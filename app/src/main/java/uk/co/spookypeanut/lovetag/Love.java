@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.File;
@@ -31,6 +33,15 @@ public class Love extends ActionBarActivity {
         iF.addAction("com.android.music.queuechanged");
 
         registerReceiver(mReceiver, iF);
+
+        final Button button = (Button) findViewById(R.id.login);
+        button.setOnClickListener(new View.OnClickListener() {
+             public void onClick(View v) {
+                 Intent i = new Intent(Love.this.getApplication(), LoginActivity.class);
+                 startActivity(i);
+             }
+         });
+
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
