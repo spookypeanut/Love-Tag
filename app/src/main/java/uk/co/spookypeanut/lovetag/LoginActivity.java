@@ -4,14 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +17,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -201,23 +201,26 @@ public class LoginActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
+            Md5Maker md5m;
+            UrlMaker urlm;
+            md5m = new Md5Maker();
+            urlm = new UrlMaker(getBaseContext());
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 return false;
             }
+            String authToken = md5m.encode(mUsername + md5m.encode(mPassword));
+            Log.i("Love&Tag", authToken);
+            Map<String, String> restparams = new HashMap<String, String>();
+            restparams.put("authToken", authToken);
+            restparams.put("method", "auth.getMobileSession");
+            restparams.put("username", mUsername);
+            String url;
+            url = urlm.from_hashmap(restparams);
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mUsername)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
             return true;
         }
 
