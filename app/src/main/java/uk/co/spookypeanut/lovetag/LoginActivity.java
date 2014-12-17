@@ -220,7 +220,7 @@ public class LoginActivity extends Activity {
             restparams.put("username", mUsername);
             String url;
             url = urlm.from_hashmap(restparams);
-
+            Log.i("Love&Tag.LoginActivity", "url: " + url);
             return true;
         }
 

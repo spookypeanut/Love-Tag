@@ -1,5 +1,6 @@
 package uk.co.spookypeanut.lovetag;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.util.Log;
 
@@ -25,15 +26,21 @@ public class UrlMaker {
             String api_key = mContext.getString(R.string.lastfm_api_key);
             params.put("api_key", api_key);
         }
-        Set<String> keys = params.keySet();
-        String api_sig = generate_api_sig(params);  
-        for (String key : keys) {
+        params.put("api_sig", generate_api_sig(params));
+
+        StringBuilder url = new StringBuilder();
+        url.append(mContext.getString(R.string.base_url));
+        List combined = new ArrayList();
+        String delim = "";
+        for (String key : params.keySet()) {
             String value = (String) params.get(key);
             if (value == null) {
                value = "null";
             }
+            url.append(delim).append(key).append("=").append(value);
+            delim = mContext.getString(R.string.url_param_separator);
         }
-        return "";
+        return url.toString();
     }
     private String generate_api_sig(Map<String, String> params) {
         List<String> keys = asSortedList(params.keySet());
