@@ -18,6 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -213,14 +219,35 @@ public class LoginActivity extends Activity {
                 return false;
             }
             String authToken = md5m.encode(mUsername + md5m.encode(mPassword));
-            Log.i("Love&Tag", authToken);
             Map<String, String> restparams = new HashMap<String, String>();
             restparams.put("authToken", authToken);
             restparams.put("method", "auth.getMobileSession");
             restparams.put("username", mUsername);
-            String url;
-            url = urlm.from_hashmap(restparams);
-            Log.i("Love&Tag.LoginActivity", "url: " + url);
+            String urlString;
+            urlString = urlm.from_hashmap(restparams);
+            Log.d("Love&Tag.LoginActivity", "Got url: " + urlString);
+
+            InputStream in = null;
+
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+                urlConnection.setRequestProperty("Accept","*/*");
+                in = new BufferedInputStream(urlConnection.getInputStream());
+            } catch (MalformedURLException e) {
+                Log.e("Love&Tag.LoginActivity", "Malformed URL: " + e.getMessage());
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                Log.e("Love&Tag.LoginActivity", "IO Exception: " + e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+            String response;
+            response = in.toString();
+            Log.i("Love&Tag.LoginActivity", response);
             return true;
         }
 
