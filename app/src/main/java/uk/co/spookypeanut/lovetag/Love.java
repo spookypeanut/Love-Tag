@@ -13,13 +13,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 public class Love extends ActionBarActivity {
+    LastfmSession mLfs;
+    UrlMaker mUrlMaker;
+    Context mCurrentContext = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        String tag = "Love&Tag.Love.onCreate";
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_love);
-        Log.i("LoveAndTag", "blah");
 
         IntentFilter iF = new IntentFilter();
         iF.addAction("com.android.music.metachanged");
@@ -31,13 +40,41 @@ public class Love extends ActionBarActivity {
 
         final Button button = (Button) findViewById(R.id.login);
         button.setOnClickListener(new View.OnClickListener() {
-             public void onClick(View v) {
-                 Intent i = new Intent(Love.this.getApplication(), LoginActivity.class);
-                 startActivity(i);
-             }
-         });
+            public void onClick(View v) {
+            }
+        });
 
+        mUrlMaker = new UrlMaker();
+        // This snippet should be used whenever getting a session. It's
+
+        // the most elegant way I can figure out to do this (the only
+        // inelegance is duplication of this snippet)
+        mLfs = new LastfmSession();
+        if (!mLfs.isLoggedIn()) {
+            Intent i = new Intent();
+            i.setClass(this, LoginActivity.class);
+            startActivityForResult(i, getResources().getInteger(
+                                                R.integer.rc_log_in));
+        }
     }
+
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    String tag = "Love&Tag.Love.onActivityResult";
+    Log.i(tag, "Starting");
+    // Check which request we're responding to
+    if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
+        // Make sure the request was successful
+        if (resultCode == RESULT_OK) {
+            if (data.getBooleanExtra("success", false)) {
+                Log.i(tag, "Failed");
+            } else {
+                Log.i(tag, "Succeeded");
+            }
+        } else {
+            Log.e("Love&Tag.Love", "Log in failed");
+        }
+    }
+}
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -76,3 +113,5 @@ public class Love extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+
