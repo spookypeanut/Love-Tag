@@ -7,8 +7,10 @@ package uk.co.spookypeanut.lovetag;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -82,16 +84,32 @@ public class LoginActivity extends Activity {
         Md5Maker md5m;
         md5m = new Md5Maker();
         String authToken = md5m.encode(username + md5m.encode(password));
-        LastfmSession lfs;
-        lfs = new LastfmSession();
-        lfs.logIn(username, authToken);
-        Intent intent=new Intent();
-        if (lfs.isLoggedIn()) {
-            intent.putExtra("success", true);
-        } else {
-            intent.putExtra("success", false);
+        new CallAPI().execute(username, authToken);
+    }
+
+    private class CallAPI extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String tag = "Love&Tag.CallAPI.doInBackground";
+            String username = params[0];
+            String authToken = params[1];
+            LastfmSession lfs;
+            lfs = new LastfmSession();
+            boolean result = lfs.logIn(username, authToken);
+            Log.i(tag, "Result: " + result);
+            if (lfs.isLoggedIn()) {
+                Log.i(tag, "Logged in");
+            } else {
+                Log.i(tag, "Not logged in");
+            }
+//            setResult(getResources().getInteger(R.integer.rc_log_in), intent);
+            return "";
+
         }
-        setResult(getResources().getInteger(R.integer.rc_log_in), intent);
+
+        protected void onPostExecute(String result) {
+
+        }
     }
 }
 

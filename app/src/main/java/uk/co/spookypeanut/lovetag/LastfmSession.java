@@ -9,7 +9,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,16 +52,31 @@ public class LastfmSession {
         String urlString;
         urlString = mUrlMaker.from_hashmap(restparams);
         Log.i(tag, "log in url: " + urlString);
-        String response = getUrlResponse(urlString);
-        Log.i(tag, "response: " + response);
+        try {
+            mSessionKey = getSessionKey(urlString);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
-    protected String getUrlResponse(String urlString) {
+    protected XmlPullParser getUrlResponse(String urlString) {
         String tag = "Love&Tag.LastfmSession.getUrlResponse";
         Log.d(tag, "url: " + urlString);
 
         InputStream in = null;
+        XmlPullParserFactory pullParserFactory;
+        XmlPullParser parser;
+        parser = null;
+        try {
+            pullParserFactory = XmlPullParserFactory.newInstance();
+        }
+        catch (XmlPullParserException e) {
+            e.printStackTrace();
+            return parser;
+        }
 
         try {
             URL url = new URL(urlString);
@@ -68,46 +88,47 @@ public class LastfmSession {
         } catch (Exception e) {
             Log.e(tag, "Exception: " + e.getMessage());
             e.printStackTrace();
-            return e.getMessage();
+            return parser;
         }
-        String response;
-        response = in.toString();
-        Log.i(tag, response);
-        return response;
+        try {
+            parser = pullParserFactory.newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(in, null);
+            return parser;
+        }
+        catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        return parser;
     }
-/*    public dumpingground() {
-            Map<String, String> restparams = new HashMap<String, String>();
-            restparams.put("authToken", authToken);
-            restparams.put("method", "auth.getMobileSession");
-            restparams.put("username", mUsername);
-            String urlString;
-            urlString = urlm.from_hashmap(restparams);
-            Log.d("Love&Tag.LoginActivity", "Got url: " + urlString);
+    private String getSessionKey(String url) throws
+            XmlPullParserException, IOException {
+        String tag = "Love&Tag.LastfmSession.parseXML";
+        XmlPullParser parser;
+        parser = getUrlResponse(url);
+        Log.d(tag, "Got parser");
+        int eventType = parser.getEventType();
 
-            InputStream in = null;
+        while(eventType != XmlPullParser.END_DOCUMENT) {
+            String name;
 
-            try {
-                URL url = new URL(urlString);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-                urlConnection.setRequestProperty("Accept","*_/*"); // Remove the underscore
-                in = new BufferedInputStream(urlConnection.getInputStream());
-            } catch (MalformedURLException e) {
-                Log.e("Love&Tag.LoginActivity", "Malformed URL: " + e.getMessage());
-                e.printStackTrace();
-                return false;
-            } catch (IOException e) {
-                Log.e("Love&Tag.LoginActivity", "IO Exception: " + e.getMessage());
-                e.printStackTrace();
-                return false;
+            switch(eventType) {
+                case XmlPullParser.START_TAG:
+                    name = parser.getName().toString();
+                    Log.d(tag, "|" + name + "|");
+                    if (name.equals("key")) {
+                        Log.i(tag, "Found key");
+                        String result = parser.nextText();
+                        Log.i(tag, "Key is " + result);
+                        return result;
+                    }
+                case XmlPullParser.END_TAG:
+                    break;
             }
-            String response;
-            response = in.toString();
-            Log.i("Love&Tag.LoginActivity", response);
-            return true;
-
-    }*/
+            eventType = parser.next();
+        }
+        throw(new IOException("Session key not found"));
+    }
 }
 
 class UrlMaker {
