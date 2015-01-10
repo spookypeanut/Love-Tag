@@ -20,12 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
-/**
- * A login screen that offers login via username/password.
- */
 public class LoginActivity extends Activity {
-    // UI references.
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
 
@@ -34,7 +29,6 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -99,8 +93,12 @@ public class LoginActivity extends Activity {
             Log.i(tag, "Result: " + result);
             if (lfs.isLoggedIn()) {
                 Log.i(tag, "Logged in");
+                setResult(RESULT_OK);
+                finish();
             } else {
                 Log.i(tag, "Not logged in");
+                setResult(RESULT_CANCELED);
+                finish();
             }
 //            setResult(getResources().getInteger(R.integer.rc_log_in), intent);
             return "";

@@ -41,6 +41,11 @@ public class Love extends ActionBarActivity {
         final Button button = (Button) findViewById(R.id.login);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                String tag;
+                tag = "Love&Tag.Love.onClick";
+                boolean response;
+                response = mLfs.love("Sleeper", "Pyrotechnician");
+                Log.i(tag, "Response: " + String.valueOf(response));
             }
         });
 
@@ -61,17 +66,15 @@ public class Love extends ActionBarActivity {
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     String tag = "Love&Tag.Love.onActivityResult";
     Log.i(tag, "Starting");
+    Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
     // Check which request we're responding to
     if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
         // Make sure the request was successful
         if (resultCode == RESULT_OK) {
-            if (data.getBooleanExtra("success", false)) {
-                Log.i(tag, "Failed");
-            } else {
-                Log.i(tag, "Succeeded");
-            }
+            Log.i(tag, "Succeeded");
+            mLfs = new LastfmSession();
         } else {
-            Log.e("Love&Tag.Love", "Log in failed");
+            Log.e(tag, "Log in failed");
         }
     }
 }

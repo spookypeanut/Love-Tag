@@ -2,5 +2,5 @@
 <!-- Copyright (c) 2014 Henry Bush -->
 <!-- Distributed under the GNU GPL v3. For full terms see the file COPYING. -->
 <resources>
-    <integer name="rc_log_in">1</integer>
+    <integer name="rc_log_in">3</integer>
 </resources>

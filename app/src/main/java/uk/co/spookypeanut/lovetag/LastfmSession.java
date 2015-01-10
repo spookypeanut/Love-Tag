@@ -32,15 +32,57 @@ public class LastfmSession {
 
     public LastfmSession() {
         mContext = App.getContext();
-        mSettings = mContext.getSharedPreferences("LastfmSession", mContext.MODE_MULTI_PROCESS);
+        String ss;
+        ss = mContext.getString(R.string.session_setting);
+        mSettings = mContext.getSharedPreferences(ss, mContext.MODE_MULTI_PROCESS);
         mUrlMaker = new UrlMaker();
-        if (mSettings.contains("sessionKey")) {
-            mSessionKey = mSettings.getString("session_key", "");
+        passiveLogin();
+    }
+
+    private void passiveLogin() {
+        String tag = "Love&Tag.LastfmSession.passiveLogin";
+        String ss = mContext.getString(R.string.session_setting);
+        if (mSettings.contains(ss)) {
+            mSessionKey = mSettings.getString(ss, "");
+        } else {
+            Log.i(tag, "Couldn't log in");
         }
     }
 
     public boolean isLoggedIn() {
+        passiveLogin();
         return mSessionKey != "";
+    }
+
+    public boolean love(String artist, String track) {
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> restparams = new HashMap<String, String>();
+        restparams.put("method", "track.love");
+        restparams.put("sk", mSessionKey);
+        restparams.put("track", track);
+        restparams.put("artist", artist);
+        String urlString;
+        urlString = mUrlMaker.from_hashmap(restparams);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void setSessionKey(String sk) {
+        String ss;
+        String tag = "Love&Tag.LastfmSession.setSessionKey";
+        Log.i(tag, "Setting session key: " + sk);
+        ss = mContext.getString(R.string.session_setting);
+        mSettings.edit().putString(ss, sk).commit();
+        mSessionKey = sk;
     }
 
     public boolean logIn(String username, String authToken) {
@@ -53,7 +95,7 @@ public class LastfmSession {
         urlString = mUrlMaker.from_hashmap(restparams);
         Log.i(tag, "log in url: " + urlString);
         try {
-            mSessionKey = getSessionKey(urlString);
+            setSessionKey(getSessionKey(urlString));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +108,7 @@ public class LastfmSession {
         String tag = "Love&Tag.LastfmSession.getUrlResponse";
         Log.d(tag, "url: " + urlString);
 
-        InputStream in = null;
+        InputStream in;
         XmlPullParserFactory pullParserFactory;
         XmlPullParser parser;
         parser = null;
@@ -101,9 +143,38 @@ public class LastfmSession {
         }
         return parser;
     }
+    private boolean getBoolean(String url) throws
+            XmlPullParserException, IOException {
+        String tag = "Love&Tag.LastfmSession.getBoolean";
+        XmlPullParser parser;
+        parser = getUrlResponse(url);
+        Log.d(tag, "Got parser");
+        int eventType = parser.getEventType();
+
+        while(eventType != XmlPullParser.END_DOCUMENT) {
+            String name;
+            Log.i(tag, parser.getText());
+            switch(eventType) {
+                case XmlPullParser.START_TAG:
+                    name = parser.getName().toString();
+                    Log.d(tag, "|" + name + "|");
+                    if (name.equals("status")) {
+                        Log.i(tag, "Found key");
+                        String result = parser.nextText();
+                        Log.i(tag, "Key is " + result);
+                        return true;
+                    }
+                case XmlPullParser.END_TAG:
+                    break;
+            }
+            eventType = parser.next();
+        }
+        return false;
+    }
+
     private String getSessionKey(String url) throws
             XmlPullParserException, IOException {
-        String tag = "Love&Tag.LastfmSession.parseXML";
+        String tag = "Love&Tag.LastfmSession.getSessionKey";
         XmlPullParser parser;
         parser = getUrlResponse(url);
         Log.d(tag, "Got parser");
@@ -139,10 +210,8 @@ class UrlMaker {
         mMd5Maker = new Md5Maker();
     }
     public String from_hashmap(Map<String, String> params) {
-        if ((String) params.get("method") == "auth.getMobileSession") {
-            String api_key = mContext.getString(R.string.lastfm_api_key);
-            params.put("api_key", api_key);
-        }
+        String api_key = mContext.getString(R.string.lastfm_api_key);
+        params.put("api_key", api_key);
         params.put("api_sig", generate_api_sig(params));
 
         StringBuilder url = new StringBuilder();
