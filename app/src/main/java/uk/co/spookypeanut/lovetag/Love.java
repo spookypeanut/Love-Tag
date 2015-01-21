@@ -38,7 +38,7 @@ public class Love extends ActionBarActivity {
 
         registerReceiver(mReceiver, iF);
 
-        final Button button = (Button) findViewById(R.id.login);
+        final Button button = (Button) findViewById(R.id.lovebutton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String tag;
