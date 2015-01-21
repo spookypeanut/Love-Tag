@@ -26,8 +26,8 @@ public class Love extends ActionBarActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        String tag = "Love&Tag.Love.onCreate";
         super.onCreate(savedInstanceState);
+        String tag = "Love&Tag.Love.onCreate";
 
         setContentView(R.layout.activity_love);
 
@@ -62,6 +62,11 @@ public class Love extends ActionBarActivity {
             startActivityForResult(i, getResources().getInteger(
                     R.integer.rc_log_in));
         }
+    }
+
+    protected void onDestroy() {
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
