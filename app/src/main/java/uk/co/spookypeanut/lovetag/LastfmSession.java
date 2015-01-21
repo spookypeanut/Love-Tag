@@ -153,15 +153,20 @@ public class LastfmSession {
 
         while(eventType != XmlPullParser.END_DOCUMENT) {
             String name;
-            Log.i(tag, parser.getText());
+            String debug;
+            debug = parser.getText();
+            if (debug != null) {
+                Log.i(tag, parser.getText());
+            }
             switch(eventType) {
                 case XmlPullParser.START_TAG:
-                    name = parser.getName().toString();
-                    Log.d(tag, "|" + name + "|");
-                    if (name.equals("status")) {
-                        Log.i(tag, "Found key");
-                        String result = parser.nextText();
-                        Log.i(tag, "Key is " + result);
+                    if (1 != parser.getAttributeCount()) {
+                        break;
+                    }
+                    if (!"status".equals(parser.getAttributeName(0))) {
+                        break;
+                    }
+                    if ("ok".equals(parser.getAttributeValue(0))) {
                         return true;
                     }
                 case XmlPullParser.END_TAG:
