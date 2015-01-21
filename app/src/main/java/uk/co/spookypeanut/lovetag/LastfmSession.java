@@ -7,6 +7,7 @@ package uk.co.spookypeanut.lovetag;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -63,6 +64,31 @@ public class LastfmSession {
         restparams.put("sk", mSessionKey);
         restparams.put("track", track);
         restparams.put("artist", artist);
+        String urlString;
+        urlString = mUrlMaker.from_hashmap(restparams);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean tag(String artist, String track, List<String> tag_list) {
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> restparams = new HashMap<String, String>();
+        String tag_cat;
+        tag_cat = TextUtils.join(",", tag_list);
+        restparams.put("method", "track.addTags");
+        restparams.put("sk", mSessionKey);
+        restparams.put("track", track);
+        restparams.put("artist", artist);
+        restparams.put("tags", tag_cat);
         String urlString;
         urlString = mUrlMaker.from_hashmap(restparams);
         boolean response;
