@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -43,9 +44,9 @@ public class Love extends ActionBarActivity {
             public void onClick(View v) {
                 String tag;
                 tag = "Love&Tag.Love.onClick";
-                boolean response;
-                response = mLfs.love("Sleeper", "Pyrotechnician");
-                Log.i(tag, "Response: " + String.valueOf(response));
+                LoveCall lc = new LoveCall();
+                lc.execute("Sleeper", "Pyrotechnician");
+                Log.d(tag, "Submitted love");
             }
         });
 
@@ -59,25 +60,25 @@ public class Love extends ActionBarActivity {
             Intent i = new Intent();
             i.setClass(this, LoginActivity.class);
             startActivityForResult(i, getResources().getInteger(
-                                                R.integer.rc_log_in));
+                    R.integer.rc_log_in));
         }
     }
 
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    String tag = "Love&Tag.Love.onActivityResult";
-    Log.i(tag, "Starting");
-    Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
-    // Check which request we're responding to
-    if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
-        // Make sure the request was successful
-        if (resultCode == RESULT_OK) {
-            Log.i(tag, "Succeeded");
-            mLfs = new LastfmSession();
-        } else {
-            Log.e(tag, "Log in failed");
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String tag = "Love&Tag.Love.onActivityResult";
+        Log.i(tag, "Starting");
+        Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
+        // Check which request we're responding to
+        if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Log.i(tag, "Succeeded");
+                mLfs = new LastfmSession();
+            } else {
+                Log.e(tag, "Log in failed");
+            }
         }
     }
-}
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -114,6 +115,33 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class LoveCall extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String track = params[0];
+            String artist = params[1];
+            String tag = "Love&Tag.Love.doInBackground";
+            boolean result = mLfs.love(track, artist);
+            Log.i(tag, "Result: " + result);
+            if (result == true) {
+                Log.i(tag, "Love succeeded");
+                setResult(RESULT_OK);
+                finish();
+            } else {
+                Log.i(tag, "Love failed");
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+//            setResult(getResources().getInteger(R.integer.rc_log_in), intent);
+            return "";
+
+        }
+
+        protected void onPostExecute(String result) {
+
+        }
     }
 }
 
