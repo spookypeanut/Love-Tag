@@ -6,7 +6,6 @@ package uk.co.spookypeanut.lovetag;
  */
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
