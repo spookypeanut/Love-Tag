@@ -13,16 +13,23 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Love extends ActionBarActivity {
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
+    String mNowPlayingTitle;
+    String mNowPlayingArtist;
+    View mPodView;
+    private LayoutInflater mInflater;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,7 @@ public class Love extends ActionBarActivity {
 
         registerReceiver(mReceiver, iF);
 
+        /*
         final Button button = (Button) findViewById(R.id.lovebutton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -49,10 +57,16 @@ public class Love extends ActionBarActivity {
                 Log.d(tag, "Submitted love");
             }
         });
+*/
+        int mNowPlayingView = R.layout.view_listentry;
+        mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mPodView = mInflater.inflate(mNowPlayingView, null);
+        LinearLayout podLayout;
+        podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
+        podLayout.addView(mPodView);
 
         mUrlMaker = new UrlMaker();
         // This snippet should be used whenever getting a session. It's
-
         // the most elegant way I can figure out to do this (the only
         // inelegance is duplication of this snippet)
         mLfs = new LastfmSession();
@@ -86,17 +100,18 @@ public class Love extends ActionBarActivity {
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
+            String tag = "Love&Tag.Love.mReceiver.onReceive";
             String action = intent.getAction();
-            String cmd = intent.getStringExtra("command");
-            Log.v("tag ", action + " / " + cmd);
             String artist = intent.getStringExtra("artist");
-            String album = intent.getStringExtra("album");
             String track = intent.getStringExtra("track");
-            Log.v("tag", artist + ":" + album + ":" + track);
-            Toast.makeText(Love.this, track, Toast.LENGTH_SHORT).show();
+            mNowPlayingArtist = artist;
+            TextView artistView = (TextView) mPodView.findViewById(R.id.artist);
+            artistView.setText(artist);
+            mNowPlayingTitle = track;
+            TextView titleView = (TextView) mPodView.findViewById(R.id.title);
+            titleView.setText(track);
         }
     };
 
