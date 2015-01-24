@@ -12,12 +12,13 @@
 
         <TextView
             android:layout_width="261dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="A Huge Ever Growing Pulsating Brain That Rules from the Centre of the Ultraworld"
             android:id="@+id/title"
-            android:ellipsize="end"
-            android:lines="2"/>
+            android:ellipsize="middle"
+            android:lines="1"
+            android:textSize="20sp"/>
 
         <TextView
             android:layout_width="wrap_content"
