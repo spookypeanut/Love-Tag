@@ -9,12 +9,28 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".Love"
     android:weightSum="1">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Playing on Device"
+        android:id="@+id/podLabel"
+        android:layout_gravity="right"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="69dp"
         android:id="@+id/playingOnDeviceLayout">
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Last.fm History"
+        android:id="@+id/historyLabel"
+        android:layout_gravity="right"/>
 
     <ScrollView
         android:layout_width="328dp"
