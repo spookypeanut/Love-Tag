@@ -17,8 +17,10 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -241,6 +243,7 @@ class UrlMaker {
         mMd5Maker = new Md5Maker();
     }
     public String from_hashmap(Map<String, String> params) {
+        String tag = "Love&Tag.LastfmSession.UrlMaker.from_hashmap";
         String api_key = mContext.getString(R.string.lastfm_api_key);
         params.put("api_key", api_key);
         params.put("api_sig", generate_api_sig(params));
@@ -250,12 +253,20 @@ class UrlMaker {
         List combined = new ArrayList();
         String delim = "";
         for (String key : params.keySet()) {
-            String value = (String) params.get(key);
-            if (value == null) {
-                value = "null";
+            String rawvalue = (String) params.get(key);
+            if (rawvalue == null) {
+                rawvalue = "null";
             }
-            url.append(delim).append(key).append("=").append(value);
-            delim = mContext.getString(R.string.url_param_separator);
+            String value;
+            try {
+                value = URLEncoder.encode(rawvalue, "utf-8");
+                url.append(delim).append(key).append("=").append(value);
+                delim = mContext.getString(R.string.url_param_separator);
+            }
+            catch (UnsupportedEncodingException e) {
+                Log.e(tag, "rawvalue: " + rawvalue);
+                e.printStackTrace();
+            }
         }
         return url.toString();
     }

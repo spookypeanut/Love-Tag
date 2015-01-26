@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -147,6 +148,17 @@ public class Love extends ActionBarActivity {
             View.inflate(context, R.layout.view_listentry, this);
             mArtistView = (TextView) findViewById(R.id.artist);
             mTitleView = (TextView) findViewById(R.id.title);
+            final ImageButton loveButton = (ImageButton) findViewById(R.id
+                    .lovebutton);
+            loveButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    String tag;
+                    tag = "Love&Tag.Love.ListEntry.onClick";
+                    LoveCall lc = new LoveCall();
+                    lc.execute(mArtist, mTitle);
+                    Log.d(tag, "Submitted love");
+                }
+            });
         }
 
 
