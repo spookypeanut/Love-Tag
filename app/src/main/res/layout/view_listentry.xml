@@ -3,52 +3,50 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:weightSum="1">
+              android:weightSum="1"
+              android:gravity="right">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TextView
-            android:layout_width="261dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="A Huge Ever Growing Pulsating Brain That Rules from the Centre of the Ultraworld"
             android:id="@+id/title"
             android:ellipsize="middle"
             android:lines="1"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:singleLine="true"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="The Orb"
-            android:id="@+id/artist"/>
+            android:id="@+id/artist"
+            android:ellipsize="middle"/>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:weightSum="1"
-        android:layout_gravity="center_vertical">
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/lovebutton"
+        android:src="@android:drawable/star_big_on"
+        android:layout_weight="0"
+        />
 
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/lovebutton"
-            android:src="@android:drawable/star_big_on"
-            android:layout_weight="0.02"/>
-
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/tagbutton"
-            android:layout_weight="0.05"
-            android:src="@android:drawable/ic_input_get"/>
-    </LinearLayout>
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tagbutton"
+        android:layout_weight="0"
+        android:src="@android:drawable/ic_input_get"/>
 
 </LinearLayout>

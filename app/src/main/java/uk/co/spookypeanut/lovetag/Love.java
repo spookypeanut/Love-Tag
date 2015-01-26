@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,7 +30,7 @@ public class Love extends ActionBarActivity {
     Context mCurrentContext = this;
     String mNowPlayingTitle;
     String mNowPlayingArtist;
-    View mPodView;
+    ListEntry mPodView;
     private LayoutInflater mInflater;
 
     @Override
@@ -58,9 +60,8 @@ public class Love extends ActionBarActivity {
             }
         });
 */
-        int mNowPlayingView = R.layout.view_listentry;
         mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mPodView = mInflater.inflate(mNowPlayingView, null);
+        mPodView = new ListEntry(mCurrentContext);
         LinearLayout podLayout;
         podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
         podLayout.addView(mPodView);
@@ -107,11 +108,8 @@ public class Love extends ActionBarActivity {
             String artist = intent.getStringExtra("artist");
             String track = intent.getStringExtra("track");
             mNowPlayingArtist = artist;
-            TextView artistView = (TextView) mPodView.findViewById(R.id.artist);
-            artistView.setText(artist);
             mNowPlayingTitle = track;
-            TextView titleView = (TextView) mPodView.findViewById(R.id.title);
-            titleView.setText(track);
+            mPodView.setMusic(artist, track);
         }
     };
 
@@ -137,12 +135,62 @@ public class Love extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public class ListEntry extends LinearLayout {
+        String mArtist;
+        TextView mArtistView;
+        String mTitle;
+        TextView mTitleView;
+
+        String mLoved;
+        public ListEntry(Context context) {
+            super(context);
+            View.inflate(context, R.layout.view_listentry, this);
+            mArtistView = (TextView) findViewById(R.id.artist);
+            mTitleView = (TextView) findViewById(R.id.title);
+            mArtistView.setText("FUKKIT");
+        }
+
+//        private void checkLayout() {
+//            if (null == mLayout) {
+//                mLayout = mInflater.inflate(R.layout.view_listentry, null);
+//                this.addView(mLayout);
+//            }
+//        }
+
+        public void setMusic(String artist, String title) {
+            String tag = "Love&Tag.Love.ListEntry.setMusic";
+//            checkLayout();
+            Log.i(tag, "Start");
+            mArtist = artist;
+            mTitle = title;
+            try {
+                update();
+            }
+            catch (NullPointerException e) {
+                Log.w(tag, "Caught NullPointerException");
+            }
+        }
+        private void update() {
+            String tag = "Love&Tag.Love.ListEntry.update";
+            Log.i(tag, "Start");
+            Log.i(tag, "Setting to " + mArtist);
+            mArtistView.setText(mArtist);
+            mTitleView.setText(mTitle);
+        }
+    }
+
+    private class SongList extends LinearLayout {
+        public SongList(Context context) {
+            super(context);
+        }
+    }
+
     private class LoveCall extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             String track = params[0];
             String artist = params[1];
-            String tag = "Love&Tag.Love.doInBackground";
+            String tag = "Love&Tag.Love.LoveCall.doInBackground";
             boolean result = mLfs.love(track, artist);
             Log.i(tag, "Result: " + result);
             if (result == true) {

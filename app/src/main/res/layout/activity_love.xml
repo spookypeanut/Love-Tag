@@ -19,9 +19,10 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="69dp"
         android:id="@+id/playingOnDeviceLayout">
+
     </LinearLayout>
 
     <TextView
@@ -33,11 +34,13 @@
         android:layout_gravity="right"/>
 
     <ScrollView
-        android:layout_width="328dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recentlyPlayedLayout"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:fillViewport="false"/>
+        android:fillViewport="false">
+
+    </ScrollView>
 
 </LinearLayout>
