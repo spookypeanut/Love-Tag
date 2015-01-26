@@ -147,20 +147,11 @@ public class Love extends ActionBarActivity {
             View.inflate(context, R.layout.view_listentry, this);
             mArtistView = (TextView) findViewById(R.id.artist);
             mTitleView = (TextView) findViewById(R.id.title);
-            mArtistView.setText("FUKKIT");
         }
 
-//        private void checkLayout() {
-//            if (null == mLayout) {
-//                mLayout = mInflater.inflate(R.layout.view_listentry, null);
-//                this.addView(mLayout);
-//            }
-//        }
 
         public void setMusic(String artist, String title) {
             String tag = "Love&Tag.Love.ListEntry.setMusic";
-//            checkLayout();
-            Log.i(tag, "Start");
             mArtist = artist;
             mTitle = title;
             try {
@@ -171,17 +162,8 @@ public class Love extends ActionBarActivity {
             }
         }
         private void update() {
-            String tag = "Love&Tag.Love.ListEntry.update";
-            Log.i(tag, "Start");
-            Log.i(tag, "Setting to " + mArtist);
             mArtistView.setText(mArtist);
             mTitleView.setText(mTitle);
-        }
-    }
-
-    private class SongList extends LinearLayout {
-        public SongList(Context context) {
-            super(context);
         }
     }
 
@@ -202,9 +184,7 @@ public class Love extends ActionBarActivity {
                 setResult(RESULT_CANCELED);
                 finish();
             }
-//            setResult(getResources().getInteger(R.integer.rc_log_in), intent);
             return "";
-
         }
 
         protected void onPostExecute(String result) {
