@@ -67,7 +67,7 @@ public class LastfmSession {
         restparams.put("track", track);
         restparams.put("artist", artist);
         String urlString;
-        urlString = mUrlMaker.from_hashmap(restparams);
+        urlString = mUrlMaker.fromHashmap(restparams);
         boolean response;
         try {
             response = getBoolean(urlString);
@@ -79,20 +79,18 @@ public class LastfmSession {
         }
     }
 
-    public boolean tag(String artist, String track, List<String> tag_list) {
+    public boolean tag(String artist, String track, String tag_list) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        Map<String, String> restparams = new HashMap<String, String>();
-        String tag_cat;
-        tag_cat = TextUtils.join(",", tag_list);
-        restparams.put("method", "track.addTags");
-        restparams.put("sk", mSessionKey);
-        restparams.put("track", track);
-        restparams.put("artist", artist);
-        restparams.put("tags", tag_cat);
+        Map<String, String> rest_params = new HashMap<String, String>();
+        rest_params.put("method", "track.addTags");
+        rest_params.put("sk", mSessionKey);
+        rest_params.put("track", track);
+        rest_params.put("artist", artist);
+        rest_params.put("tags", tag_list);
         String urlString;
-        urlString = mUrlMaker.from_hashmap(restparams);
+        urlString = mUrlMaker.fromHashmap(rest_params);
         boolean response;
         try {
             response = getBoolean(urlString);
@@ -120,7 +118,7 @@ public class LastfmSession {
         restparams.put("method", "auth.getMobileSession");
         restparams.put("username", username);
         String urlString;
-        urlString = mUrlMaker.from_hashmap(restparams);
+        urlString = mUrlMaker.fromHashmap(restparams);
         Log.i(tag, "log in url: " + urlString);
         try {
             setSessionKey(getSessionKey(urlString));
@@ -242,35 +240,35 @@ class UrlMaker {
         mContext = App.getContext();
         mMd5Maker = new Md5Maker();
     }
-    public String from_hashmap(Map<String, String> params) {
-        String tag = "Love&Tag.LastfmSession.UrlMaker.from_hashmap";
+    public String fromHashmap(Map<String, String> params) {
+        String tag = "Love&Tag.LastfmSession.UrlMaker.fromHashmap";
         String api_key = mContext.getString(R.string.lastfm_api_key);
         params.put("api_key", api_key);
-        params.put("api_sig", generate_api_sig(params));
+        params.put("api_sig", generateApiSig(params));
 
         StringBuilder url = new StringBuilder();
         url.append(mContext.getString(R.string.base_url));
         List combined = new ArrayList();
         String delim = "";
         for (String key : params.keySet()) {
-            String rawvalue = (String) params.get(key);
-            if (rawvalue == null) {
-                rawvalue = "null";
+            String raw_value = (String) params.get(key);
+            if (raw_value == null) {
+                raw_value = "null";
             }
             String value;
             try {
-                value = URLEncoder.encode(rawvalue, "utf-8");
+                value = URLEncoder.encode(raw_value, "utf-8");
                 url.append(delim).append(key).append("=").append(value);
                 delim = mContext.getString(R.string.url_param_separator);
             }
             catch (UnsupportedEncodingException e) {
-                Log.e(tag, "rawvalue: " + rawvalue);
+                Log.e(tag, "raw_value: " + raw_value);
                 e.printStackTrace();
             }
         }
         return url.toString();
     }
-    private String generate_api_sig(Map<String, String> params) {
+    private String generateApiSig(Map<String, String> params) {
         List<String> keys = asSortedList(params.keySet());
         String secret = mContext.getString(R.string.lastfm_api_secret);
         String pre_md5 = "";

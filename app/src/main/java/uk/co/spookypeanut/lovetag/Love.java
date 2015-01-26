@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Love extends ActionBarActivity {
     LastfmSession mLfs;
@@ -46,21 +50,8 @@ public class Love extends ActionBarActivity {
         iF.addAction("com.android.music.playstatechanged");
         iF.addAction("com.android.music.playbackcomplete");
         iF.addAction("com.android.music.queuechanged");
-
         registerReceiver(mReceiver, iF);
 
-        /*
-        final Button button = (Button) findViewById(R.id.lovebutton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String tag;
-                tag = "Love&Tag.Love.onClick";
-                LoveCall lc = new LoveCall();
-                lc.execute("Sleeper", "Pyrotechnician");
-                Log.d(tag, "Submitted love");
-            }
-        });
-*/
         mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mPodView = new ListEntry(mCurrentContext);
         LinearLayout podLayout;
@@ -153,14 +144,27 @@ public class Love extends ActionBarActivity {
             loveButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     String tag;
-                    tag = "Love&Tag.Love.ListEntry.onClick";
+                    tag = "Love&Tag.Love.ListEntry.loveButton.onClick";
                     LoveCall lc = new LoveCall();
                     lc.execute(mArtist, mTitle);
                     Log.d(tag, "Submitted love");
                 }
             });
+            final ImageButton tagButton = (ImageButton) findViewById(R.id
+                    .tagbutton);
+            tagButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    String tag;
+                    tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
+                    TagCall tc = new TagCall();
+                    List<String> tags;
+                    tags = Arrays.asList("Love&Tag", "Love", "Tag");
+                    String tag_cat = TextUtils.join(",", tags);
+                    tc.execute(mArtist, mTitle, tag_cat);
+                    Log.d(tag, "Submitted love");
+                }
+            });
         }
-
 
         public void setMusic(String artist, String title) {
             String tag = "Love&Tag.Love.ListEntry.setMusic";
@@ -186,21 +190,32 @@ public class Love extends ActionBarActivity {
             String artist = params[1];
             String tag = "Love&Tag.Love.LoveCall.doInBackground";
             boolean result = mLfs.love(track, artist);
-            Log.i(tag, "Result: " + result);
             if (result == true) {
                 Log.i(tag, "Love succeeded");
                 setResult(RESULT_OK);
-                finish();
             } else {
                 Log.i(tag, "Love failed");
                 setResult(RESULT_CANCELED);
-                finish();
             }
             return "";
         }
-
-        protected void onPostExecute(String result) {
-
+    }
+    private class TagCall extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String track = params[0];
+            String artist = params[1];
+            String tag_list = params[2];
+            String tag = "Love&Tag.Love.TagCall.doInBackground";
+            boolean result = mLfs.tag(track, artist, tag_list);
+            if (result == true) {
+                Log.i(tag, "Tag succeeded");
+                setResult(RESULT_OK);
+            } else {
+                Log.i(tag, "Tag failed");
+                setResult(RESULT_CANCELED);
+            }
+            return "";
         }
     }
 }
