@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,9 +38,8 @@ public class Love extends ActionBarActivity {
     Context mCurrentContext = this;
     String mNowPlayingTitle;
     String mNowPlayingArtist;
+    List<LastfmSession.RecentTrack> mRecentTracks;
     ListEntry mPodView;
-    private LayoutInflater mInflater;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +54,6 @@ public class Love extends ActionBarActivity {
         iF.addAction("com.android.music.queuechanged");
         registerReceiver(mReceiver, iF);
 
-        mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mPodView = new ListEntry(mCurrentContext);
         LinearLayout podLayout;
         podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
@@ -73,6 +72,18 @@ public class Love extends ActionBarActivity {
             return;
         }
         updateRecent();
+    }
+
+    private void setRecentTracks(List<LastfmSession.RecentTrack> tracks) {
+        mRecentTracks = tracks;
+        LinearLayout rtLayout;
+        rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
+        rtLayout.removeAllViews();
+        for (LastfmSession.RecentTrack track : tracks) {
+            ListEntry list_entry = new ListEntry(mCurrentContext);
+            rtLayout.addView(list_entry);
+            list_entry.setMusic(track);
+        }
     }
 
     @Override
@@ -123,12 +134,10 @@ public class Love extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -176,7 +185,15 @@ public class Love extends ActionBarActivity {
             });
         }
 
+        public void setMusic(LastfmSession.RecentTrack track) {
+            setMusic(track.mArtist, track.mTitle, track.mLoved);
+        }
+
         public void setMusic(String artist, String title) {
+            setMusic(artist, title, false);
+        }
+
+        public void setMusic(String artist, String title, boolean loved) {
             String tag = "Love&Tag.Love.ListEntry.setMusic";
             mArtist = artist;
             mTitle = title;
@@ -229,11 +246,15 @@ public class Love extends ActionBarActivity {
         }
     }
     private class GetRecent extends AsyncTask<String, String, String> {
+        List<LastfmSession.RecentTrack> mTempTracks = new ArrayList<>();
         @Override
         protected String doInBackground(String... params) {
             String tag = "Love&Tag.Love.TagCall.doInBackground";
-            mLfs.getRecent();
+            mTempTracks = mLfs.getRecent();
             return "";
+        }
+        protected void onPostExecute(String result) {
+            setRecentTracks(mTempTracks);
         }
     }
 }
