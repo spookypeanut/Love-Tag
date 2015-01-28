@@ -22,10 +22,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 public class LastfmSession {
     Context mContext;
@@ -102,6 +104,82 @@ public class LastfmSession {
         catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public class RecentTrack {
+        String mArtist;
+        String mTitle;
+        boolean mLoved;
+        public RecentTrack(String artist, String title, boolean loved) {
+            mArtist = artist;
+            mTitle = title;
+            mLoved = loved;
+        }
+    }
+    // public List<RecentTrack> getRecent () {
+    public void getRecent () {
+        String tag = "Love&Tag.LastfmSession.getRecent";
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> rest_params = new HashMap<String, String>();
+        rest_params.put("method", "user.getRecentTracks");
+        rest_params.put("user", mUsername);
+        // This is so we get loved information too
+        rest_params.put("extended", "1");
+        rest_params.put("limit", "1");
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(rest_params);
+        Log.i(tag, "Got url back");
+        List<String> artistList = Arrays.asList("lfm", "recenttracks",
+                "track", "artist", "name");
+        List<String> titleList = Arrays.asList("lfm", "recenttracks",
+                "track", "name");
+        List<String> lovedList = Arrays.asList("lfm", "recenttracks",
+                "track", "loved");
+        List<List<String>> listOfLists = Arrays.asList(artistList, titleList,
+                lovedList);
+
+        XmlPullParser parser;
+        try {
+            parser = getUrlResponse(urlString);
+            getTagsFromLists(parser, listOfLists);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getTagsFromLists(XmlPullParser parser,
+                                    List<List<String>> tag_list_list)
+                                    throws XmlPullParserException, IOException {
+        String tag = "Love&Tag.LastfmSession.getTagsFromLists";
+        int eventType = parser.getEventType();
+        List<String> CurrentPos = new ArrayList<>();
+
+        String name;
+        while(eventType != XmlPullParser.END_DOCUMENT) {
+            switch(eventType) {
+                case XmlPullParser.START_TAG:
+                    name = parser.getName();
+                    if(name == null) {
+                        Log.i(tag, "Name is null");
+                        continue;
+                    }
+                    CurrentPos.add(name.toString());
+                    for(List<String> each_list : tag_list_list) {
+                        if(CurrentPos.equals(each_list)) {
+                            Log.i(tag, "Matched: " + CurrentPos.toString());
+                            Log.i(tag, "Matched: " + parser.getText());
+                        }
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    CurrentPos.remove(CurrentPos.size() - 1);
+                    break;
+            }
+            eventType = parser.next();
         }
     }
 

@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,9 +70,12 @@ public class Love extends ActionBarActivity {
             i.setClass(this, LoginActivity.class);
             startActivityForResult(i, getResources().getInteger(
                     R.integer.rc_log_in));
+            return;
         }
+        updateRecent();
     }
 
+    @Override
     protected void onDestroy() {
         unregisterReceiver(mReceiver);
         super.onDestroy();
@@ -125,6 +130,11 @@ public class Love extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateRecent() {
+        GetRecent gr = new GetRecent();
+        gr.execute();
     }
 
     public class ListEntry extends LinearLayout {
@@ -215,6 +225,14 @@ public class Love extends ActionBarActivity {
                 Log.i(tag, "Tag failed");
                 setResult(RESULT_CANCELED);
             }
+            return "";
+        }
+    }
+    private class GetRecent extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String tag = "Love&Tag.Love.TagCall.doInBackground";
+            mLfs.getRecent();
             return "";
         }
     }
