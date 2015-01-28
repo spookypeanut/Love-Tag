@@ -5,15 +5,9 @@ import sys
 targetName = sys.argv[1]
 tokens = targetName.split(".")[0].split("-")
                       
-label = None
-if len(tokens) > 3:
-    label = tokens[2]
 resolution = tokens[-1].split("x")
 
-if label:
-    sourceimage = "generated/icon-gen-%s.svg" % label
-else:
-    sourceimage = "icon.svg"
+sourceimage = "%s.svg" % tokens[0]
 
 cmdList = ["inkscape"]
 cmdList.append("--without-gui")
