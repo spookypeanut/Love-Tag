@@ -198,12 +198,12 @@ public class LastfmSession {
 
     public boolean logIn(String username, String authToken) {
         String tag = "Love&Tag.LastfmSession.logIn";
-        Map<String, String> restparams = new HashMap<String, String>();
-        restparams.put("authToken", authToken);
-        restparams.put("method", "auth.getMobileSession");
-        restparams.put("username", username);
+        Map<String, String> rest_params = new HashMap<String, String>();
+        rest_params.put("authToken", authToken);
+        rest_params.put("method", "auth.getMobileSession");
+        rest_params.put("username", username);
         String urlString;
-        urlString = mUrlMaker.fromHashmap(restparams);
+        urlString = mUrlMaker.fromHashmap(rest_params);
         Log.i(tag, "log in url: " + urlString);
         try {
             setSessionKey(getSessionKey(urlString));
