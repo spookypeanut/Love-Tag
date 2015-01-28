@@ -8,4 +8,5 @@
     <string name="base_url">https://ws.audioscrobbler.com/2.0/?</string>
     <string name="url_param_separator"><![CDATA[&]]></string>
     <string name="session_setting">uk.co.spookypeanut.loveandtag.sessionkey</string>
+    <string name="username_setting">uk.co.spookypeanut.loveandtag.usernamekey</string>
 </resources>
