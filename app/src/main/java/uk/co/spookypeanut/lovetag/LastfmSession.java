@@ -254,7 +254,9 @@ class UrlMaker {
         String tag = "Love&Tag.LastfmSession.UrlMaker.fromHashmap";
         String api_key = mContext.getString(R.string.lastfm_api_key);
         params.put("api_key", api_key);
-        params.put("api_sig", generateApiSig(params));
+        if (params.containsKey("sk")||params.containsKey("authToken")) {
+            params.put("api_sig", generateApiSig(params));
+        }
 
         StringBuilder url = new StringBuilder();
         url.append(mContext.getString(R.string.base_url));
