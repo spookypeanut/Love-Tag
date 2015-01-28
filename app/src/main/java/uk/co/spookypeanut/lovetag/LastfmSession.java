@@ -116,9 +116,18 @@ public class LastfmSession {
             mTitle = title;
             mLoved = loved;
         }
+        public RecentTrack(Map<String, String> params) {
+            mArtist = params.get("artist");
+            mTitle = params.get("title");
+            if ("1" == params.get("loved")) {
+                mLoved = true;
+            } else {
+                mLoved = false;
+            }
+        }
     }
-    // public List<RecentTrack> getRecent () {
-    public void getRecent () {
+
+    public List<RecentTrack> getRecent () {
         String tag = "Love&Tag.LastfmSession.getRecent";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
@@ -129,8 +138,7 @@ public class LastfmSession {
         // This is so we get loved information too
         rest_params.put("extended", "1");
         rest_params.put("limit", "10");
-        String urlString;
-        urlString = mUrlMaker.fromHashmap(rest_params);
+        String urlString = mUrlMaker.fromHashmap(rest_params);
         Log.i(tag, "Got url back");
         Map<String, List<String>> list_map = new HashMap<String, List<String>>();
         list_map.put("artist", Arrays.asList("lfm", "recenttracks",
@@ -141,16 +149,17 @@ public class LastfmSession {
                 "track", "loved"));
 
         XmlPullParser parser;
+        List<RecentTrack> recentTracks = new ArrayList<>();
         try {
             parser = getUrlResponse(urlString);
-            List<Map<String, String>> results = getTagsFromLists(parser,
-                    list_map);
-            Log.i(tag, "GOT RESULT!");
-            Log.i(tag, results.toString());
+            for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
+                recentTracks.add(new RecentTrack(map));
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        return recentTracks;
     }
 
     private List<Map<String, String>> getTagsFromLists(XmlPullParser parser,
