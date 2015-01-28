@@ -31,6 +31,7 @@ public class LastfmSession {
     Context mContext;
     SharedPreferences mSettings;
     String mSessionKey = "";
+    String mUsername;
     UrlMaker mUrlMaker;
 
     public LastfmSession() {
@@ -45,8 +46,10 @@ public class LastfmSession {
     private void passiveLogin() {
         String tag = "Love&Tag.LastfmSession.passiveLogin";
         String ss = mContext.getString(R.string.session_setting);
+        String us = mContext.getString(R.string.username_setting);
         if (mSettings.contains(ss)) {
             mSessionKey = mSettings.getString(ss, "");
+            mUsername = mSettings.getString(us, "");
         } else {
             Log.i(tag, "Couldn't log in");
         }
@@ -111,6 +114,12 @@ public class LastfmSession {
         mSessionKey = sk;
     }
 
+    private void saveUsername(String username) {
+        String us = mContext.getString(R.string.username_setting);
+        mSettings.edit().putString(us, username).commit();
+        mUsername = username;
+    }
+
     public boolean logIn(String username, String authToken) {
         String tag = "Love&Tag.LastfmSession.logIn";
         Map<String, String> restparams = new HashMap<String, String>();
@@ -122,6 +131,7 @@ public class LastfmSession {
         Log.i(tag, "log in url: " + urlString);
         try {
             setSessionKey(getSessionKey(urlString));
+            saveUsername(username);
         }
         catch (Exception e) {
             e.printStackTrace();
