@@ -163,20 +163,18 @@ public class LastfmSession {
             switch(eventType) {
                 case XmlPullParser.START_TAG:
                     name = parser.getName();
-                    if(name == null) {
-                        Log.i(tag, "Name is null");
-                        continue;
-                    }
-                    CurrentPos.add(name.toString());
+                    CurrentPos.add(name);
+                    break;
+                case XmlPullParser.END_TAG:
+                    CurrentPos.remove(CurrentPos.size() - 1);
+                    break;
+                case XmlPullParser.TEXT:
                     for(List<String> each_list : tag_list_list) {
                         if(CurrentPos.equals(each_list)) {
                             Log.i(tag, "Matched: " + CurrentPos.toString());
                             Log.i(tag, "Matched: " + parser.getText());
                         }
                     }
-                    break;
-                case XmlPullParser.END_TAG:
-                    CurrentPos.remove(CurrentPos.size() - 1);
                     break;
             }
             eventType = parser.next();
