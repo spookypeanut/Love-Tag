@@ -38,7 +38,7 @@
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:id="@+id/lovebutton"
-        android:src="@android:drawable/star_big_on"
+        android:src="@drawable/loveunknown"
         android:layout_weight="0"
         />
 
@@ -47,6 +47,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/tagbutton"
         android:layout_weight="0"
-        android:src="@android:drawable/ic_input_get"/>
+        android:src="@drawable/tag"/>
 
 </LinearLayout>
