@@ -186,8 +186,8 @@ public class LastfmSession {
                                                     tag_list_map.entrySet()) {
                         if(CurrentPos.equals(entry.getValue())) {
                             String text = parser.getText();
-                            Log.i(tag, "Matched: " + CurrentPos.toString());
-                            Log.i(tag, "Matched: " + text);
+                            Log.v(tag, "Matched: " + CurrentPos.toString());
+                            Log.v(tag, "Matched: " + text);
                             oneMap.put(entry.getKey(), text);
                             if(oneMap.size() == tag_list_map.size()) {
                                 returnList.add(oneMap);
