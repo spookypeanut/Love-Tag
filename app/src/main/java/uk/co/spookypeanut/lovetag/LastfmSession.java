@@ -128,35 +128,39 @@ public class LastfmSession {
         rest_params.put("user", mUsername);
         // This is so we get loved information too
         rest_params.put("extended", "1");
-        rest_params.put("limit", "1");
+        rest_params.put("limit", "10");
         String urlString;
         urlString = mUrlMaker.fromHashmap(rest_params);
         Log.i(tag, "Got url back");
-        List<String> artistList = Arrays.asList("lfm", "recenttracks",
-                "track", "artist", "name");
-        List<String> titleList = Arrays.asList("lfm", "recenttracks",
-                "track", "name");
-        List<String> lovedList = Arrays.asList("lfm", "recenttracks",
-                "track", "loved");
-        List<List<String>> listOfLists = Arrays.asList(artistList, titleList,
-                lovedList);
+        Map<String, List<String>> list_map = new HashMap<String, List<String>>();
+        list_map.put("artist", Arrays.asList("lfm", "recenttracks",
+                                             "track", "artist", "name"));
+        list_map.put("title", Arrays.asList("lfm", "recenttracks",
+                                            "track", "name"));
+        list_map.put("loved", Arrays.asList("lfm", "recenttracks",
+                "track", "loved"));
 
         XmlPullParser parser;
         try {
             parser = getUrlResponse(urlString);
-            getTagsFromLists(parser, listOfLists);
+            List<Map<String, String>> results = getTagsFromLists(parser,
+                    list_map);
+            Log.i(tag, "GOT RESULT!");
+            Log.i(tag, results.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void getTagsFromLists(XmlPullParser parser,
-                                    List<List<String>> tag_list_list)
-                                    throws XmlPullParserException, IOException {
+    private List<Map<String, String>> getTagsFromLists(XmlPullParser parser,
+                                  Map<String, List<String>> tag_list_map)
+                                  throws XmlPullParserException, IOException {
         String tag = "Love&Tag.LastfmSession.getTagsFromLists";
         int eventType = parser.getEventType();
         List<String> CurrentPos = new ArrayList<>();
+        List<Map<String, String>> returnList = new ArrayList<>();
+        Map<String, String> oneMap = new HashMap<String, String>();
 
         String name;
         while(eventType != XmlPullParser.END_DOCUMENT) {
@@ -169,16 +173,25 @@ public class LastfmSession {
                     CurrentPos.remove(CurrentPos.size() - 1);
                     break;
                 case XmlPullParser.TEXT:
-                    for(List<String> each_list : tag_list_list) {
-                        if(CurrentPos.equals(each_list)) {
+                    for (Map.Entry<String, List<String>> entry :
+                                                    tag_list_map.entrySet()) {
+                        if(CurrentPos.equals(entry.getValue())) {
+                            String text = parser.getText();
                             Log.i(tag, "Matched: " + CurrentPos.toString());
-                            Log.i(tag, "Matched: " + parser.getText());
+                            Log.i(tag, "Matched: " + text);
+                            oneMap.put(entry.getKey(), text);
+                            if(oneMap.size() == tag_list_map.size()) {
+                                returnList.add(oneMap);
+                                oneMap = new HashMap<String, String>();
+                            }
                         }
                     }
                     break;
             }
             eventType = parser.next();
         }
+        Log.i(tag, returnList.toString());
+        return returnList;
     }
 
     private void setSessionKey(String sk) {
