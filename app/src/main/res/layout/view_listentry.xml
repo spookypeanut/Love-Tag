@@ -10,17 +10,18 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="A Huge Ever Growing Pulsating Brain That Rules from the Centre of the Ultraworld"
+            android:text="-"
             android:id="@+id/title"
-            android:ellipsize="middle"
+            android:ellipsize="marquee"
             android:lines="1"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:singleLine="true"
             />
 
@@ -28,9 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="The Orb"
+            android:text="-"
             android:id="@+id/artist"
-            android:ellipsize="middle"/>
+            android:ellipsize="middle"
+            android:textStyle="italic"/>
 
     </LinearLayout>
 
