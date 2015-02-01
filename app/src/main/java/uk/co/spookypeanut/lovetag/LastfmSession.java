@@ -117,7 +117,7 @@ public class LastfmSession {
         public RecentTrack(Map<String, String> params) {
             mArtist = params.get("artist");
             mTitle = params.get("title");
-            if ("1" == params.get("loved")) {
+            if ("1".equals(params.get("loved"))) {
                 mLoved = true;
             } else {
                 mLoved = false;
