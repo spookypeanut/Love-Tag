@@ -166,6 +166,17 @@ public class Love extends ActionBarActivity {
                     .tagbutton);
             tagButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    Intent i = new Intent();
+                    i.setClass(App.getContext(), TagInput.class);
+                    startActivityForResult(i, getResources().getInteger(
+                            R.integer.rc_tag_input));
+                    return;
+
+                }
+            });
+            /*
+            tagButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
                     String tag;
                     tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
                     TagCall tc = new TagCall();
@@ -176,6 +187,7 @@ public class Love extends ActionBarActivity {
                     Log.d(tag, "Submitted love");
                 }
             });
+            */
         }
 
         public void setMusic(LastfmSession.RecentTrack track) {

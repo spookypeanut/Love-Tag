@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2014 Henry Bush -->
 <!-- Distributed under the GNU GPL v3. For full terms see the file COPYING. -->
 <resources>
+
     <string name="app_name">Love &amp; Tag</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -9,4 +10,6 @@
     <string name="url_param_separator"><![CDATA[&]]></string>
     <string name="session_setting">uk.co.spookypeanut.loveandtag.sessionkey</string>
     <string name="username_setting">uk.co.spookypeanut.loveandtag.usernamekey</string>
+    <string name="title_activity_tag_input">TagInput</string>
+
 </resources>
