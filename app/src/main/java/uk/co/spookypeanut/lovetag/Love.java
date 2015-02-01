@@ -175,9 +175,15 @@ public class Love extends ActionBarActivity {
                 public void onClick(View v) {
                     String tag;
                     tag = "Love&Tag.Love.ListEntry.loveButton.onClick";
-                    LoveCall lc = new LoveCall();
-                    lc.execute(mArtist, mTitle);
-                    Log.d(tag, "Submitted love");
+                    if (false == mLoved) {
+                        LoveCall lc = new LoveCall();
+                        lc.execute(mArtist, mTitle);
+                        Log.d(tag, "Submitted love");
+                        return;
+                    }
+                    UnloveCall ulc = new UnloveCall();
+                    ulc.execute(mArtist, mTitle);
+                    Log.d(tag, "Submitted unlove");
                 }
             });
             final ImageButton tagButton = (ImageButton) findViewById(R.id
@@ -229,6 +235,26 @@ public class Love extends ActionBarActivity {
         }
     }
 
+    private class UnloveCall extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String track = params[0];
+            String artist = params[1];
+            String tag = "Love&Tag.Love.UnloveCall.doInBackground";
+            boolean result = mLfs.unlove(track, artist);
+            if (result == true) {
+                Log.i(tag, "Unlove succeeded");
+                setResult(RESULT_OK);
+            } else {
+                Log.i(tag, "Unlove failed");
+                setResult(RESULT_CANCELED);
+            }
+            return "";
+        }
+        protected void onPostExecute(String result) {
+            updateRecent();
+        }
+    }
     private class LoveCall extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -244,6 +270,9 @@ public class Love extends ActionBarActivity {
                 setResult(RESULT_CANCELED);
             }
             return "";
+        }
+        protected void onPostExecute(String result) {
+            updateRecent();
         }
     }
     private class TagCall extends AsyncTask<String, String, String> {
@@ -277,5 +306,3 @@ public class Love extends ActionBarActivity {
         }
     }
 }
-
-

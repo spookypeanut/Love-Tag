@@ -60,6 +60,27 @@ public class LastfmSession {
         return mSessionKey != "";
     }
 
+    public boolean unlove(String artist, String track) {
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> restparams = new HashMap<String, String>();
+        restparams.put("method", "track.unlove");
+        restparams.put("sk", mSessionKey);
+        restparams.put("track", track);
+        restparams.put("artist", artist);
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(restparams);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public boolean love(String artist, String track) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
