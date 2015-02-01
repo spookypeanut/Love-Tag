@@ -160,13 +160,15 @@ public class Love extends ActionBarActivity {
         TextView mArtistView;
         String mTitle;
         TextView mTitleView;
+        boolean mLoved;
+        ImageButton mLovedView;
 
-        String mLoved;
         public ListEntry(Context context) {
             super(context);
             View.inflate(context, R.layout.view_listentry, this);
             mArtistView = (TextView) findViewById(R.id.artist);
             mTitleView = (TextView) findViewById(R.id.title);
+            mLovedView = (ImageButton) findViewById(R.id.lovebutton);
             final ImageButton loveButton = (ImageButton) findViewById(R.id
                     .lovebutton);
             loveButton.setOnClickListener(new View.OnClickListener() {
@@ -204,8 +206,11 @@ public class Love extends ActionBarActivity {
 
         public void setMusic(String artist, String title, boolean loved) {
             String tag = "Love&Tag.Love.ListEntry.setMusic";
+            Log.d(tag, "Setting: " + artist + ", " + title + ", " +
+                    String.valueOf(loved));
             mArtist = artist;
             mTitle = title;
+            mLoved = loved;
             try {
                 update();
             }
@@ -216,6 +221,11 @@ public class Love extends ActionBarActivity {
         private void update() {
             mArtistView.setText(mArtist);
             mTitleView.setText(mTitle);
+            if (mLoved == true) {
+                mLovedView.setImageDrawable(getDrawable(R.drawable.lovetrue));
+            } else if (mLoved == false) {
+                mLovedView.setImageDrawable(getDrawable(R.drawable.lovefalse));
+            }
         }
     }
 
