@@ -30,8 +30,8 @@ public class TagInput extends ActionBarActivity {
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
         final ArrayAdapter<String> tagAdaptor;
-        final ArrayList<String> tagList = new ArrayList<String>();
-        tagAdaptor = new ArrayAdapter<String> (this,
+        final ArrayList<String> tagList = new ArrayList<>();
+        tagAdaptor = new ArrayAdapter<> (this,
                 android.R.layout.simple_list_item_1, tagList);
         tagListView.setAdapter(tagAdaptor);
 
