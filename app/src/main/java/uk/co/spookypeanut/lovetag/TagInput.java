@@ -17,10 +17,14 @@ import java.util.ArrayList;
 
 
 public class TagInput extends ActionBarActivity {
+    String mArtist;
+    String mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mArtist = this.getIntent().getStringExtra("artist");
+        mTitle = this.getIntent().getStringExtra("title");
         final String tag = "Love&Tag.TagInput.onCreate";
         setContentView(R.layout.activity_tag_input);
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
@@ -51,7 +55,10 @@ public class TagInput extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent resultData = new Intent();
+                Log.d(tag, "Tagging " + mTitle + " with " + tagList.toString());
                 resultData.putExtra("tagList", tagList);
+                resultData.putExtra("artist", mArtist);
+                resultData.putExtra("title", mTitle);
                 setResult(RESULT_OK, resultData);
                 finish();
             }

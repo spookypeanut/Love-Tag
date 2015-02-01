@@ -93,7 +93,6 @@ public class Love extends ActionBarActivity {
         // Check which request we're responding to
         if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
             if (resultCode == RESULT_OK) {
-                Log.i(tag, "Succeeded");
                 mLfs = new LastfmSession();
             } else {
                 Log.e(tag, "Log in failed");
@@ -102,11 +101,15 @@ public class Love extends ActionBarActivity {
         }
         if (requestCode == getResources().getInteger(R.integer.rc_tag_input)) {
             if (resultCode == RESULT_OK) {
-                Log.i(tag, "Succeeded");
                 ArrayList<String> tagList;
                 tagList = data.getStringArrayListExtra("tagList");
-                Toast.makeText(this, tagList.toString(),
-                        Toast.LENGTH_SHORT).show();
+                String artist = data.getStringExtra("artist");
+                String title = data.getStringExtra("title");
+                Log.d(tag, "Tagging using: " + tagList.toString());
+                TagCall tc = new TagCall();
+                String tag_cat = TextUtils.join(",", tagList);
+                tc.execute(artist, title, tag_cat);
+                Log.d(tag, "Submitted tag");
             } else {
                 Log.e(tag, "Tagging aborted");
             }
@@ -181,26 +184,14 @@ public class Love extends ActionBarActivity {
                 public void onClick(View v) {
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInput.class);
+                    i.putExtra("artist", mArtist);
+                    i.putExtra("title", mTitle);
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));
                     return;
 
                 }
             });
-            /*
-            tagButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    String tag;
-                    tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
-                    TagCall tc = new TagCall();
-                    List<String> tags;
-                    tags = Arrays.asList("Love&Tag", "Love", "Tag");
-                    String tag_cat = TextUtils.join(",", tags);
-                    tc.execute(mArtist, mTitle, tag_cat);
-                    Log.d(tag, "Submitted love");
-                }
-            });
-            */
         }
 
         public void setMusic(LastfmSession.RecentTrack track) {
