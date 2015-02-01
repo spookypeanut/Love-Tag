@@ -1,5 +1,6 @@
 package uk.co.spookypeanut.lovetag;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ public class TagInput extends ActionBarActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
-                        tagList.add(0, tagEntry.getText().toString());
+                        tagList.add(tagList.size(), tagEntry.getText().toString());
                         tagAdaptor.notifyDataSetChanged();
                         tagEntry.setText("");
                         tagEntry.requestFocus();
@@ -45,6 +46,26 @@ public class TagInput extends ActionBarActivity {
                 return false;
             }
         });
+        final Button okButton = (Button) findViewById(R.id.tag_ok);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resultData = new Intent();
+                resultData.putExtra("tagList", tagList);
+                setResult(RESULT_OK, resultData);
+                finish();
+            }
+        });
+        final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(tag, "User cancelled tagging");
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+        });
+
     }
 
     @Override

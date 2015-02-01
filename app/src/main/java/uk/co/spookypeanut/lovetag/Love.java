@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,13 +92,25 @@ public class Love extends ActionBarActivity {
         Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
         // Check which request we're responding to
         if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
-            // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Log.i(tag, "Succeeded");
                 mLfs = new LastfmSession();
             } else {
                 Log.e(tag, "Log in failed");
             }
+            return;
+        }
+        if (requestCode == getResources().getInteger(R.integer.rc_tag_input)) {
+            if (resultCode == RESULT_OK) {
+                Log.i(tag, "Succeeded");
+                ArrayList<String> tagList;
+                tagList = data.getStringArrayListExtra("tagList");
+                Toast.makeText(this, tagList.toString(),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(tag, "Tagging aborted");
+            }
+            return;
         }
     }
 
