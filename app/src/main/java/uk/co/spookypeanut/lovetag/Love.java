@@ -49,9 +49,6 @@ public class Love extends ActionBarActivity {
         registerReceiver(mReceiver, iF);
 
         mPodView = new ListEntry(mCurrentContext);
-        LinearLayout podLayout;
-        podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
-        podLayout.addView(mPodView);
 
         mUrlMaker = new UrlMaker();
         // This snippet should be used whenever getting a session. It's
@@ -127,6 +124,11 @@ public class Love extends ActionBarActivity {
             mNowPlayingArtist = artist;
             mNowPlayingTitle = track;
             mPodView.setMusic(artist, track);
+
+            LinearLayout podLayout;
+            podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
+            podLayout.removeAllViews();
+            podLayout.addView(mPodView);
         }
     };
 
