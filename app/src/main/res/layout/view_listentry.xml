@@ -38,7 +38,7 @@
 
     <ImageButton
         android:layout_width="48dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:id="@+id/lovebutton"
         android:src="@drawable/loveunknown"
         android:layout_weight="0"
@@ -46,7 +46,7 @@
 
     <ImageButton
         android:layout_width="48dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:id="@+id/tagbutton"
         android:layout_weight="0"
         android:src="@drawable/tag"/>
