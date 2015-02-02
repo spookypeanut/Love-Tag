@@ -70,6 +70,10 @@ public class Love extends ActionBarActivity {
         updateRecent();
     }
 
+    public void onResume(Bundle icicle) {
+        updateRecent();
+    }
+
     private void setMediaController() {
         // To possibly be re-introduced later
         /*
