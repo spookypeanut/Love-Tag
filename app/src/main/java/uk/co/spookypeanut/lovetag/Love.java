@@ -9,6 +9,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaMetadata;
+import android.media.session.MediaController;
+import android.media.session.MediaSessionManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -34,6 +37,8 @@ public class Love extends ActionBarActivity {
     String mNowPlayingArtist;
     List<LastfmSession.RecentTrack> mRecentTracks;
     ListEntry mPodView;
+    MediaController mMediaController;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,19 @@ public class Love extends ActionBarActivity {
             return;
         }
         updateRecent();
+    }
+
+    private void setMediaController() {
+        // To possibly be re-introduced later
+        /*
+        String tag = "Love&Tag.Love.setMediaController";
+        MediaSessionManager msm = (MediaSessionManager) getSystemService(MEDIA_SESSION_SERVICE);
+        List<MediaController> mc_list = msm.getActiveSessions(null);
+        Log.d(tag, "Found " + mc_list.size());
+        for (MediaController mc : mc_list) {
+            MediaMetadata md = mc.getMetadata();
+            Log.d(tag, md.getString(md.METADATA_KEY_ARTIST));
+        }*/
     }
 
     private void setRecentTracks(List<LastfmSession.RecentTrack> tracks) {
