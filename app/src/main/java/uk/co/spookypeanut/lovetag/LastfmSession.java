@@ -181,6 +181,35 @@ public class LastfmSession {
         return recentTracks;
     }
 
+    public List<String> getTags() {
+        String tag = "Love&Tag.LastfmSession.getTags";
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> rest_params = new HashMap<String, String>();
+        rest_params.put("method", "user.getTopTags");
+        rest_params.put("user", mUsername);
+        rest_params.put("limit", "10");
+        String urlString = mUrlMaker.fromHashmap(rest_params);
+        Log.i(tag, "Got url back");
+        Log.i(tag, urlString);
+        Map<String, List<String>> list_map = new HashMap<String, List<String>>();
+        list_map.put("tag", Arrays.asList("lfm", "toptags", "tag", "name"));
+        XmlPullParser parser;
+        List<String> topTags = new ArrayList<>();
+        try {
+            parser = getUrlResponse(urlString);
+            for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
+                Log.d(tag, map.toString());
+                topTags.add(map.get("tag"));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topTags;
+    }
+
     private List<Map<String, String>> getTagsFromLists(XmlPullParser parser,
                                   Map<String, List<String>> tag_list_map)
                                   throws XmlPullParserException, IOException {

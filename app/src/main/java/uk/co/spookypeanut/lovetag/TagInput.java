@@ -1,6 +1,7 @@
 package uk.co.spookypeanut.lovetag;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +15,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class TagInput extends ActionBarActivity {
     String mArtist;
     String mTitle;
+    LastfmSession mLfs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,20 @@ public class TagInput extends ActionBarActivity {
         tagAdaptor = new ArrayAdapter<> (this,
                 android.R.layout.simple_list_item_1, tagList);
         tagListView.setAdapter(tagAdaptor);
-
+//        List<String> existingTags;
+//        existingTags = getIntent().getStringArrayListExtra("existing_tags");
+//        Log.d(tag, "Existing tags: " + existingTags.toString());
+        // This snippet should be used whenever getting a session. It's
+        // the most elegant way I can figure out to do this (the only
+        // inelegance is duplication of this snippet)
+        mLfs = new LastfmSession();
+        if (!mLfs.isLoggedIn()) {
+            Intent i = new Intent();
+            i.setClass(this, LoginActivity.class);
+            startActivityForResult(i, getResources().getInteger(
+                    R.integer.rc_log_in));
+            return;
+        }
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -72,7 +88,13 @@ public class TagInput extends ActionBarActivity {
                 finish();
             }
         });
+        GetExistingCall gec = new GetExistingCall();
+        gec.execute();
+    }
 
+    private void addExisting(List<String> tag_list) {
+        String tag = "Love&Tag.TagInput.addExisting";
+        Log.d(tag, tag_list.toString());
     }
 
     @Override
@@ -95,5 +117,17 @@ public class TagInput extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private class GetExistingCall extends AsyncTask<String, String, String> {
+        List<String> mTempTags = new ArrayList<>();
+        @Override
+        protected String doInBackground(String... params) {
+            String tag = "Love&Tag.TagInput.GetExistingCall.doInBackground";
+            mTempTags = mLfs.getTags();
+            return "";
+        }
+        protected void onPostExecute(String result) {
+            addExisting(mTempTags);
+        }
     }
 }

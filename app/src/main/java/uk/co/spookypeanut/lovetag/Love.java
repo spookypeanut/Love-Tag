@@ -214,10 +214,13 @@ public class Love extends ActionBarActivity {
                     .tagbutton);
             tagButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    String tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInput.class);
                     i.putExtra("artist", mArtist);
                     i.putExtra("title", mTitle);
+                    List<String> et = mLfs.getTags();
+                    Log.d(tag, et.toString());
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));
                     return;
