@@ -6,6 +6,7 @@ targetName = sys.argv[1]
 tokens = targetName.split(".")[0].split("-")
                       
 resolution = tokens[-1].split("x")
+print resolution
 
 sourceimage = "%s.svg" % tokens[0]
 

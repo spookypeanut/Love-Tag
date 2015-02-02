@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -9,34 +7,15 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
-   id="svg2"
+   viewBox="0 -256 512 512"
+   id="svg4315"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="New document 1">
-  <defs
-     id="defs4" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="380.71429"
-     inkscape:cy="514.28571"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1366"
-     inkscape:window-height="725"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="1" />
+   width="100%"
+   height="100%"
+   sodipodi:docname="icon.svg">
   <metadata
-     id="metadata7">
+     id="metadata4325">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -47,21 +26,65 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
+  <defs
+     id="defs4323" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="725"
+     id="namedview4321"
+     showgrid="false"
+     inkscape:zoom="0.7449875"
+     inkscape:cx="505.24096"
+     inkscape:cy="279.4364"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4315"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:snap-to-guides="false"
+     inkscape:snap-grids="false">
+    <sodipodi:guide
+       orientation="1,0"
+       position="256,256"
+       id="guide3041" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="256,256"
+       id="guide3043" />
+  </sodipodi:namedview>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1">
+     transform="matrix(0.27700883,0,0,-0.27700883,43.177268,180.77198)"
+     id="g4317">
+    <path
+       d="m 448,1088 q 0,53 -37.5,90.5 Q 373,1216 320,1216 267,1216 229.5,1178.5 192,1141 192,1088 192,1035 229.5,997.5 267,960 320,960 q 53,0 90.5,37.5 Q 448,1035 448,1088 z M 1515,512 q 0,-53 -37,-90 L 987,-70 q -39,-37 -91,-37 -53,0 -90,37 L 91,646 Q 53,683 26.5,747 0,811 0,864 v 416 q 0,52 38,90 38,38 90,38 h 416 q 53,0 117,-26.5 64,-26.5 102,-64.5 l 715,-714 q 37,-39 37,-91 z"
+       id="path4319"
+       inkscape:connector-curvature="0"
+       style="fill:currentColor" />
+  </g>
+  <g
+     transform="matrix(0.24355582,0.24355582,-0.28907145,0.28907145,427.86639,-275.29763)"
+     id="layer1"
+     inkscape:label="Layer 1">
     <g
-       id="layer1-4"
-       transform="translate(58.209672,242.7085)">
+       transform="matrix(0.79922092,0,0,0.74180661,-1.2874538,576.11341)"
+       id="layer1-4">
       <path
-         style="fill:#ff0000"
-         id="path2417"
+         inkscape:connector-curvature="0"
          d="M 297.29747,550.86823 C 283.52243,535.43191 249.1268,505.33855 220.86277,483.99412 137.11867,420.75228 125.72108,411.5999 91.719238,380.29088 29.03471,322.57071 2.413622,264.58086 2.5048478,185.95124 2.5493594,147.56739 5.1656152,132.77929 15.914734,110.15398 34.151433,71.768267 61.014996,43.244667 95.360052,25.799457 119.68545,13.443675 131.6827,7.9542046 172.30448,7.7296236 c 42.49329,-0.234834 51.43863,4.7197234 76.43471,18.4518354 30.42451,16.714318 61.7399,52.435708 68.21323,77.810591 l 3.9981,15.6724 9.85963,-21.584508 c 55.71617,-121.972928 233.59836,-120.148052 295.50229,3.031588 19.63767,39.07605 21.79364,122.51317 4.38012,169.51287 -22.71527,61.30937 -65.38001,108.05053 -164.00634,179.67658 -64.68082,46.97364 -137.88474,118.04586 -142.98067,128.02803 -5.91548,11.58753 -0.28216,1.8159 -26.40808,-27.46078 z"
-         inkscape:connector-curvature="0" />
+         id="path2417"
+         style="fill:#ff0000" />
       <g
-         id="g2221"
-         transform="translate(129.28571,-64.285714)" />
+         transform="translate(129.28571,-64.285714)"
+         id="g2221" />
     </g>
   </g>
 </svg>
