@@ -208,7 +208,6 @@ public class TagInput extends ActionBarActivity {
             View view = super.getView(position, convertView, parent);
             TextView textView = (TextView) view.findViewById(android.R.id.text1);
             ActiveElement ae = getItem(position);
-            Log.i(tag, "ActiveElement: " + ae.mLabel + ", " + ae.mActive);
             textView.setText(ae.mLabel);
             if (ae.mActive) {
                 textView.setTextColor(Color.BLACK);

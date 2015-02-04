@@ -124,7 +124,6 @@ public class Love extends ActionBarActivity {
                 tagList = data.getStringArrayListExtra("tagList");
                 String artist = data.getStringExtra("artist");
                 String title = data.getStringExtra("title");
-                Log.d(tag, "Tagging using: " + tagList.toString());
                 TagCall tc = new TagCall();
                 String tag_cat = TextUtils.join(",", tagList);
                 tc.execute(artist, title, tag_cat);
@@ -219,8 +218,6 @@ public class Love extends ActionBarActivity {
                     i.setClass(App.getContext(), TagInput.class);
                     i.putExtra("artist", mArtist);
                     i.putExtra("title", mTitle);
-                    List<String> et = mLfs.getTags();
-                    Log.d(tag, et.toString());
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));
                     return;
@@ -239,7 +236,7 @@ public class Love extends ActionBarActivity {
 
         public void setMusic(String artist, String title, boolean loved) {
             String tag = "Love&Tag.Love.ListEntry.setMusic";
-            Log.d(tag, "Setting: " + artist + ", " + title + ", " +
+            Log.d(tag, "Adding: " + artist + ", " + title + ", " +
                     String.valueOf(loved));
             mArtist = artist;
             mTitle = title;
