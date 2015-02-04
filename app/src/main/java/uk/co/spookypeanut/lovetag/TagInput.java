@@ -1,6 +1,8 @@
 package uk.co.spookypeanut.lovetag;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,12 +11,15 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -22,27 +27,15 @@ public class TagInput extends ActionBarActivity {
     String mArtist;
     String mTitle;
     LastfmSession mLfs;
+    final ArrayList<String> mActiveTagList = new ArrayList<>();
+    final ArrayList<String> mInactiveTagList = new ArrayList<>();
+    final ArrayList<ActiveElement> mAllTagList = new ArrayList<>();
+    ActiveAdapter mTagAdaptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mArtist = this.getIntent().getStringExtra("artist");
-        mTitle = this.getIntent().getStringExtra("title");
         final String tag = "Love&Tag.TagInput.onCreate";
-        setContentView(R.layout.activity_tag_input);
-        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
-        ListView tagListView = (ListView) findViewById(R.id.tagList);
-        final ArrayAdapter<String> tagAdaptor;
-        final ArrayList<String> tagList = new ArrayList<>();
-        tagAdaptor = new ArrayAdapter<> (this,
-                android.R.layout.simple_list_item_1, tagList);
-        tagListView.setAdapter(tagAdaptor);
-//        List<String> existingTags;
-//        existingTags = getIntent().getStringArrayListExtra("existing_tags");
-//        Log.d(tag, "Existing tags: " + existingTags.toString());
-        // This snippet should be used whenever getting a session. It's
-        // the most elegant way I can figure out to do this (the only
-        // inelegance is duplication of this snippet)
         mLfs = new LastfmSession();
         if (!mLfs.isLoggedIn()) {
             Intent i = new Intent();
@@ -51,13 +44,22 @@ public class TagInput extends ActionBarActivity {
                     R.integer.rc_log_in));
             return;
         }
+        mArtist = this.getIntent().getStringExtra("artist");
+        mTitle = this.getIntent().getStringExtra("title");
+        setContentView(R.layout.activity_tag_input);
+        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
+        mTagAdaptor = new ActiveAdapter(this, mAllTagList);
+        ListView tagListView = (ListView) findViewById(R.id.tagList);
+        tagListView.setAdapter(mTagAdaptor);
+        // This snippet should be used whenever getting a session. It's
+        // the most elegant way I can figure out to do this (the only
+        // inelegance is duplication of this snippet)
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
-                        tagList.add(tagList.size(), tagEntry.getText().toString());
-                        tagAdaptor.notifyDataSetChanged();
+                        addToList(Arrays.asList(tagEntry.getText().toString()), true);
                         tagEntry.setText("");
                         tagEntry.requestFocus();
                         return true;
@@ -71,8 +73,9 @@ public class TagInput extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent resultData = new Intent();
-                Log.d(tag, "Tagging " + mTitle + " with " + tagList.toString());
-                resultData.putExtra("tagList", tagList);
+                Log.d(tag, "Tagging " + mTitle + " with " + mActiveTagList
+                        .toString());
+                resultData.putExtra("tagList", mActiveTagList);
                 resultData.putExtra("artist", mArtist);
                 resultData.putExtra("title", mTitle);
                 setResult(RESULT_OK, resultData);
@@ -92,9 +95,32 @@ public class TagInput extends ActionBarActivity {
         gec.execute();
     }
 
-    private void addExisting(List<String> tag_list) {
+    private void addToList(List<String> tag_list, boolean active) {
         String tag = "Love&Tag.TagInput.addExisting";
         Log.d(tag, tag_list.toString());
+        if (active) {
+            mActiveTagList.addAll(tag_list);
+        } else {
+            mInactiveTagList.addAll(tag_list);
+        }
+        ArrayList<String> remove = new ArrayList<>();
+        for (String t: mInactiveTagList) {
+            if (mActiveTagList.contains(t)) {
+                remove.add(t);
+            }
+        }
+        mInactiveTagList.removeAll(remove);
+
+        mAllTagList.clear();
+        for (String t : mActiveTagList) {
+            ActiveElement ae = new ActiveElement(t, true);
+            mAllTagList.add(ae);
+        }
+        for (String t : mInactiveTagList) {
+            ActiveElement ae = new ActiveElement(t, false);
+            mAllTagList.add(ae);
+        }
+        mTagAdaptor.notifyDataSetChanged();
     }
 
     @Override
@@ -127,7 +153,45 @@ public class TagInput extends ActionBarActivity {
             return "";
         }
         protected void onPostExecute(String result) {
-            addExisting(mTempTags);
+            addToList(mTempTags, false);
         }
     }
+
+    private class ActiveElement {
+        String mLabel;
+        boolean mActive;
+
+        public ActiveElement(String label, boolean active) {
+            mLabel = label;
+            mActive = active;
+        }
+    }
+
+    public class ActiveAdapter extends ArrayAdapter<ActiveElement> {
+    private final Context context;
+    private final ArrayList<ActiveElement> values;
+
+    public ActiveAdapter(Context context, ArrayList<ActiveElement>
+            values) {
+        super(context, android.R.layout.simple_list_item_1, values);
+        this.context = context;
+        this.values = values;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        String tag = "Love&Tag.TagInput.ActiveAdapter.getView";
+        View view = super.getView(position, convertView, parent);
+        TextView textView = (TextView) view.findViewById(android.R.id.text1);
+        ActiveElement ae = getItem(position);
+        Log.i(tag, "ActiveElement: " + ae.mLabel + ", " + ae.mActive);
+        textView.setText(ae.mLabel);
+        if (ae.mActive) {
+            textView.setTextColor(Color.RED);
+        } else {
+            textView.setTextColor(Color.BLUE);
+        }
+        return view;
+    }
+}
 }
