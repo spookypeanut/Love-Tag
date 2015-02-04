@@ -269,11 +269,16 @@ public class Love extends ActionBarActivity {
             String artist = params[1];
             String tag = "Love&Tag.Love.UnloveCall.doInBackground";
             boolean result = mLfs.unlove(track, artist);
+            Context c = getBaseContext();
             if (result == true) {
-                Log.i(tag, "Unlove succeeded");
+                String msg = getString(R.string.unlove_success);
+                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT);
+                Log.i(tag, msg);
                 setResult(RESULT_OK);
             } else {
-                Log.i(tag, "Unlove failed");
+                String msg = getString(R.string.unlove_failed);
+                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT);
+                Log.i(tag, msg);
                 setResult(RESULT_CANCELED);
             }
             return "";
@@ -289,11 +294,16 @@ public class Love extends ActionBarActivity {
             String artist = params[1];
             String tag = "Love&Tag.Love.LoveCall.doInBackground";
             boolean result = mLfs.love(track, artist);
+            Context c = getBaseContext();
             if (result == true) {
-                Log.i(tag, "Love succeeded");
+                String msg = getString(R.string.love_success);
+                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
+                Log.i(tag, msg);
                 setResult(RESULT_OK);
             } else {
-                Log.i(tag, "Love failed");
+                String msg = getString(R.string.love_failed);
+                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
+                Log.i(tag, msg);
                 setResult(RESULT_CANCELED);
             }
             return "";
@@ -310,11 +320,16 @@ public class Love extends ActionBarActivity {
             String tag_list = params[2];
             String tag = "Love&Tag.Love.TagCall.doInBackground";
             boolean result = mLfs.tag(track, artist, tag_list);
+            Context c = getBaseContext();
             if (result == true) {
-                Log.i(tag, "Tag succeeded");
+                String msg = getString(R.string.tag_success);
+                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
+                Log.i(tag, msg);
                 setResult(RESULT_OK);
             } else {
-                Log.i(tag, "Tag failed");
+                String msg = getString(R.string.tag_failed);
+                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
+                Log.i(tag, msg);
                 setResult(RESULT_CANCELED);
             }
             return "";

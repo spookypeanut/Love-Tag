@@ -12,4 +12,10 @@
     <string name="username_setting">uk.co.spookypeanut.loveandtag.usernamekey</string>
     <string name="title_activity_tag_input">TagInput</string>
 
+    <string name="love_success">Love succeeded</string>
+    <string name="love_failed">Love failed</string>
+    <string name="unlove_success">Unlove succeeded</string>
+    <string name="unlove_failed">Unlove failed</string>
+    <string name="tag_success">Tag succeeded</string>
+    <string name="tag_failed">Tag failed</string>
 </resources>
