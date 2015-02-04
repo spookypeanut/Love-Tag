@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -41,8 +41,8 @@
      inkscape:window-height="725"
      id="namedview4321"
      showgrid="false"
-     inkscape:zoom="0.7449875"
-     inkscape:cx="505.24096"
+     inkscape:zoom="1"
+     inkscape:cx="274.3646"
      inkscape:cy="279.4364"
      inkscape:window-x="0"
      inkscape:window-y="25"
@@ -63,12 +63,13 @@
   </sodipodi:namedview>
   <g
      transform="matrix(0.27700883,0,0,-0.27700883,43.177268,180.77198)"
-     id="g4317">
+     id="g4317"
+     style="stroke:#ffffff;stroke-width:7.21998645;stroke-miterlimit:4;stroke-dasharray:none">
     <path
        d="m 448,1088 q 0,53 -37.5,90.5 Q 373,1216 320,1216 267,1216 229.5,1178.5 192,1141 192,1088 192,1035 229.5,997.5 267,960 320,960 q 53,0 90.5,37.5 Q 448,1035 448,1088 z M 1515,512 q 0,-53 -37,-90 L 987,-70 q -39,-37 -91,-37 -53,0 -90,37 L 91,646 Q 53,683 26.5,747 0,811 0,864 v 416 q 0,52 38,90 38,38 90,38 h 416 q 53,0 117,-26.5 64,-26.5 102,-64.5 l 715,-714 q 37,-39 37,-91 z"
        id="path4319"
        inkscape:connector-curvature="0"
-       style="fill:currentColor" />
+       style="fill:currentColor;stroke:#ffffff;stroke-width:7.21998645;stroke-miterlimit:4;stroke-dasharray:none" />
   </g>
   <g
      transform="matrix(0.24355582,0.24355582,-0.28907145,0.28907145,427.86639,-275.29763)"
