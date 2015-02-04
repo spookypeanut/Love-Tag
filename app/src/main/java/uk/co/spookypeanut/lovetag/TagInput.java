@@ -211,9 +211,9 @@ public class TagInput extends ActionBarActivity {
             Log.i(tag, "ActiveElement: " + ae.mLabel + ", " + ae.mActive);
             textView.setText(ae.mLabel);
             if (ae.mActive) {
-                textView.setTextColor(Color.RED);
+                textView.setTextColor(Color.BLACK);
             } else {
-                textView.setTextColor(Color.BLUE);
+                textView.setTextColor(Color.LTGRAY);
             }
             return view;
         }
