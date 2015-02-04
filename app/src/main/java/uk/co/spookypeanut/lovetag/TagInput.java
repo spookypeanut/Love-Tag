@@ -192,30 +192,30 @@ public class TagInput extends ActionBarActivity {
     }
 
     public class ActiveAdapter extends ArrayAdapter<ActiveElement> {
-    private final Context context;
-    private final ArrayList<ActiveElement> values;
+        private final Context context;
+        private final ArrayList<ActiveElement> values;
 
-    public ActiveAdapter(Context context, ArrayList<ActiveElement>
-            values) {
-        super(context, android.R.layout.simple_list_item_1, values);
-        this.context = context;
-        this.values = values;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        String tag = "Love&Tag.TagInput.ActiveAdapter.getView";
-        View view = super.getView(position, convertView, parent);
-        TextView textView = (TextView) view.findViewById(android.R.id.text1);
-        ActiveElement ae = getItem(position);
-        Log.i(tag, "ActiveElement: " + ae.mLabel + ", " + ae.mActive);
-        textView.setText(ae.mLabel);
-        if (ae.mActive) {
-            textView.setTextColor(Color.RED);
-        } else {
-            textView.setTextColor(Color.BLUE);
+        public ActiveAdapter(Context context, ArrayList<ActiveElement>
+                values) {
+            super(context, android.R.layout.simple_list_item_1, values);
+            this.context = context;
+            this.values = values;
         }
-        return view;
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            String tag = "Love&Tag.TagInput.ActiveAdapter.getView";
+            View view = super.getView(position, convertView, parent);
+            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            ActiveElement ae = getItem(position);
+            Log.i(tag, "ActiveElement: " + ae.mLabel + ", " + ae.mActive);
+            textView.setText(ae.mLabel);
+            if (ae.mActive) {
+                textView.setTextColor(Color.RED);
+            } else {
+                textView.setTextColor(Color.BLUE);
+            }
+            return view;
+        }
     }
-}
 }
