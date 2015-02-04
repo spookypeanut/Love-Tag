@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +37,9 @@ public class TagInput extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String tag = "Love&Tag.TagInput.onCreate";
+        // This snippet should be used whenever getting a session. It's
+        // the most elegant way I can figure out to do this (the only
+        // inelegance is duplication of this snippet)
         mLfs = new LastfmSession();
         if (!mLfs.isLoggedIn()) {
             Intent i = new Intent();
@@ -51,9 +55,6 @@ public class TagInput extends ActionBarActivity {
         mTagAdaptor = new ActiveAdapter(this, mAllTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
-        // This snippet should be used whenever getting a session. It's
-        // the most elegant way I can figure out to do this (the only
-        // inelegance is duplication of this snippet)
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -91,26 +92,49 @@ public class TagInput extends ActionBarActivity {
                 finish();
             }
         });
+        tagListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int index, long id) {
+                ActiveElement item = mAllTagList.get(index);
+                List<String> tag_list = Arrays.asList(item.mLabel);
+                removeFromList(tag_list);
+                if (item.mActive) {
+                    addToList(tag_list, false);
+                } else {
+                    addToList(tag_list, true);
+                }
+                updateList();
+            }
+        });
         GetExistingCall gec = new GetExistingCall();
         gec.execute();
     }
 
+    private void removeFromList(List<String> tag_list) {
+        mActiveTagList.removeAll(tag_list);
+        mInactiveTagList.removeAll(tag_list);
+        updateList();
+    }
+
     private void addToList(List<String> tag_list, boolean active) {
-        String tag = "Love&Tag.TagInput.addExisting";
-        Log.d(tag, tag_list.toString());
+        String tag = "Love&Tag.TagInput.addToList";
         if (active) {
             mActiveTagList.addAll(tag_list);
         } else {
             mInactiveTagList.addAll(tag_list);
         }
         ArrayList<String> remove = new ArrayList<>();
-        for (String t: mInactiveTagList) {
+        for (String t : mInactiveTagList) {
             if (mActiveTagList.contains(t)) {
                 remove.add(t);
             }
         }
         mInactiveTagList.removeAll(remove);
+        updateList();
+    }
 
+    private void updateList() {
         mAllTagList.clear();
         for (String t : mActiveTagList) {
             ActiveElement ae = new ActiveElement(t, true);
