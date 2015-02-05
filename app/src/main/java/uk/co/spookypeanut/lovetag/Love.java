@@ -264,23 +264,21 @@ public class Love extends ActionBarActivity {
         protected String doInBackground(String... params) {
             String track = params[0];
             String artist = params[1];
-            String tag = "Love&Tag.Love.UnloveCall.doInBackground";
             boolean result = mLfs.unlove(track, artist);
-            Context c = getBaseContext();
+            String msg;
             if (result == true) {
-                String msg = getString(R.string.unlove_success);
-                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT);
-                Log.i(tag, msg);
                 setResult(RESULT_OK);
+                msg = getString(R.string.unlove_success);
             } else {
-                String msg = getString(R.string.unlove_failed);
-                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT);
-                Log.i(tag, msg);
                 setResult(RESULT_CANCELED);
+                msg = getString(R.string.unlove_failed);
             }
-            return "";
+            return msg;
         }
         protected void onPostExecute(String result) {
+            String tag = "Love&Tag.Love.UnloveCall.onPostExecute";
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+            Log.i(tag, result);
             updateRecent();
         }
     }
