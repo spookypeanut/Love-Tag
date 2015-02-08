@@ -35,7 +35,7 @@ public class Love extends ActionBarActivity {
     Context mCurrentContext = this;
     String mNowPlayingTitle;
     String mNowPlayingArtist;
-    List<LastfmSession.RecentTrack> mRecentTracks;
+    List<RecentTrack> mRecentTracks;
     ListEntry mPodView;
     MediaController mMediaController;
 
@@ -87,12 +87,12 @@ public class Love extends ActionBarActivity {
         }*/
     }
 
-    private void setRecentTracks(List<LastfmSession.RecentTrack> tracks) {
+    private void setRecentTracks(List<RecentTrack> tracks) {
         mRecentTracks = tracks;
         LinearLayout rtLayout;
         rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
         rtLayout.removeAllViews();
-        for (LastfmSession.RecentTrack track : tracks) {
+        for (RecentTrack track : tracks) {
             ListEntry list_entry = new ListEntry(mCurrentContext);
             rtLayout.addView(list_entry);
             list_entry.setMusic(track);
@@ -125,8 +125,7 @@ public class Love extends ActionBarActivity {
                 String artist = data.getStringExtra("artist");
                 String title = data.getStringExtra("title");
                 TagCall tc = new TagCall();
-                String tag_cat = TextUtils.join(",", tagList);
-                tc.execute(artist, title, tag_cat);
+                tc.execute(artist, title, TextUtils.join(",", tagList));
                 Log.d(tag, "Submitted tag");
             } else {
                 Log.e(tag, "Tagging aborted");
@@ -141,10 +140,10 @@ public class Love extends ActionBarActivity {
             String tag = "Love&Tag.Love.mReceiver.onReceive";
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
-            String track = intent.getStringExtra("track");
-            mNowPlayingArtist = artist;
-            mNowPlayingTitle = track;
-            mPodView.setMusic(artist, track);
+            String title = intent.getStringExtra("track");
+            RecentTrack track;
+            track = new RecentTrack(artist, title, false);
+            mPodView.setMusic(track);
 
             LinearLayout podLayout;
             podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
@@ -179,11 +178,9 @@ public class Love extends ActionBarActivity {
     }
 
     public class ListEntry extends LinearLayout {
-        String mArtist;
+        RecentTrack mRecentTrack;
         TextView mArtistView;
-        String mTitle;
         TextView mTitleView;
-        boolean mLoved;
         ImageButton mLovedView;
 
         public ListEntry(Context context) {
@@ -198,14 +195,14 @@ public class Love extends ActionBarActivity {
                 public void onClick(View v) {
                     String tag;
                     tag = "Love&Tag.Love.ListEntry.loveButton.onClick";
-                    if (false == mLoved) {
+                    if (false == mRecentTrack.mLoved) {
                         LoveCall lc = new LoveCall();
-                        lc.execute(mArtist, mTitle);
+                        lc.execute(mRecentTrack);
                         Log.d(tag, "Submitted love");
                         return;
                     }
                     UnloveCall ulc = new UnloveCall();
-                    ulc.execute(mArtist, mTitle);
+                    ulc.execute(mRecentTrack);
                     Log.d(tag, "Submitted unlove");
                 }
             });
@@ -216,8 +213,9 @@ public class Love extends ActionBarActivity {
                     String tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInput.class);
-                    i.putExtra("artist", mArtist);
-                    i.putExtra("title", mTitle);
+                    // TODO: Maybe I should make the class parcellable
+                    i.putExtra("artist", mRecentTrack.mArtist);
+                    i.putExtra("title", mRecentTrack.mTitle);
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));
                     return;
@@ -226,21 +224,12 @@ public class Love extends ActionBarActivity {
             });
         }
 
-        public void setMusic(LastfmSession.RecentTrack track) {
-            setMusic(track.mArtist, track.mTitle, track.mLoved);
-        }
-
-        public void setMusic(String artist, String title) {
-            setMusic(artist, title, false);
-        }
-
-        public void setMusic(String artist, String title, boolean loved) {
+        public void setMusic(RecentTrack track) {
             String tag = "Love&Tag.Love.ListEntry.setMusic";
-            Log.d(tag, "Adding: " + artist + ", " + title + ", " +
-                    String.valueOf(loved));
-            mArtist = artist;
-            mTitle = title;
-            mLoved = loved;
+            mRecentTrack = track;
+            Log.v(tag, "Adding: " + mRecentTrack.mArtist +
+                    ", " + mRecentTrack.mTitle +
+                    ", " + String.valueOf(mRecentTrack.mLoved));
             try {
                 update();
             }
@@ -249,22 +238,21 @@ public class Love extends ActionBarActivity {
             }
         }
         private void update() {
-            mArtistView.setText(mArtist);
-            mTitleView.setText(mTitle);
-            if (mLoved == true) {
+            mArtistView.setText(mRecentTrack.mArtist);
+            mTitleView.setText(mRecentTrack.mTitle);
+            if (mRecentTrack.mLoved == true) {
                 mLovedView.setImageDrawable(getDrawable(R.drawable.lovetrue));
-            } else if (mLoved == false) {
+            } else if (mRecentTrack.mLoved == false) {
                 mLovedView.setImageDrawable(getDrawable(R.drawable.lovefalse));
             }
         }
     }
 
-    private class UnloveCall extends AsyncTask<String, String, String> {
+    private class UnloveCall extends AsyncTask<RecentTrack, String, String> {
         @Override
-        protected String doInBackground(String... params) {
-            String track = params[0];
-            String artist = params[1];
-            boolean result = mLfs.unlove(track, artist);
+        protected String doInBackground(RecentTrack... params) {
+            RecentTrack track = params[0];
+            boolean result = mLfs.unlove(track);
             String msg;
             if (result == true) {
                 setResult(RESULT_OK);
@@ -282,59 +270,60 @@ public class Love extends ActionBarActivity {
             updateRecent();
         }
     }
-    private class LoveCall extends AsyncTask<String, String, String> {
+    private class LoveCall extends AsyncTask<RecentTrack, String, String> {
         @Override
-        protected String doInBackground(String... params) {
-            String track = params[0];
-            String artist = params[1];
+        protected String doInBackground(RecentTrack... params) {
+            RecentTrack track = params[0];
             String tag = "Love&Tag.Love.LoveCall.doInBackground";
-            boolean result = mLfs.love(track, artist);
-            Context c = getBaseContext();
+            boolean result = mLfs.love(track);
+            String msg;
             if (result == true) {
-                String msg = getString(R.string.love_success);
-                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
-                Log.i(tag, msg);
                 setResult(RESULT_OK);
+                msg = getString(R.string.love_success);
             } else {
-                String msg = getString(R.string.love_failed);
-                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
-                Log.i(tag, msg);
                 setResult(RESULT_CANCELED);
+                msg = getString(R.string.love_failed);
             }
-            return "";
+            return msg;
         }
         protected void onPostExecute(String result) {
+            String tag = "Love&Tag.Love.LoveCall.onPostExecute";
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+            Log.i(tag, result);
             updateRecent();
         }
     }
     private class TagCall extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            String track = params[0];
-            String artist = params[1];
-            String tag_list = params[2];
+            String artist = params[0];
+            String title = params[1];
+            String tag_cat = params[2];
             String tag = "Love&Tag.Love.TagCall.doInBackground";
-            boolean result = mLfs.tag(track, artist, tag_list);
-            Context c = getBaseContext();
+            RecentTrack track = new RecentTrack(artist, title, false);
+            boolean result = mLfs.tag(track, tag_cat);
+            String msg;
             if (result == true) {
-                String msg = getString(R.string.tag_success);
-                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
-                Log.i(tag, msg);
                 setResult(RESULT_OK);
+                msg = getString(R.string.tag_success);
             } else {
-                String msg = getString(R.string.tag_failed);
-                Toast.makeText(c, msg, Toast.LENGTH_SHORT);
-                Log.i(tag, msg);
                 setResult(RESULT_CANCELED);
+                msg = getString(R.string.tag_failed);
             }
-            return "";
+            return msg;
         }
+        protected void onPostExecute(String result) {
+            String tag = "Love&Tag.Love.TagCall.onPostExecute";
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+            Log.i(tag, result);
+        }
+
     }
     private class GetRecent extends AsyncTask<String, String, String> {
-        List<LastfmSession.RecentTrack> mTempTracks = new ArrayList<>();
+        List<RecentTrack> mTempTracks = new ArrayList<>();
         @Override
         protected String doInBackground(String... params) {
-            String tag = "Love&Tag.Love.TagCall.doInBackground";
+            String tag = "Love&Tag.Love.GetRecent.doInBackground";
             mTempTracks = mLfs.getRecent();
             return "";
         }

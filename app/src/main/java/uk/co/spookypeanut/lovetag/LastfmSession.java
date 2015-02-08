@@ -60,15 +60,15 @@ public class LastfmSession {
         return mSessionKey != "";
     }
 
-    public boolean unlove(String artist, String track) {
+    public boolean unlove(RecentTrack track) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
         Map<String, String> restparams = new HashMap<String, String>();
         restparams.put("method", "track.unlove");
         restparams.put("sk", mSessionKey);
-        restparams.put("track", track);
-        restparams.put("artist", artist);
+        restparams.put("track", track.mTitle);
+        restparams.put("artist", track.mArtist);
         String urlString;
         urlString = mUrlMaker.fromHashmap(restparams);
         boolean response;
@@ -81,15 +81,15 @@ public class LastfmSession {
             return false;
         }
     }
-    public boolean love(String artist, String track) {
+    public boolean love(RecentTrack track) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
         Map<String, String> restparams = new HashMap<String, String>();
         restparams.put("method", "track.love");
         restparams.put("sk", mSessionKey);
-        restparams.put("track", track);
-        restparams.put("artist", artist);
+        restparams.put("track", track.mTitle);
+        restparams.put("artist", track.mArtist);
         String urlString;
         urlString = mUrlMaker.fromHashmap(restparams);
         boolean response;
@@ -103,16 +103,16 @@ public class LastfmSession {
         }
     }
 
-    public boolean tag(String artist, String track, String tag_list) {
+    public boolean tag(RecentTrack track, String tag_cat) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
         Map<String, String> rest_params = new HashMap<String, String>();
         rest_params.put("method", "track.addTags");
         rest_params.put("sk", mSessionKey);
-        rest_params.put("track", track);
-        rest_params.put("artist", artist);
-        rest_params.put("tags", tag_list);
+        rest_params.put("track", track.mTitle);
+        rest_params.put("artist", track.mArtist);
+        rest_params.put("tags", tag_cat);
         String urlString;
         urlString = mUrlMaker.fromHashmap(rest_params);
         boolean response;
@@ -126,25 +126,7 @@ public class LastfmSession {
         }
     }
 
-    public class RecentTrack {
-        String mArtist;
-        String mTitle;
-        boolean mLoved;
-        public RecentTrack(String artist, String title, boolean loved) {
-            mArtist = artist;
-            mTitle = title;
-            mLoved = loved;
-        }
-        public RecentTrack(Map<String, String> params) {
-            mArtist = params.get("artist");
-            mTitle = params.get("title");
-            if ("1".equals(params.get("loved"))) {
-                mLoved = true;
-            } else {
-                mLoved = false;
-            }
-        }
-    }
+
 
     public List<RecentTrack> getRecent () {
         String tag = "Love&Tag.LastfmSession.getRecent";
