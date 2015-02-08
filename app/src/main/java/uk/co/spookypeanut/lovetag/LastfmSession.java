@@ -60,7 +60,7 @@ public class LastfmSession {
         return mSessionKey != "";
     }
 
-    public boolean unlove(RecentTrack track) {
+    public boolean unlove(Track track) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
@@ -81,7 +81,7 @@ public class LastfmSession {
             return false;
         }
     }
-    public boolean love(RecentTrack track) {
+    public boolean love(Track track) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
@@ -103,7 +103,7 @@ public class LastfmSession {
         }
     }
 
-    public boolean tag(RecentTrack track, String tag_cat) {
+    public boolean tag(Track track, String tag_cat) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
@@ -128,7 +128,7 @@ public class LastfmSession {
 
 
 
-    public List<RecentTrack> getRecent () {
+    public List<Track> getRecent () {
         String tag = "Love&Tag.LastfmSession.getRecent";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
@@ -150,11 +150,11 @@ public class LastfmSession {
                 "track", "loved"));
 
         XmlPullParser parser;
-        List<RecentTrack> recentTracks = new ArrayList<>();
+        List<Track> recentTracks = new ArrayList<>();
         try {
             parser = getUrlResponse(urlString);
             for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
-                recentTracks.add(new RecentTrack(map));
+                recentTracks.add(new Track(map));
             }
         }
         catch (Exception e) {

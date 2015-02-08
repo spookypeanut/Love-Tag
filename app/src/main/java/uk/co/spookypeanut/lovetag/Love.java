@@ -9,9 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.MediaMetadata;
 import android.media.session.MediaController;
-import android.media.session.MediaSessionManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -26,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Love extends ActionBarActivity {
@@ -35,7 +32,7 @@ public class Love extends ActionBarActivity {
     Context mCurrentContext = this;
     String mNowPlayingTitle;
     String mNowPlayingArtist;
-    List<RecentTrack> mRecentTracks;
+    List<Track> mRecentTracks;
     ListEntry mPodView;
     MediaController mMediaController;
 
@@ -87,12 +84,12 @@ public class Love extends ActionBarActivity {
         }*/
     }
 
-    private void setRecentTracks(List<RecentTrack> tracks) {
+    private void setRecentTracks(List<Track> tracks) {
         mRecentTracks = tracks;
         LinearLayout rtLayout;
         rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
         rtLayout.removeAllViews();
-        for (RecentTrack track : tracks) {
+        for (Track track : tracks) {
             ListEntry list_entry = new ListEntry(mCurrentContext);
             rtLayout.addView(list_entry);
             list_entry.setMusic(track);
@@ -141,8 +138,8 @@ public class Love extends ActionBarActivity {
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
             String title = intent.getStringExtra("track");
-            RecentTrack track;
-            track = new RecentTrack(artist, title, false);
+            Track track;
+            track = new Track(artist, title, false);
             mPodView.setMusic(track);
 
             LinearLayout podLayout;
@@ -178,7 +175,7 @@ public class Love extends ActionBarActivity {
     }
 
     public class ListEntry extends LinearLayout {
-        RecentTrack mRecentTrack;
+        Track mTrack;
         TextView mArtistView;
         TextView mTitleView;
         ImageButton mLovedView;
@@ -195,14 +192,14 @@ public class Love extends ActionBarActivity {
                 public void onClick(View v) {
                     String tag;
                     tag = "Love&Tag.Love.ListEntry.loveButton.onClick";
-                    if (false == mRecentTrack.mLoved) {
+                    if (false == mTrack.mLoved) {
                         LoveCall lc = new LoveCall();
-                        lc.execute(mRecentTrack);
+                        lc.execute(mTrack);
                         Log.d(tag, "Submitted love");
                         return;
                     }
                     UnloveCall ulc = new UnloveCall();
-                    ulc.execute(mRecentTrack);
+                    ulc.execute(mTrack);
                     Log.d(tag, "Submitted unlove");
                 }
             });
@@ -214,8 +211,8 @@ public class Love extends ActionBarActivity {
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInput.class);
                     // TODO: Maybe I should make the class parcellable
-                    i.putExtra("artist", mRecentTrack.mArtist);
-                    i.putExtra("title", mRecentTrack.mTitle);
+                    i.putExtra("artist", mTrack.mArtist);
+                    i.putExtra("title", mTrack.mTitle);
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));
                     return;
@@ -224,12 +221,12 @@ public class Love extends ActionBarActivity {
             });
         }
 
-        public void setMusic(RecentTrack track) {
+        public void setMusic(Track track) {
             String tag = "Love&Tag.Love.ListEntry.setMusic";
-            mRecentTrack = track;
-            Log.v(tag, "Adding: " + mRecentTrack.mArtist +
-                    ", " + mRecentTrack.mTitle +
-                    ", " + String.valueOf(mRecentTrack.mLoved));
+            mTrack = track;
+            Log.v(tag, "Adding: " + mTrack.mArtist +
+                    ", " + mTrack.mTitle +
+                    ", " + String.valueOf(mTrack.mLoved));
             try {
                 update();
             }
@@ -238,20 +235,20 @@ public class Love extends ActionBarActivity {
             }
         }
         private void update() {
-            mArtistView.setText(mRecentTrack.mArtist);
-            mTitleView.setText(mRecentTrack.mTitle);
-            if (mRecentTrack.mLoved == true) {
+            mArtistView.setText(mTrack.mArtist);
+            mTitleView.setText(mTrack.mTitle);
+            if (mTrack.mLoved == true) {
                 mLovedView.setImageDrawable(getDrawable(R.drawable.lovetrue));
-            } else if (mRecentTrack.mLoved == false) {
+            } else if (mTrack.mLoved == false) {
                 mLovedView.setImageDrawable(getDrawable(R.drawable.lovefalse));
             }
         }
     }
 
-    private class UnloveCall extends AsyncTask<RecentTrack, String, String> {
+    private class UnloveCall extends AsyncTask<Track, String, String> {
         @Override
-        protected String doInBackground(RecentTrack... params) {
-            RecentTrack track = params[0];
+        protected String doInBackground(Track... params) {
+            Track track = params[0];
             boolean result = mLfs.unlove(track);
             String msg;
             if (result == true) {
@@ -270,10 +267,10 @@ public class Love extends ActionBarActivity {
             updateRecent();
         }
     }
-    private class LoveCall extends AsyncTask<RecentTrack, String, String> {
+    private class LoveCall extends AsyncTask<Track, String, String> {
         @Override
-        protected String doInBackground(RecentTrack... params) {
-            RecentTrack track = params[0];
+        protected String doInBackground(Track... params) {
+            Track track = params[0];
             String tag = "Love&Tag.Love.LoveCall.doInBackground";
             boolean result = mLfs.love(track);
             String msg;
@@ -300,7 +297,7 @@ public class Love extends ActionBarActivity {
             String title = params[1];
             String tag_cat = params[2];
             String tag = "Love&Tag.Love.TagCall.doInBackground";
-            RecentTrack track = new RecentTrack(artist, title, false);
+            Track track = new Track(artist, title, false);
             boolean result = mLfs.tag(track, tag_cat);
             String msg;
             if (result == true) {
@@ -320,7 +317,7 @@ public class Love extends ActionBarActivity {
 
     }
     private class GetRecent extends AsyncTask<String, String, String> {
-        List<RecentTrack> mTempTracks = new ArrayList<>();
+        List<Track> mTempTracks = new ArrayList<>();
         @Override
         protected String doInBackground(String... params) {
             String tag = "Love&Tag.Love.GetRecent.doInBackground";
