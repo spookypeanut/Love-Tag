@@ -25,4 +25,21 @@ public class Track {
             mLoved = false;
         }
     }
+    boolean equals(Track other) {
+        if (mArtist != other.mArtist) {
+            return false;
+        }
+        if (mTitle != other.mTitle) {
+            return false;
+        }
+        return true;
+    }
+    boolean isIn(List<Track> other_tracks) {
+        for (Track other : other_tracks) {
+            if (equals(other)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

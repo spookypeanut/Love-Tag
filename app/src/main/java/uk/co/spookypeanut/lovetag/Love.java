@@ -30,8 +30,7 @@ public class Love extends ActionBarActivity {
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
-    String mNowPlayingTitle;
-    String mNowPlayingArtist;
+    Track mNowPlaying;
     List<Track> mRecentTracks;
     ListEntry mPodView;
     MediaController mMediaController;
@@ -85,14 +84,22 @@ public class Love extends ActionBarActivity {
     }
 
     private void setRecentTracks(List<Track> tracks) {
+        String tag = "Love&Tag.Love.setRecentTracks";
         mRecentTracks = tracks;
         LinearLayout rtLayout;
         rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
         rtLayout.removeAllViews();
+        List<Track> present_list = new ArrayList<>();
+        if (mNowPlaying != null) {
+            present_list.add(mNowPlaying);
+        }
         for (Track track : tracks) {
-            ListEntry list_entry = new ListEntry(mCurrentContext);
-            rtLayout.addView(list_entry);
-            list_entry.setMusic(track);
+            if (!track.isIn(present_list)) {
+                ListEntry list_entry = new ListEntry(mCurrentContext);
+                rtLayout.addView(list_entry);
+                list_entry.setMusic(track);
+                present_list.add(track);
+            }
         }
     }
 
