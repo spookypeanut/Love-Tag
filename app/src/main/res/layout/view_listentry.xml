@@ -47,6 +47,7 @@
         android:id="@+id/lovebutton"
         android:src="@drawable/loveunknown"
         android:layout_weight="0"
+        android:background="?android:selectableItemBackground"
         />
 
     <ImageButton
@@ -54,6 +55,8 @@
         android:layout_height="48dp"
         android:id="@+id/tagbutton"
         android:layout_weight="0"
-        android:src="@drawable/tag"/>
+        android:src="@drawable/tag"
+        android:background="?android:selectableItemBackground"
+        />
 
 </LinearLayout>
