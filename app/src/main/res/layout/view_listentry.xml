@@ -3,6 +3,11 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:layout_marginLeft="4dp"
+              android:layout_marginRight="4dp"
+              android:layout_marginTop="2dp"
+              android:layout_marginBottom="2dp"
+              android:background="@drawable/bg_card"
               android:weightSum="1"
               android:gravity="right">
 
