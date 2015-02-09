@@ -2,10 +2,12 @@
 <!-- Copyright (c) 2014 Henry Bush -->
 <!-- Distributed under the GNU GPL v3. For full terms see the file COPYING. -->
 <resources>
+    <style name="AppTheme" parent="AppTheme.Base"/>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DialogWhenLarge">
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimary</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="windowActionBar">false</item>-->
     </style>
-
 </resources>
