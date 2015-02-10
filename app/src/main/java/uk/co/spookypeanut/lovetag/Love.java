@@ -153,6 +153,9 @@ public class Love extends ActionBarActivity {
             podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
             podLayout.removeAllViews();
             podLayout.addView(mPodView);
+            TextView label = (TextView)findViewById(R.id.podLabel);
+            label.setVisibility(View.VISIBLE);
+            podLayout.setVisibility(View.VISIBLE);
         }
     };
 
