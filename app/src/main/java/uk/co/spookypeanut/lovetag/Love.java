@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.media.session.MediaController;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,7 +27,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Love extends ActionBarActivity {
+public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
@@ -34,6 +35,7 @@ public class Love extends ActionBarActivity {
     List<Track> mRecentTracks;
     ListEntry mPodView;
     MediaController mMediaController;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class Love extends ActionBarActivity {
 
         mPodView = new ListEntry(mCurrentContext);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mUrlMaker = new UrlMaker();
         // This snippet should be used whenever getting a session. It's
         // the most elegant way I can figure out to do this (the only
@@ -63,6 +67,11 @@ public class Love extends ActionBarActivity {
                     R.integer.rc_log_in));
             return;
         }
+        updateRecent();
+    }
+
+    @Override
+    public void onRefresh() {
         updateRecent();
     }
 
@@ -101,6 +110,7 @@ public class Love extends ActionBarActivity {
                 present_list.add(track);
             }
         }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
