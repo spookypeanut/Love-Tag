@@ -190,6 +190,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
     }
 
     private void updateRecent() {
+        mSwipeRefreshLayout.setRefreshing(true);
         GetRecent gr = new GetRecent();
         gr.execute();
     }
