@@ -138,7 +138,7 @@ public class LastfmSession {
         rest_params.put("user", mUsername);
         // This is so we get loved information too
         rest_params.put("extended", "1");
-        rest_params.put("limit", "10");
+        rest_params.put("limit", "25");
         String urlString = mUrlMaker.fromHashmap(rest_params);
         Log.i(tag, "Got url back");
         Map<String, List<String>> list_map = new HashMap<String, List<String>>();
