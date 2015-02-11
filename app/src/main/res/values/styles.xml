@@ -9,11 +9,10 @@
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
-        <item name="background">@color/primary</item>
-        <item name="titleTextStyle">@style/MyActionBarTitleText</item>
+        <item name="background">@color/action_bar_background</item>
     </style>
 
     <style name="MyActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">@color/action_bar_text</item>
     </style>
 </resources>
