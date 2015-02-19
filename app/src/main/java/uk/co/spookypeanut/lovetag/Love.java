@@ -193,6 +193,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
     }
 
     private void updateAll() {
+        mSwipeRefreshLayout.setRefreshing(true);
         updateRecent();
         updatePod();
     }
@@ -206,7 +207,6 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
     }
 
     private void updateRecent() {
-        mSwipeRefreshLayout.setRefreshing(true);
         GetRecent gr = new GetRecent();
         gr.execute();
     }
@@ -229,6 +229,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
                 public void onClick(View v) {
                     String tag;
                     tag = "Love&Tag.Love.ListEntry.loveButton.onClick";
+                    mSwipeRefreshLayout.setRefreshing(true);
                     if (false == mTrack.mLoved) {
                         LoveCall lc = new LoveCall();
                         lc.execute(mTrack);
