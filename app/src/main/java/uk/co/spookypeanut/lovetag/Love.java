@@ -67,16 +67,16 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
                     R.integer.rc_log_in));
             return;
         }
-        updateRecent();
+        updateAll();
     }
 
     @Override
     public void onRefresh() {
-        updateRecent();
+        updateAll();
     }
 
     public void onResume(Bundle icicle) {
-        updateRecent();
+        updateAll();
     }
 
     private void setMediaController() {
@@ -111,6 +111,18 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             }
         }
         mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void setPodTrack(Track track) {
+        mPodView.setMusic(track);
+
+        LinearLayout podLayout;
+        podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
+        podLayout.removeAllViews();
+        podLayout.addView(mPodView);
+        TextView label = (TextView)findViewById(R.id.podLabel);
+        label.setVisibility(View.VISIBLE);
+        podLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -155,17 +167,8 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
             String title = intent.getStringExtra("track");
-            Track track;
-            track = new Track(artist, title, false);
-            mPodView.setMusic(track);
-
-            LinearLayout podLayout;
-            podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
-            podLayout.removeAllViews();
-            podLayout.addView(mPodView);
-            TextView label = (TextView)findViewById(R.id.podLabel);
-            label.setVisibility(View.VISIBLE);
-            podLayout.setVisibility(View.VISIBLE);
+            mNowPlaying = new Track(artist, title, false);
+            updatePod();
         }
     };
 
@@ -187,6 +190,19 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateAll() {
+        updateRecent();
+        updatePod();
+    }
+
+    private void updatePod() {
+        String tag = "Love&Tag.Love.updatePod";
+        if (mNowPlaying == null) return;
+        IsLovedCall ilc = new IsLovedCall();
+        ilc.execute(mNowPlaying);
+        Log.d(tag, "Checking if " + mNowPlaying.mTitle + " is loved");
     }
 
     private void updateRecent() {
@@ -285,7 +301,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             String tag = "Love&Tag.Love.UnloveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
-            updateRecent();
+            updateAll();
         }
     }
     private class LoveCall extends AsyncTask<Track, String, String> {
@@ -308,7 +324,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             String tag = "Love&Tag.Love.LoveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
-            updateRecent();
+            updateAll();
         }
     }
     private class TagCall extends AsyncTask<String, String, String> {
@@ -335,7 +351,6 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
         }
-
     }
     private class GetRecent extends AsyncTask<String, String, String> {
         List<Track> mTempTracks = new ArrayList<>();
@@ -347,6 +362,22 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
         }
         protected void onPostExecute(String result) {
             setRecentTracks(mTempTracks);
+        }
+    }
+    private class IsLovedCall extends AsyncTask<Track, String, String> {
+        Track mReturnTrack;
+
+        @Override
+        protected String doInBackground(Track... params) {
+            String tag = "Love&Tag.Love.IsLovedCall.doInBackground";
+            mReturnTrack = params[0];
+            boolean is_loved = mLfs.isLoved(mReturnTrack);
+            mReturnTrack.mLoved = is_loved;
+            return "";
+        }
+
+        protected void onPostExecute(String result) {
+            setPodTrack(mReturnTrack);
         }
     }
 }

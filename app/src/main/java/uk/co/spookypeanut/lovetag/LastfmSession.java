@@ -126,8 +126,6 @@ public class LastfmSession {
         }
     }
 
-
-
     public List<Track> getRecent () {
         String tag = "Love&Tag.LastfmSession.getRecent";
         if (!isLoggedIn()) {
@@ -161,6 +159,42 @@ public class LastfmSession {
             e.printStackTrace();
         }
         return recentTracks;
+    }
+
+    public boolean isLoved(Track orig_track) {
+        String tag = "Love&Tag.LastfmSession.isLoved";
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> rest_params = new HashMap<String, String>();
+        rest_params.put("method", "track.getInfo");
+        rest_params.put("artist", orig_track.mArtist);
+        rest_params.put("track", orig_track.mTitle);
+        rest_params.put("username", mUsername);
+        String urlString = mUrlMaker.fromHashmap(rest_params);
+        Log.i(tag, "Got url back");
+        Log.i(tag, urlString);
+        Map<String, List<String>> list_map = new HashMap<String, List<String>>();
+        list_map.put("loved", Arrays.asList("lfm", "track", "userloved"));
+        XmlPullParser parser;
+        String is_loved;
+        List<String> topTags = new ArrayList<>();
+        try {
+            parser = getUrlResponse(urlString);
+            // We get a list, but there's only one item in it
+            for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
+                Log.d(tag, map.toString());
+                is_loved = map.get("loved");
+                if (is_loved.equals("1")){
+                    return true;
+                }
+                return false;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public List<String> getTags() {
