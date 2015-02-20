@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/widget_margin"
+                android:background="#00000000"
+                android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/loveWidgetLabel"
+        android:textSize="8dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"/>
+
+    <ImageButton
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/loveWidgetButton"
+        android:src="@drawable/lovefalse"
+        android:background="#00000000"/>
+
+</LinearLayout>
