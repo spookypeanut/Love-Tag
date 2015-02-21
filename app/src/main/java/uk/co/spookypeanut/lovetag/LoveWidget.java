@@ -19,22 +19,31 @@ public class LoveWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         String tag = "Love&Tag.LoveWidget.onReceive";
-        if (intent.getAction()==null) {
+        String action = intent.getAction();
+        if (action == null) {
             Log.d(tag, "null action");
             context.startService(new Intent(context, UpdateService.class));
+            return;
         }
-        else {
-            Log.d(tag, "non-null action: " + intent.getAction());
-            super.onReceive(context, intent);
+        Log.d(tag, "non-null action: " + intent.getAction());
+        super.onReceive(context, intent);
+        String test = context.getString(R.string .love_widget_click_action);
+        if (action.equals(test)) {
+
+
         }
     }
+
+    public void loveCurrent() {
+
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         String tag = "Love&Tag.LoveWidget.onUpdate";
         Log.d(tag, "Starting");
         // There may be multiple widgets active, so update all of them
         Intent i = new Intent(context, UpdateService.class);
-        i.setAction("WHAT");
         context.startService(i);
         /*
         final int N = appWidgetIds.length;
@@ -84,7 +93,7 @@ public class LoveWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.love_widget);
             views.setTextViewText(R.id.loveWidgetLabel, widgetText);
             Intent i = new Intent(this, LoveWidget.class);
-            i.setAction("button_clicked");
+            i.setAction(getString(R.string.love_widget_click_action));
 
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.loveWidgetButton, pi);
