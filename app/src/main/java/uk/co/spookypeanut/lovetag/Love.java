@@ -200,7 +200,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
 
     private void updatePod() {
         String tag = "Love&Tag.Love.updatePod";
-        if (mNowPlaying == null) return;
+        if (mNowPlaying == null || ! mLfs.isLoggedIn()) return;
         IsLovedCall ilc = new IsLovedCall();
         ilc.execute(mNowPlaying);
         Log.d(tag, "Checking if " + mNowPlaying.mTitle + " is loved");
