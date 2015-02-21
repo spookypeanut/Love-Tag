@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 public class LoveWidget extends AppWidgetProvider {
+    LastfmSession mLfs;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -29,7 +31,6 @@ public class LoveWidget extends AppWidgetProvider {
         super.onReceive(context, intent);
         String test = context.getString(R.string .love_widget_click_action);
         if (action.equals(test)) {
-
 
         }
     }
@@ -56,6 +57,15 @@ public class LoveWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
+        String tag = "Love&Tag.LoveWidget.onEnabled";
+        mLfs = new LastfmSession();
+        if (!mLfs.isLoggedIn()) {
+            Log.d(tag, "Session not logged in");
+            int msg_id = R.string.widget_not_logged_in_message;
+            Toast.makeText(context, msg_id, Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d(tag, "Session already logged in");
+        }
     }
 
     @Override
