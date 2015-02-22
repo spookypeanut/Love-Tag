@@ -79,7 +79,7 @@ public class LoveWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-        context.unregisterReceiver(mReceiver);
+        context.unregisterReceiver(this);
     }
 
     public static class UpdateService extends IntentService {
