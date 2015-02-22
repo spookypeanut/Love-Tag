@@ -38,6 +38,16 @@ public class LoveWidget extends AppWidgetProvider {
         String test = love_widget_click_action;
         if (action.equals(test)) {
             Log.d(tag, "Widget button clicked");
+            if (mNowPlaying == null) {
+                Log.d(tag, "No song currently playing");
+                return;
+            }
+            if (mNowPlaying.mLoved == false) {
+                loveCurrent();
+                return;
+            }
+            unloveCurrent();
+            return;
         }
         test = context.getString(R.string.metachanged);
         if (action.equals(test)) {
@@ -54,7 +64,11 @@ public class LoveWidget extends AppWidgetProvider {
     }
 
     public void loveCurrent() {
+        String tag = "Love&Tag.LoveWidget.loveCurrent";
+        Log.d(tag, "Loving current track: " + mNowPlaying.mTitle);
+    }
 
+    public void unloveCurrent() {
     }
 
     @Override

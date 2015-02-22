@@ -271,6 +271,7 @@ public class LastfmSession {
         String ss;
         String tag = "Love&Tag.LastfmSession.setSessionKey";
         Log.i(tag, "Setting session key: " + sk);
+        // TODO: Make this a constant
         ss = mContext.getString(R.string.session_setting);
         mSettings.edit().putString(ss, sk).commit();
         mSessionKey = sk;
