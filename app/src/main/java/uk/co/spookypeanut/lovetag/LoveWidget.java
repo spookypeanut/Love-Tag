@@ -19,6 +19,8 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class LoveWidget extends AppWidgetProvider {
+    static final String love_widget_click_action = "love_widget_click";
+    static final String love_widget_new_track_action = "love_widget_new_track";
     LastfmSession mLfs;
     Track mNowPlaying;
 
@@ -33,7 +35,7 @@ public class LoveWidget extends AppWidgetProvider {
         }
         Log.d(tag, "non-null action: " + intent.getAction());
         super.onReceive(context, intent);
-        String test = context.getString(R.string.love_widget_click_action);
+        String test = love_widget_click_action;
         if (action.equals(test)) {
             Log.d(tag, "Widget button clicked");
         }
@@ -44,6 +46,7 @@ public class LoveWidget extends AppWidgetProvider {
             mNowPlaying = new Track(artist, title, false);
             Log.d(tag, "Got new track: " + title + " (" + action + ")");
             Intent i = new Intent(context,  UpdateService.class);
+            i.setAction(love_widget_new_track_action);
             i.putExtra("artist", artist);
             i.putExtra("title", title);
             context.startService(i);
@@ -104,7 +107,8 @@ public class LoveWidget extends AppWidgetProvider {
         @Override
         public void onHandleIntent(Intent intent) {
             String tag = "Love&Tag.LoveWidget.UpdateService.onHandleIntent";
-            Log.d(tag, "Handling intent");
+            String action = intent.getAction();
+            Log.d(tag, "Handling intent: " + action);
             ComponentName me = new ComponentName(this, LoveWidget.class);
             AppWidgetManager mgr = AppWidgetManager.getInstance(this);
             if (!intent.hasExtra("artist")) {
@@ -132,7 +136,7 @@ public class LoveWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.love_widget);
 
             Intent i = new Intent(this, LoveWidget.class);
-            i.setAction(getString(R.string.love_widget_click_action));
+            i.setAction(love_widget_click_action);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.loveWidgetButton, pi);
 
