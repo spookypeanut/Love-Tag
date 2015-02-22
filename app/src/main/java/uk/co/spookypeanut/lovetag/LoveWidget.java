@@ -4,9 +4,11 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -53,7 +55,6 @@ public class LoveWidget extends AppWidgetProvider {
         }*/
     }
 
-
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
@@ -66,15 +67,24 @@ public class LoveWidget extends AppWidgetProvider {
         } else {
             Log.d(tag, "Session already logged in");
         }
+        IntentFilter iF = new IntentFilter();
+        // TODO: use a global list for these
+        iF.addAction("com.android.music.metachanged");
+        iF.addAction("com.android.music.playstatechanged");
+        iF.addAction("com.android.music.playbackcomplete");
+        iF.addAction("com.android.music.queuechanged");
+        context.registerReceiver(this, iF);
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+        context.unregisterReceiver(mReceiver);
     }
 
     public static class UpdateService extends IntentService {
         private SharedPreferences mPrefs;
+        private Track mNowPlaying;
         public UpdateService() {
             super("LoveWidget$UpdateService");
             String tag = "Love&Tag.LoveWidget.UpdateService";
@@ -90,21 +100,36 @@ public class LoveWidget extends AppWidgetProvider {
         @Override
         public void onHandleIntent(Intent intent) {
             String tag = "Love&Tag.LoveWidget.UpdateService.onHandleIntent";
-            Log.d(tag, "Starting");
+            Log.d(tag, "Handling intent");
             ComponentName me = new ComponentName(this, LoveWidget.class);
             AppWidgetManager mgr = AppWidgetManager.getInstance(this);
-            mgr.updateAppWidget(me, buildUpdate(this));
+            if (!intent.hasExtra("artist")) {
+                mgr.updateAppWidget(me, buildUpdate(this));
+                return;
+            }
+            String artist = intent.getStringExtra("artist");
+            String title = intent.getStringExtra("title");
+            mgr.updateAppWidget(me, buildUpdate(this, artist, title));
         }
+
+        private RemoteViews buildUpdate(Context context, String artist,
+                                        String title) {
+            String tag = "Love&Tag.LoveWidget.UpdateService.buildUpdate (CSS)";
+            Log.d(tag, "Found track: " + artist + ", " + title);
+            RemoteViews views = buildUpdate(context);
+            Track mNowPlaying = new Track(artist, title, false);
+            // Construct the RemoteViews object
+            views.setTextViewText(R.id.loveWidgetLabel, title);
+            return views;
+        }
+
         private RemoteViews buildUpdate(Context context) {
             String tag = "Love&Tag.LoveWidget.UpdateService.buildUpdate";
             Log.d(tag, "Starting");
-            CharSequence widgetText = context.getString(R.string.appwidget_text);
-            // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.love_widget);
-            views.setTextViewText(R.id.loveWidgetLabel, widgetText);
+
             Intent i = new Intent(this, LoveWidget.class);
             i.setAction(getString(R.string.love_widget_click_action));
-
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.loveWidgetButton, pi);
 

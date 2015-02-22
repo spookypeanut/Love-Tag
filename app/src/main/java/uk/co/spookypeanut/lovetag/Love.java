@@ -45,6 +45,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
         setContentView(R.layout.activity_love);
 
         IntentFilter iF = new IntentFilter();
+        // TODO: use a global list for these
         iF.addAction("com.android.music.metachanged");
         iF.addAction("com.android.music.playstatechanged");
         iF.addAction("com.android.music.playbackcomplete");
@@ -167,6 +168,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
             String title = intent.getStringExtra("track");
+            Log.d(tag, "Got new track: " + title + " (" + action + ")");
             mNowPlaying = new Track(artist, title, false);
             updatePod();
         }

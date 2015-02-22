@@ -40,6 +40,12 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.android.music.metachanged" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.android.music.playstatechanged" />
+            </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
