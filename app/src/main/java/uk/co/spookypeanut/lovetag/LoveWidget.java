@@ -80,19 +80,11 @@ public class LoveWidget extends AppWidgetProvider {
         } else {
             Log.d(tag, "Session already logged in");
         }
-        IntentFilter iF = new IntentFilter();
-        // TODO: use a global list for these
-        iF.addAction("com.android.music.metachanged");
-        iF.addAction("com.android.music.playstatechanged");
-        iF.addAction("com.android.music.playbackcomplete");
-        iF.addAction("com.android.music.queuechanged");
-        context.registerReceiver(this, iF);
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-        context.unregisterReceiver(this);
     }
 
     public static class UpdateService extends IntentService {
