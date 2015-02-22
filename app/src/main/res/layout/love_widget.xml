@@ -16,18 +16,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
+        android:text=""
         android:id="@+id/loveWidgetLabel"
-        android:textSize="10dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginRight="1dp"
-        android:singleLine="false"
         android:ellipsize="marquee"
         android:textAlignment="center"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false"
         android:layout_centerInParent="true"
         android:maxLines="3"
-        android:shadowColor="#ff000000"/>
+        style="@style/WidgetLabel" />
 
 </RelativeLayout>
