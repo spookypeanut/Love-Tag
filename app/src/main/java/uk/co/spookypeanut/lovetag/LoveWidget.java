@@ -21,7 +21,6 @@ import android.widget.Toast;
 public class LoveWidget extends AppWidgetProvider {
     static final String love_widget_click_action = "love_widget_click";
     static final String love_widget_new_track_action = "love_widget_new_track";
-    LastfmSession mLfs;
     Track mNowPlaying;
 
     @Override
@@ -38,15 +37,9 @@ public class LoveWidget extends AppWidgetProvider {
         String test = love_widget_click_action;
         if (action.equals(test)) {
             Log.d(tag, "Widget button clicked");
-            if (mNowPlaying == null) {
-                Log.d(tag, "No song currently playing");
-                return;
-            }
-            if (mNowPlaying.mLoved == false) {
-                loveCurrent();
-                return;
-            }
-            unloveCurrent();
+            Intent i = new Intent(context, UpdateService.class);
+            i.setAction(love_widget_click_action);
+            context.startService(i);
             return;
         }
         test = context.getString(R.string.metachanged);
@@ -54,21 +47,14 @@ public class LoveWidget extends AppWidgetProvider {
             String artist = intent.getStringExtra("artist");
             String title = intent.getStringExtra("track");
             mNowPlaying = new Track(artist, title, false);
-            Log.d(tag, "Got new track: " + title + " (" + action + ")");
+            Log.d(tag, "Got new track: " + mNowPlaying.mTitle + " (" + action +
+                    ")");
             Intent i = new Intent(context,  UpdateService.class);
             i.setAction(love_widget_new_track_action);
             i.putExtra("artist", artist);
             i.putExtra("title", title);
             context.startService(i);
         }
-    }
-
-    public void loveCurrent() {
-        String tag = "Love&Tag.LoveWidget.loveCurrent";
-        Log.d(tag, "Loving current track: " + mNowPlaying.mTitle);
-    }
-
-    public void unloveCurrent() {
     }
 
     @Override
@@ -89,8 +75,8 @@ public class LoveWidget extends AppWidgetProvider {
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
         String tag = "Love&Tag.LoveWidget.onEnabled";
-        mLfs = new LastfmSession();
-        if (!mLfs.isLoggedIn()) {
+        LastfmSession lfs = new LastfmSession();
+        if (!lfs.isLoggedIn()) {
             Log.d(tag, "Session not logged in");
             int msg_id = R.string.widget_not_logged_in_message;
             Toast.makeText(context, msg_id, Toast.LENGTH_SHORT).show();
@@ -105,39 +91,75 @@ public class LoveWidget extends AppWidgetProvider {
     }
 
     public static class UpdateService extends IntentService {
-        private SharedPreferences mPrefs;
+        LastfmSession mLfs;
+        private SharedPreferences mSettings;
         public UpdateService() {
             super("LoveWidget$UpdateService");
             String tag = "Love&Tag.LoveWidget.UpdateService";
             Log.d(tag, "Constructor");
         }
+
         @Override
         public void onCreate() {
             super.onCreate();
             String tag = "Love&Tag.LoveWidget.UpdateService.onCreate";
             Log.d(tag, "Starting");
-            mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            mLfs = new LastfmSession();
+            if (!mLfs.isLoggedIn()) {
+                Log.d(tag, "Session not logged in");
+                int msg_id = R.string.widget_not_logged_in_message;
+                Toast.makeText(this, msg_id, Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d(tag, "Session already logged in");
+            }
+            mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+            getTrack();
         }
+
+        public void setTrack(Track track) {
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString("artist", track.mArtist);
+            editor.putString("title", track.mTitle);
+            editor.putBoolean("loved", track.mLoved).apply();
+        }
+
+        public Track getTrack() {
+            Track nowPlaying = null;
+            String artist = mSettings.getString("artist", "");
+            String title = mSettings.getString("title", "");
+            boolean loved = mSettings.getBoolean("loved", false);
+            if (!artist.equals("")) {
+                nowPlaying = new Track(artist, title, loved);
+            }
+            return nowPlaying;
+        }
+
         @Override
         public void onHandleIntent(Intent intent) {
             String tag = "Love&Tag.LoveWidget.UpdateService.onHandleIntent";
             String action = intent.getAction();
             Log.d(tag, "Handling intent: " + action);
-            ComponentName me = new ComponentName(this, LoveWidget.class);
-            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
-            if (!intent.hasExtra("artist")) {
-                mgr.updateAppWidget(me, buildUpdate(this));
+            if (action.equals(love_widget_click_action)) {
+                love();
                 return;
             }
-            String artist = intent.getStringExtra("artist");
-            String title = intent.getStringExtra("title");
-            mgr.updateAppWidget(me, buildUpdate(this, artist, title));
+            ComponentName me = new ComponentName(this, LoveWidget.class);
+            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
+            if (action.equals(love_widget_new_track_action)) {
+                String artist = intent.getStringExtra("artist");
+                String title = intent.getStringExtra("title");
+                mgr.updateAppWidget(me, buildUpdate(this, artist, title));
+                return;
+            }
+            mgr.updateAppWidget(me, buildUpdate(this));
+            return;
         }
 
         private RemoteViews buildUpdate(Context context, String artist,
                                         String title) {
             String tag = "Love&Tag.LoveWidget.UpdateService.buildUpdate (CSS)";
             Log.d(tag, "Found track: " + artist + ", " + title);
+            setTrack(new Track(artist, title));
             RemoteViews views = buildUpdate(context);
             // Construct the RemoteViews object
             views.setTextViewText(R.id.loveWidgetLabel, title);
@@ -156,7 +178,9 @@ public class LoveWidget extends AppWidgetProvider {
 
             return views;
         }
+
+        public boolean love() {
+            return mLfs.love(getTrack());
+        }
     }
 }
-
-
