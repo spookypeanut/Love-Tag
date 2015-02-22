@@ -11,6 +11,12 @@ public class Track {
     String mTitle;
     boolean mLoved;
     List<String> mTags;
+    public Track(String artist, String title) {
+        mArtist = artist;
+        mTitle = title;
+        mLoved = false;
+    }
+
     public Track(String artist, String title, boolean loved) {
         mArtist = artist;
         mTitle = title;
