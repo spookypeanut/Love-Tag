@@ -4,17 +4,12 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
