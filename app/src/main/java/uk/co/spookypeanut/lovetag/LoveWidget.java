@@ -135,7 +135,12 @@ public class LoveWidget extends AppWidgetProvider {
             String action = intent.getAction();
             Log.d(tag, "Handling intent: " + action);
             if (action.equals(love_widget_click_action)) {
-                love();
+                Track track = getTrack();
+                if (track.mLoved) {
+                    mLfs.unlove(track);
+                } else {
+                    mLfs.love(track);
+                }
                 return;
             }
             ComponentName me = new ComponentName(this, LoveWidget.class);
@@ -154,10 +159,20 @@ public class LoveWidget extends AppWidgetProvider {
                                         String title) {
             String tag = "Love&Tag.LoveWidget.UpdateService.buildUpdate (CSS)";
             Log.d(tag, "Found track: " + artist + ", " + title);
-            setTrack(new Track(artist, title));
+            Track track = new Track(artist, title);
+            setTrack(track);
             RemoteViews views = buildUpdate(context);
             // Construct the RemoteViews object
             views.setTextViewText(R.id.loveWidgetLabel, title);
+            if (mLfs.isLoved(track)) {
+                track.mLoved = true;
+                setTrack(track);
+                views.setImageViewResource(R.id.loveWidgetButton, R.drawable.lovetrue);
+            } else {
+                views.setImageViewResource(R.id.loveWidgetButton,
+                        R.drawable.lovefalse);
+            }
+
             return views;
         }
 
@@ -172,10 +187,6 @@ public class LoveWidget extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.loveWidgetButton, pi);
 
             return views;
-        }
-
-        public boolean love() {
-            return mLfs.love(getTrack());
         }
     }
 }
