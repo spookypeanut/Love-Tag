@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 public class LoveWidget extends AppWidgetProvider {
     LastfmSession mLfs;
+    Track mNowPlaying;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -31,9 +33,20 @@ public class LoveWidget extends AppWidgetProvider {
         }
         Log.d(tag, "non-null action: " + intent.getAction());
         super.onReceive(context, intent);
-        String test = context.getString(R.string .love_widget_click_action);
+        String test = context.getString(R.string.love_widget_click_action);
         if (action.equals(test)) {
-
+            Log.d(tag, "Widget button clicked");
+        }
+        test = context.getString(R.string.metachanged);
+        if (action.equals(test)) {
+            String artist = intent.getStringExtra("artist");
+            String title = intent.getStringExtra("track");
+            mNowPlaying = new Track(artist, title, false);
+            Log.d(tag, "Got new track: " + title + " (" + action + ")");
+            Intent i = new Intent(context,  UpdateService.class);
+            i.putExtra("artist", artist);
+            i.putExtra("title", title);
+            context.startService(i);
         }
     }
 
@@ -84,7 +97,6 @@ public class LoveWidget extends AppWidgetProvider {
 
     public static class UpdateService extends IntentService {
         private SharedPreferences mPrefs;
-        private Track mNowPlaying;
         public UpdateService() {
             super("LoveWidget$UpdateService");
             String tag = "Love&Tag.LoveWidget.UpdateService";
@@ -117,7 +129,6 @@ public class LoveWidget extends AppWidgetProvider {
             String tag = "Love&Tag.LoveWidget.UpdateService.buildUpdate (CSS)";
             Log.d(tag, "Found track: " + artist + ", " + title);
             RemoteViews views = buildUpdate(context);
-            Track mNowPlaying = new Track(artist, title, false);
             // Construct the RemoteViews object
             views.setTextViewText(R.id.loveWidgetLabel, title);
             return views;
