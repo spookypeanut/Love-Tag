@@ -134,17 +134,23 @@ public class LoveWidget extends AppWidgetProvider {
             String tag = "Love&Tag.LoveWidget.UpdateService.onHandleIntent";
             String action = intent.getAction();
             Log.d(tag, "Handling intent: " + action);
+            ComponentName me = new ComponentName(this, LoveWidget.class);
+            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
             if (action.equals(love_widget_click_action)) {
                 Track track = getTrack();
                 if (track.mLoved) {
+                    Toast.makeText(this, "Unloving " + track.mTitle,
+                            Toast.LENGTH_SHORT).show();
                     mLfs.unlove(track);
                 } else {
+                    Toast.makeText(this, "Loving " + track.mTitle,
+                            Toast.LENGTH_SHORT).show();
                     mLfs.love(track);
                 }
+                mgr.updateAppWidget(me, buildUpdate(this, track.mArtist,
+                        track.mTitle));
                 return;
             }
-            ComponentName me = new ComponentName(this, LoveWidget.class);
-            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
             if (action.equals(love_widget_new_track_action)) {
                 String artist = intent.getStringExtra("artist");
                 String title = intent.getStringExtra("title");
