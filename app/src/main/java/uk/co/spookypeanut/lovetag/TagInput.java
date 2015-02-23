@@ -51,6 +51,8 @@ public class TagInput extends ActionBarActivity {
         mArtist = this.getIntent().getStringExtra("artist");
         mTitle = this.getIntent().getStringExtra("title");
         setContentView(R.layout.activity_tag_input);
+        ((TextView) findViewById(R.id.tag_artist)).setText(mArtist);
+        ((TextView) findViewById(R.id.tag_title)).setText(mTitle);
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
         mTagAdaptor = new ActiveAdapter(this, mAllTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
