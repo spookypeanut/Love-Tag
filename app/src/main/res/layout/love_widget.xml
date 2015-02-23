@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/widget_margin"
@@ -18,10 +18,13 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text=""
         android:id="@+id/loveWidgetLabel"
-        android:ellipsize="marquee"
+        android:ellipsize="end"
         android:textAlignment="center"
         android:layout_centerInParent="true"
+        style="@style/WidgetLabel"
         android:maxLines="3"
-        style="@style/WidgetLabel" />
+        android:paddingTop="-10dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="-4dp"/>
 
-</RelativeLayout>
+</FrameLayout>
