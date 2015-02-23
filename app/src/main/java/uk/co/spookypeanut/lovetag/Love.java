@@ -107,6 +107,7 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             if (!track.isIn(present_list)) {
                 ListEntry list_entry = new ListEntry(mCurrentContext);
                 rtLayout.addView(list_entry);
+                list_entry.findViewById(R.id.title).setSelected(true);
                 list_entry.setMusic(track);
                 present_list.add(track);
             }
