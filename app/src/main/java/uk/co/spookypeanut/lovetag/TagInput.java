@@ -59,15 +59,24 @@ public class TagInput extends ActionBarActivity {
         ((TextView) findViewById(R.id.tag_title)).setText(title);
         checkLoved();
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
+        final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
+        final Button okButton = (Button) findViewById(R.id.tag_ok);
+        final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
         mTagAdaptor = new ActiveAdapter(this, mAllTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                String current_text = tagEntry.getText().toString();
+                if (current_text.equals("")) {
+                    okButton.setEnabled(false);
+                } else {
+                    okButton.setEnabled(true);
+                }
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
-                        addToList(Arrays.asList(tagEntry.getText().toString()), true);
+                        addToList(Arrays.asList(current_text), true);
                         tagEntry.setText("");
                         tagEntry.requestFocus();
                         return true;
@@ -76,10 +85,18 @@ public class TagInput extends ActionBarActivity {
                 return false;
             }
         });
-        final Button okButton = (Button) findViewById(R.id.tag_ok);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String current_text = tagEntry.getText().toString();
+                if (!current_text.equals("")) {
+                    // If something is entered in the input box,
+                    // assume it's a tag
+                    addToList(Arrays.asList(current_text), true);
+                }
+                if (mActiveTagList.size() == 0) {
+                    return;
+                }
                 Intent resultData = new Intent();
                 Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
                         mActiveTagList
@@ -91,7 +108,6 @@ public class TagInput extends ActionBarActivity {
                 finish();
             }
         });
-        final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +116,6 @@ public class TagInput extends ActionBarActivity {
                 finish();
             }
         });
-        final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
         loveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
