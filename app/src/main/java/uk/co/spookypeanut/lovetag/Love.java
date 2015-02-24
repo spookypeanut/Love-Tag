@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.media.session.MediaController;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.support.v4.content.ContextCompat;
 
 public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     LastfmSession mLfs;
@@ -219,9 +222,11 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
         TextView mArtistView;
         TextView mTitleView;
         ImageButton mLovedView;
+        Context mContext;
 
         public ListEntry(Context context) {
             super(context);
+            mContext = context;
             View.inflate(context, R.layout.view_listentry, this);
             mArtistView = (TextView) findViewById(R.id.artist);
             mTitleView = (TextView) findViewById(R.id.title);
@@ -278,11 +283,13 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
         private void update() {
             mArtistView.setText(mTrack.mArtist);
             mTitleView.setText(mTrack.mTitle);
+            Drawable d;
             if (mTrack.mLoved == true) {
-                mLovedView.setImageDrawable(getDrawable(R.drawable.lovetrue));
-            } else if (mTrack.mLoved == false) {
-                mLovedView.setImageDrawable(getDrawable(R.drawable.lovefalse));
+                d = ContextCompat.getDrawable(mContext, R.drawable.lovetrue);
+            } else {
+                d = ContextCompat.getDrawable(mContext, R.drawable.lovefalse);
             }
+            mLovedView.setImageDrawable(d);
         }
     }
 

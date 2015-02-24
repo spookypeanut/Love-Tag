@@ -3,8 +3,10 @@ package uk.co.spookypeanut.lovetag;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -138,11 +140,13 @@ public class TagInput extends ActionBarActivity {
     private void setLoved(boolean loved) {
         mTrack.mLoved = loved;
         ImageButton love_button = (ImageButton) findViewById(R.id.tag_love_button);
-        if (loved) {
-            love_button.setImageDrawable(getDrawable(R.drawable.lovetrue));
+        Drawable d;
+        if (loved == true) {
+            d = ContextCompat.getDrawable(this, R.drawable.lovetrue);
         } else {
-            love_button.setImageDrawable(getDrawable(R.drawable.lovefalse));
+            d = ContextCompat.getDrawable(this, R.drawable.lovefalse);
         }
+        love_button.setImageDrawable(d);
     }
 
     private void removeFromList(List<String> tag_list) {
