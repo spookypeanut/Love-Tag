@@ -16,8 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,8 +27,7 @@ import java.util.List;
 
 
 public class TagInput extends ActionBarActivity {
-    String mArtist;
-    String mTitle;
+    Track mTrack;
     LastfmSession mLfs;
     final ArrayList<String> mActiveTagList = new ArrayList<>();
     final ArrayList<String> mInactiveTagList = new ArrayList<>();
@@ -48,11 +49,13 @@ public class TagInput extends ActionBarActivity {
                     R.integer.rc_log_in));
             return;
         }
-        mArtist = this.getIntent().getStringExtra("artist");
-        mTitle = this.getIntent().getStringExtra("title");
+        String artist = this.getIntent().getStringExtra("artist");
+        String title = this.getIntent().getStringExtra("title");
+        mTrack = new Track(artist, title);
         setContentView(R.layout.activity_tag_input);
-        ((TextView) findViewById(R.id.tag_artist)).setText(mArtist);
-        ((TextView) findViewById(R.id.tag_title)).setText(mTitle);
+        ((TextView) findViewById(R.id.tag_artist)).setText(artist);
+        ((TextView) findViewById(R.id.tag_title)).setText(title);
+        checkLoved();
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
         mTagAdaptor = new ActiveAdapter(this, mAllTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
@@ -76,11 +79,12 @@ public class TagInput extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent resultData = new Intent();
-                Log.d(tag, "Tagging " + mTitle + " with " + mActiveTagList
+                Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
+                        mActiveTagList
                         .toString());
                 resultData.putExtra("tagList", mActiveTagList);
-                resultData.putExtra("artist", mArtist);
-                resultData.putExtra("title", mTitle);
+                resultData.putExtra("artist", mTrack.mArtist);
+                resultData.putExtra("title", mTrack.mTitle);
                 setResult(RESULT_OK, resultData);
                 finish();
             }
@@ -92,6 +96,19 @@ public class TagInput extends ActionBarActivity {
                 Log.d(tag, "User cancelled tagging");
                 setResult(RESULT_CANCELED);
                 finish();
+            }
+        });
+        final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
+        loveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mTrack.mLoved == true) {
+                    UnloveCall ulc = new UnloveCall();
+                    ulc.execute(mTrack);
+                } else {
+                    LoveCall lc = new LoveCall();
+                    lc.execute(mTrack);
+                }
             }
         });
         tagListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -111,6 +128,21 @@ public class TagInput extends ActionBarActivity {
         });
         GetExistingCall gec = new GetExistingCall();
         gec.execute();
+    }
+
+    private void checkLoved() {
+        IsLovedCall ilc = new IsLovedCall();
+        ilc.execute(mTrack);
+    }
+
+    private void setLoved(boolean loved) {
+        mTrack.mLoved = loved;
+        ImageButton love_button = (ImageButton) findViewById(R.id.tag_love_button);
+        if (loved) {
+            love_button.setImageDrawable(getDrawable(R.drawable.lovetrue));
+        } else {
+            love_button.setImageDrawable(getDrawable(R.drawable.lovefalse));
+        }
     }
 
     private void removeFromList(List<String> tag_list) {
@@ -217,6 +249,64 @@ public class TagInput extends ActionBarActivity {
                 textView.setTextColor(Color.LTGRAY);
             }
             return view;
+        }
+    }
+    private class IsLovedCall extends AsyncTask<Track, String, String> {
+        Track mReturnTrack;
+
+        @Override
+        protected String doInBackground(Track... params) {
+            String tag = "Love&Tag.TagInput.IsLovedCall.doInBackground";
+            mReturnTrack = params[0];
+            boolean is_loved = mLfs.isLoved(mReturnTrack);
+            mReturnTrack.mLoved = is_loved;
+            return "";
+        }
+
+        protected void onPostExecute(String result) {
+            setLoved(mReturnTrack.mLoved);
+        }
+    }
+
+    private class UnloveCall extends AsyncTask<Track, String, String> {
+        @Override
+        protected String doInBackground(Track... params) {
+            Track track = params[0];
+            boolean result = mLfs.unlove(track);
+            String msg;
+            if (result == true) {
+                msg = getString(R.string.unlove_success);
+            } else {
+                msg = getString(R.string.unlove_failed);
+            }
+            return msg;
+        }
+        protected void onPostExecute(String result) {
+            String tag = "Love&Tag.TagInput.UnloveCall.onPostExecute";
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+            Log.i(tag, result);
+            checkLoved();
+        }
+    }
+    private class LoveCall extends AsyncTask<Track, String, String> {
+        @Override
+        protected String doInBackground(Track... params) {
+            Track track = params[0];
+            String tag = "Love&Tag.TagInput.LoveCall.doInBackground";
+            boolean result = mLfs.love(track);
+            String msg;
+            if (result == true) {
+                msg = getString(R.string.love_success);
+            } else {
+                msg = getString(R.string.love_failed);
+            }
+            return msg;
+        }
+        protected void onPostExecute(String result) {
+            String tag = "Love&Tag.TagInput.LoveCall.onPostExecute";
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+            Log.i(tag, result);
+            checkLoved();
         }
     }
 }
