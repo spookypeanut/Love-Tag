@@ -79,7 +79,9 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
         updateAll();
     }
 
-    public void onResume(Bundle icicle) {
+    @Override
+    protected void onResume() {
+        super.onResume();
         updateAll();
     }
 
