@@ -75,7 +75,10 @@ public class TagInput extends ActionBarActivity {
                     okButton.setEnabled(true);
                 }
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
+                    if ((keyCode == KeyEvent.KEYCODE_ENTER ||
+                         keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
+                        // When enter is pressed in the field,
+                        // add the tag and reset the input
                         addToList(Arrays.asList(current_text), true);
                         tagEntry.setText("");
                         tagEntry.requestFocus();
@@ -99,8 +102,7 @@ public class TagInput extends ActionBarActivity {
                 }
                 Intent resultData = new Intent();
                 Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
-                        mActiveTagList
-                        .toString());
+                        mActiveTagList.toString());
                 resultData.putExtra("tagList", mActiveTagList);
                 resultData.putExtra("artist", mTrack.mArtist);
                 resultData.putExtra("title", mTrack.mTitle);
