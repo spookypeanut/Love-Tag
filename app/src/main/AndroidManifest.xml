@@ -36,7 +36,7 @@
                 android:value="uk.co.spookypeanut.lovetag.Love" />
         </activity>
 
-        <receiver android:name=".LoveWidget" >
+        <receiver android:name=".LoveWidget" android:label="Love">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.android.music.metachanged" />
@@ -47,7 +47,18 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/love_widget_info" />
         </receiver>
-        <service android:name=".LoveWidget$UpdateService" />
+        <receiver android:name=".TagWidget" android:label="Tag">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.android.music.metachanged" />
+                <action android:name="com.android.music.playstatechanged" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tag_widget_info" />
+        </receiver>
+        <service android:name=".TagWidget$UpdateService" />
     </application>
 
 </manifest>

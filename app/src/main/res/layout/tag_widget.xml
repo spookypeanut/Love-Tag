@@ -1,0 +1,29 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/widget_margin"
+                android:background="#00000000"
+    >
+
+    <ImageButton
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/tagWidgetButton"
+        android:src="@drawable/tag"
+        android:background="#00000000"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/tagWidgetLabel"
+        android:ellipsize="end"
+        android:textAlignment="center"
+        android:layout_centerInParent="true"
+        style="@style/WidgetLabel"
+        android:maxLines="3"
+        android:paddingTop="-10dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="-6dp"/>
+
+</FrameLayout>
