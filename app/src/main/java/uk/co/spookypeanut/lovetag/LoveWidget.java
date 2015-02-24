@@ -136,7 +136,7 @@ public class LoveWidget extends AppWidgetProvider {
             Log.d(tag, "Handling intent: " + action);
             ComponentName me = new ComponentName(this, LoveWidget.class);
             AppWidgetManager mgr = AppWidgetManager.getInstance(this);
-            if (action.equals(love_widget_click_action)) {
+            if (action != null && action.equals(love_widget_click_action)) {
                 Track track = getTrack();
                 if (track.mLoved) {
                     Toast.makeText(this, "Unloving " + track.mTitle,
@@ -151,7 +151,7 @@ public class LoveWidget extends AppWidgetProvider {
                         track.mTitle));
                 return;
             }
-            if (action.equals(love_widget_new_track_action)) {
+            if (action != null && action.equals(love_widget_new_track_action)) {
                 String artist = intent.getStringExtra("artist");
                 String title = intent.getStringExtra("title");
                 mgr.updateAppWidget(me, buildUpdate(this, artist, title));
