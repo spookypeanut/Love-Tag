@@ -47,6 +47,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/love_widget_info" />
         </receiver>
+        <service android:name=".LoveWidget$UpdateService" />
         <receiver android:name=".TagWidget" android:label="Tag">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
