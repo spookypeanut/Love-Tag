@@ -59,11 +59,6 @@ public class LoveWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         Intent i = new Intent(context, UpdateService.class);
         context.startService(i);
-        /*
-        final int N = appWidgetIds.length;
-        for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
-        }*/
     }
 
     @Override
@@ -113,16 +108,18 @@ public class LoveWidget extends AppWidgetProvider {
 
         public void setTrack(Track track) {
             SharedPreferences.Editor editor = mSettings.edit();
-            editor.putString("artist", track.mArtist);
-            editor.putString("title", track.mTitle);
-            editor.putBoolean("loved", track.mLoved).apply();
+            // TODO: Can we use the same one for both widgets?
+            editor.putString("lw_artist", track.mArtist);
+            editor.putString("lw_title", track.mTitle);
+            editor.putBoolean("lw_loved", track.mLoved).apply();
         }
 
         public Track getTrack() {
             Track nowPlaying = null;
-            String artist = mSettings.getString("artist", "");
-            String title = mSettings.getString("title", "");
-            boolean loved = mSettings.getBoolean("loved", false);
+            // TODO: Can we use the same one for both widgets?
+            String artist = mSettings.getString("lw_artist", "");
+            String title = mSettings.getString("lw_title", "");
+            boolean loved = mSettings.getBoolean("lw_loved", false);
             if (!artist.equals("")) {
                 nowPlaying = new Track(artist, title, loved);
             }
@@ -158,7 +155,6 @@ public class LoveWidget extends AppWidgetProvider {
                 return;
             }
             mgr.updateAppWidget(me, buildUpdate(this));
-            return;
         }
 
         private RemoteViews buildUpdate(Context context, String artist,
@@ -169,6 +165,7 @@ public class LoveWidget extends AppWidgetProvider {
             setTrack(track);
             RemoteViews views = buildUpdate(context);
             // Construct the RemoteViews object
+            Log.d(tag, "Setting text view");
             views.setTextViewText(R.id.loveWidgetLabel, title);
             if (mLfs.isLoved(track)) {
                 track.mLoved = true;

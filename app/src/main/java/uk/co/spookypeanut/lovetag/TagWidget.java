@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TagWidget extends AppWidgetProvider {
@@ -113,16 +114,16 @@ public class TagWidget extends AppWidgetProvider {
 
         public void setTrack(Track track) {
             SharedPreferences.Editor editor = mSettings.edit();
-            editor.putString("artist", track.mArtist);
-            editor.putString("title", track.mTitle);
-            editor.putBoolean("loved", track.mLoved).apply();
+            editor.putString("tw_artist", track.mArtist);
+            editor.putString("tw_title", track.mTitle);
+            editor.putBoolean("tw_loved", track.mLoved).apply();
         }
 
         public Track getTrack() {
             Track nowPlaying = null;
-            String artist = mSettings.getString("artist", "");
-            String title = mSettings.getString("title", "");
-            boolean loved = mSettings.getBoolean("loved", false);
+            String artist = mSettings.getString("tw_artist", "");
+            String title = mSettings.getString("tw_title", "");
+            boolean loved = mSettings.getBoolean("tw_loved", false);
             if (!artist.equals("")) {
                 nowPlaying = new Track(artist, title, loved);
             }
@@ -158,7 +159,6 @@ public class TagWidget extends AppWidgetProvider {
                 return;
             }
             mgr.updateAppWidget(me, buildUpdate(this));
-            return;
         }
 
         private RemoteViews buildUpdate(Context context, String artist,
@@ -169,6 +169,7 @@ public class TagWidget extends AppWidgetProvider {
             setTrack(track);
             RemoteViews views = buildUpdate(context);
             // Construct the RemoteViews object
+            Log.d(tag, "Setting text view");
             views.setTextViewText(R.id.tagWidgetLabel, title);
             // TODO: This is rather wasteful, we don't need to connect to
             // last.fm on every change of track
