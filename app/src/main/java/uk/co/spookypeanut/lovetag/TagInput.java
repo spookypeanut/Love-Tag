@@ -68,17 +68,13 @@ public class TagInput extends ActionBarActivity {
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                String current_text = tagEntry.getText().toString();
-                if (current_text.equals("")) {
-                    okButton.setEnabled(false);
-                } else {
-                    okButton.setEnabled(true);
-                }
+                updateOkButton();
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     if ((keyCode == KeyEvent.KEYCODE_ENTER ||
                          keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
                         // When enter is pressed in the field,
                         // add the tag and reset the input
+                        String current_text = tagEntry.getText().toString();
                         addToList(Arrays.asList(current_text), true);
                         tagEntry.setText("");
                         tagEntry.requestFocus();
@@ -137,11 +133,8 @@ public class TagInput extends ActionBarActivity {
                 ActiveElement item = mAllTagList.get(index);
                 List<String> tag_list = Arrays.asList(item.mLabel);
                 removeFromList(tag_list);
-                if (item.mActive) {
-                    addToList(tag_list, false);
-                } else {
-                    addToList(tag_list, true);
-                }
+                addToList(tag_list, !item.mActive);
+                updateOkButton();
                 updateList();
             }
         });
@@ -187,6 +180,17 @@ public class TagInput extends ActionBarActivity {
         }
         mInactiveTagList.removeAll(remove);
         updateList();
+    }
+
+    private void updateOkButton() {
+        final Button okButton = (Button) findViewById(R.id.tag_ok);
+        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
+        String current_text = tagEntry.getText().toString();
+        if (mActiveTagList.size() == 0 && current_text.equals("")) {
+            okButton.setEnabled(false);
+        } else {
+            okButton.setEnabled(true);
+        }
     }
 
     private void updateList() {
