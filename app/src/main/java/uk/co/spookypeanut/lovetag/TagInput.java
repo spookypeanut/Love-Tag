@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -109,11 +110,10 @@ public class TagInput extends ActionBarActivity {
                 Intent resultData = new Intent();
                 Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
                         mActiveTagList.toString());
-                resultData.putExtra("tagList", mActiveTagList);
-                resultData.putExtra("artist", mTrack.mArtist);
-                resultData.putExtra("title", mTrack.mTitle);
-                setResult(RESULT_OK, resultData);
-                finish();
+                TagCall tc = new TagCall();
+                tc.execute(mTrack.mArtist, mTrack.mTitle,
+                           TextUtils.join(",", mActiveTagList));
+                // TODO: Put a little "working" animation in
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -342,6 +342,33 @@ public class TagInput extends ActionBarActivity {
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             checkLoved();
+        }
+    }
+
+    private class TagCall extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String artist = params[0];
+            String title = params[1];
+            String tag_cat = params[2];
+            String tag = "Love&Tag.Love.TagCall.doInBackground";
+            Track track = new Track(artist, title, false);
+            boolean result = mLfs.tag(track, tag_cat);
+            String msg;
+            if (result == true) {
+                setResult(RESULT_OK);
+                msg = getString(R.string.tag_success);
+            } else {
+                setResult(RESULT_CANCELED);
+                msg = getString(R.string.tag_failed);
+            }
+            return msg;
+        }
+        protected void onPostExecute(String result) {
+            String tag = "Love&Tag.Love.TagCall.onPostExecute";
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+            Log.i(tag, result);
+            finish();
         }
     }
 }

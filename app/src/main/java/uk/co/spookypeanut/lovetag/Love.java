@@ -151,20 +151,6 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             }
             return;
         }
-        if (requestCode == getResources().getInteger(R.integer.rc_tag_input)) {
-            if (resultCode == RESULT_OK) {
-                ArrayList<String> tagList;
-                tagList = data.getStringArrayListExtra("tagList");
-                String artist = data.getStringExtra("artist");
-                String title = data.getStringExtra("title");
-                TagCall tc = new TagCall();
-                tc.execute(artist, title, TextUtils.join(",", tagList));
-                Log.d(tag, "Submitted tag");
-            } else {
-                Log.e(tag, "Tagging aborted");
-            }
-            return;
-        }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -338,31 +324,6 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             updateAll();
-        }
-    }
-    private class TagCall extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            String artist = params[0];
-            String title = params[1];
-            String tag_cat = params[2];
-            String tag = "Love&Tag.Love.TagCall.doInBackground";
-            Track track = new Track(artist, title, false);
-            boolean result = mLfs.tag(track, tag_cat);
-            String msg;
-            if (result == true) {
-                setResult(RESULT_OK);
-                msg = getString(R.string.tag_success);
-            } else {
-                setResult(RESULT_CANCELED);
-                msg = getString(R.string.tag_failed);
-            }
-            return msg;
-        }
-        protected void onPostExecute(String result) {
-            String tag = "Love&Tag.Love.TagCall.onPostExecute";
-            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
-            Log.i(tag, result);
         }
     }
     private class GetRecent extends AsyncTask<String, String, String> {
