@@ -170,7 +170,8 @@ public class LoveWidget extends AppWidgetProvider {
             if (mLfs.isLoved(track)) {
                 track.mLoved = true;
                 setTrack(track);
-                views.setImageViewResource(R.id.loveWidgetButton, R.drawable.lovetrue);
+                views.setImageViewResource(R.id.loveWidgetButton,
+                        R.drawable.lovetrue);
             } else {
                 views.setImageViewResource(R.id.loveWidgetButton,
                         R.drawable.lovefalse);

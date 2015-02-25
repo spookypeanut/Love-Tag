@@ -60,11 +60,6 @@ public class TagWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         Intent i = new Intent(context, UpdateService.class);
         context.startService(i);
-        /*
-        final int N = appWidgetIds.length;
-        for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
-        }*/
     }
 
     @Override
