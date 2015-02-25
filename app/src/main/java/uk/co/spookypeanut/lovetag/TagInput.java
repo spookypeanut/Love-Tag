@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -35,6 +37,13 @@ public class TagInput extends ActionBarActivity {
     final ArrayList<String> mInactiveTagList = new ArrayList<>();
     final ArrayList<ActiveElement> mAllTagList = new ArrayList<>();
     ActiveAdapter mTagAdaptor;
+    private TextWatcher inputTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) { }
+        public void beforeTextChanged(CharSequence s, int st, int c, int a) { }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            updateOkButton();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +74,7 @@ public class TagInput extends ActionBarActivity {
         mTagAdaptor = new ActiveAdapter(this, mAllTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
+        tagEntry.addTextChangedListener(inputTextWatcher);
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
