@@ -138,7 +138,6 @@ public class LastfmSession {
         rest_params.put("extended", "1");
         rest_params.put("limit", "25");
         String urlString = mUrlMaker.fromHashmap(rest_params);
-        Log.i(tag, "Got url back");
         Map<String, List<String>> list_map = new HashMap<String, List<String>>();
         list_map.put("artist", Arrays.asList("lfm", "recenttracks",
                                              "track", "artist", "name"));
@@ -172,8 +171,6 @@ public class LastfmSession {
         rest_params.put("track", orig_track.mTitle);
         rest_params.put("username", mUsername);
         String urlString = mUrlMaker.fromHashmap(rest_params);
-        Log.i(tag, "Got url back");
-        Log.i(tag, urlString);
         Map<String, List<String>> list_map = new HashMap<String, List<String>>();
         list_map.put("loved", Arrays.asList("lfm", "track", "userloved"));
         XmlPullParser parser;
@@ -207,8 +204,6 @@ public class LastfmSession {
         rest_params.put("user", mUsername);
         rest_params.put("limit", "10");
         String urlString = mUrlMaker.fromHashmap(rest_params);
-        Log.i(tag, "Got url back");
-        Log.i(tag, urlString);
         Map<String, List<String>> list_map = new HashMap<String, List<String>>();
         list_map.put("tag", Arrays.asList("lfm", "toptags", "tag", "name"));
         XmlPullParser parser;
@@ -263,14 +258,14 @@ public class LastfmSession {
             }
             eventType = parser.next();
         }
-        Log.i(tag, returnList.toString());
+        Log.d(tag, "Returning: " + returnList.toString());
         return returnList;
     }
 
     private void setSessionKey(String sk) {
         String ss;
         String tag = "Love&Tag.LastfmSession.setSessionKey";
-        Log.i(tag, "Setting session key: " + sk);
+        Log.d(tag, "Setting session key");
         // TODO: Make this a constant
         ss = mContext.getString(R.string.session_setting);
         mSettings.edit().putString(ss, sk).commit();
@@ -291,7 +286,6 @@ public class LastfmSession {
         rest_params.put("username", username);
         String urlString;
         urlString = mUrlMaker.fromHashmap(rest_params);
-        Log.i(tag, "log in url: " + urlString);
         try {
             setSessionKey(getSessionKey(urlString));
             saveUsername(username);
@@ -305,7 +299,7 @@ public class LastfmSession {
 
     protected XmlPullParser getUrlResponse(String urlString) {
         String tag = "Love&Tag.LastfmSession.getUrlResponse";
-        Log.d(tag, "url: " + urlString);
+        Log.v(tag, "url: " + urlString);
 
         InputStream in;
         XmlPullParserFactory pullParserFactory;
@@ -392,9 +386,8 @@ public class LastfmSession {
                     name = parser.getName().toString();
                     Log.d(tag, "|" + name + "|");
                     if (name.equals("key")) {
-                        Log.i(tag, "Found key");
                         String result = parser.nextText();
-                        Log.i(tag, "Key is " + result);
+                        Log.d(tag, "Key is " + result);
                         return result;
                     }
                 case XmlPullParser.END_TAG:
@@ -423,7 +416,6 @@ class UrlMaker {
 
         StringBuilder url = new StringBuilder();
         url.append(mContext.getString(R.string.base_url));
-        List combined = new ArrayList();
         String delim = "";
         for (String key : params.keySet()) {
             String raw_value = (String) params.get(key);
@@ -441,14 +433,16 @@ class UrlMaker {
                 e.printStackTrace();
             }
         }
+        Log.d(tag, "Returning url: " + url.toString());
         return url.toString();
     }
     private String generateApiSig(Map<String, String> params) {
+        String tag = "Love&Tag.LastfmSession.UrlMaker.generateApiSig";
         List<String> keys = asSortedList(params.keySet());
         String secret = mContext.getString(R.string.lastfm_api_secret);
         String pre_md5 = "";
         for (String key : keys) {
-            String value = (String) params.get(key);
+            String value = params.get(key);
             if (value == null) {
                 value = "null";
             }
@@ -456,9 +450,9 @@ class UrlMaker {
             pre_md5 += value;
         }
         pre_md5 += secret;
-        Log.d("Love&Tag.UrlMaker", "pre_md5: " + pre_md5);
+        Log.d(tag, "pre_md5: " + pre_md5);
         String api_sig = mMd5Maker.encode(pre_md5);
-        Log.d("Love&Tag.UrlMaker", "api_sig: " + api_sig);
+        Log.d(tag, "api_sig: " + api_sig);
         return api_sig;
     }
     public static <T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
