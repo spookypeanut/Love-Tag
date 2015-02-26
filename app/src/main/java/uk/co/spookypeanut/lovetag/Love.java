@@ -249,8 +249,6 @@ public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefr
                     i.putExtra("title", mTrack.mTitle);
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));
-                    return;
-
                 }
             });
         }
