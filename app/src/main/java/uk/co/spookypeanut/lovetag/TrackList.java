@@ -30,7 +30,7 @@ import java.util.List;
 
 import android.support.v4.content.ContextCompat;
 
-public class Love extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;

@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".Love"
+            android:name=".TrackList"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,18 +22,18 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".Love" >
+            android:parentActivityName=".TrackList" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="uk.co.spookypeanut.lovetag.Love" />
+                android:value=".TrackList" />
         </activity>
         <activity
             android:name=".TagInput"
             android:label="@string/title_activity_tag_input"
-            android:parentActivityName=".Love" >
+            android:parentActivityName=".TrackList" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="uk.co.spookypeanut.lovetag.Love" />
+                android:value=".TrackList" />
         </activity>
 
         <receiver android:name=".LoveWidget" android:label="Love&amp;Tag:Love">
