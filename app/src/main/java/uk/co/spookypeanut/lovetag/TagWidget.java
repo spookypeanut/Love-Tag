@@ -30,15 +30,8 @@ public class TagWidget extends AppWidgetProvider {
         }
         Log.d(tag, "non-null action: " + intent.getAction());
         super.onReceive(context, intent);
-        String test = tag_widget_click_action;
-        if (action.equals(test)) {
-            Log.d(tag, "Widget button clicked");
-            Intent i = new Intent(context, UpdateService.class);
-            i.setAction(tag_widget_click_action);
-            context.startService(i);
-            return;
-        }
-        test = context.getString(R.string.metachanged);
+
+        String test = context.getString(R.string.metachanged);
         if (action.equals(test)) {
             String artist = intent.getStringExtra("artist");
             String title = intent.getStringExtra("track");
@@ -181,10 +174,13 @@ public class TagWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(),
                     R.layout.tag_widget);
 
-            Intent i = new Intent(this, TagWidget.class);
-            i.setAction(tag_widget_click_action);
-            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.tagWidgetButton, pi);
+            Intent i = new Intent(this, TagInput.class);
+            Track track = getTrack();
+            i.putExtra("artist", track.mArtist);
+            i.putExtra("title", track.mTitle);
+            Log.d(tag, "Track: " + track.mArtist + ", " + track.mTitle);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, 0);
+            views.setOnClickPendingIntent(R.id.tagWidgetButton, pendingIntent);
 
             return views;
         }

@@ -63,6 +63,7 @@ public class TagInput extends ActionBarActivity {
         }
         String artist = this.getIntent().getStringExtra("artist");
         String title = this.getIntent().getStringExtra("title");
+        Log.d(tag, "Track: " + title + ", " + artist);
         mTrack = new Track(artist, title);
         setContentView(R.layout.activity_tag_input);
         ((TextView) findViewById(R.id.tag_artist)).setText(artist);
