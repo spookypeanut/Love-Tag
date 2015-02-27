@@ -52,7 +52,7 @@
     <ImageButton
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:id="@+id/tagbutton"
+        android:id="@+id/entry_tagbutton"
         android:layout_weight="0"
         android:src="@drawable/tag"
         android:background="?android:selectableItemBackground"

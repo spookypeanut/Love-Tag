@@ -9,18 +9,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class TagWidget extends AppWidgetProvider {
-    static final String tag_widget_click_action = "tag_widget_click";
     static final String tag_widget_new_track_action = "tag_widget_new_track";
     Track mNowPlaying;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         String tag = "Love&Tag.TagWidget.onReceive";
         String action = intent.getAction();
         if (action == null) {
@@ -101,6 +100,8 @@ public class TagWidget extends AppWidgetProvider {
         }
 
         public void setTrack(Track track) {
+            String tag = "Love&Tag.TagWidget.UpdateService.setTrack";
+            Log.d(tag, track.mTitle + ", " + track.mArtist);
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putString("tw_artist", track.mArtist);
             editor.putString("tw_title", track.mTitle);
@@ -108,12 +109,17 @@ public class TagWidget extends AppWidgetProvider {
         }
 
         public Track getTrack() {
+            String tag = "Love&Tag.TagWidget.UpdateService.getTrack";
             Track nowPlaying = null;
             String artist = mSettings.getString("tw_artist", "");
             String title = mSettings.getString("tw_title", "");
             boolean loved = mSettings.getBoolean("tw_loved", false);
             if (!artist.equals("")) {
                 nowPlaying = new Track(artist, title, loved);
+                Log.d(tag, nowPlaying.mTitle + ", " + nowPlaying.mArtist);
+            }
+            if (nowPlaying == null) {
+                Log.d(tag, "No track stored");
             }
             return nowPlaying;
         }
@@ -125,21 +131,6 @@ public class TagWidget extends AppWidgetProvider {
             Log.d(tag, "Handling intent: " + action);
             ComponentName me = new ComponentName(this, TagWidget.class);
             AppWidgetManager mgr = AppWidgetManager.getInstance(this);
-            if (action != null && action.equals(tag_widget_click_action)) {
-                Track track = getTrack();
-                if (track.mLoved) {
-                    Toast.makeText(this, "Unloving " + track.mTitle,
-                            Toast.LENGTH_SHORT).show();
-                    mLfs.unlove(track);
-                } else {
-                    Toast.makeText(this, "Loving " + track.mTitle,
-                            Toast.LENGTH_SHORT).show();
-                    mLfs.love(track);
-                }
-                mgr.updateAppWidget(me, buildUpdate(this, track.mArtist,
-                        track.mTitle));
-                return;
-            }
             if (action != null && action.equals(tag_widget_new_track_action)) {
                 String artist = intent.getStringExtra("artist");
                 String title = intent.getStringExtra("title");
@@ -158,13 +149,14 @@ public class TagWidget extends AppWidgetProvider {
             RemoteViews views = buildUpdate(context);
             // Construct the RemoteViews object
             Log.d(tag, "Setting text view");
-            views.setTextViewText(R.id.tagWidgetLabel, title);
+            views.setTextViewText(R.id.tw_label, title);
             // TODO: This is rather wasteful, we don't need to connect to
             // last.fm on every change of track
+            /*
             if (mLfs.isLoved(track)) {
                 track.mLoved = true;
                 setTrack(track);
-            }
+            }*/
             return views;
         }
 
@@ -174,13 +166,17 @@ public class TagWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(),
                     R.layout.tag_widget);
 
-            Intent i = new Intent(this, TagInput.class);
+            Intent i = new Intent();
+            i.setClass(context, TagInput.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Track track = getTrack();
             i.putExtra("artist", track.mArtist);
             i.putExtra("title", track.mTitle);
-            Log.d(tag, "Track: " + track.mArtist + ", " + track.mTitle);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, 0);
-            views.setOnClickPendingIntent(R.id.tagWidgetButton, pendingIntent);
+            Log.i(tag, "Track: " + i.getStringExtra("artist") + ", " +
+                    i.getStringExtra("title"));
+            PendingIntent pendingIntent = PendingIntent.getActivity(context,
+                    0, i, 0);
+            views.setOnClickPendingIntent(R.id.tw_button, pendingIntent);
 
             return views;
         }

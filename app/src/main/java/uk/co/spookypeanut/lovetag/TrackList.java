@@ -10,12 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
-import android.media.session.MediaController;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,8 +27,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.support.v4.content.ContextCompat;
-
 public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
@@ -37,14 +34,12 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
     Track mNowPlaying;
     List<Track> mRecentTracks;
     ListEntry mPodView;
-    MediaController mMediaController;
+//    MediaController mMediaController;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String tag = "Love&Tag.Love.onCreate";
-
         setContentView(R.layout.activity_love);
 
         IntentFilter iF = new IntentFilter();
@@ -85,9 +80,9 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
         updateAll();
     }
 
+    /*
     private void setMediaController() {
         // To possibly be re-introduced later
-        /*
         String tag = "Love&Tag.Love.setMediaController";
         MediaSessionManager msm = (MediaSessionManager) getSystemService(MEDIA_SESSION_SERVICE);
         List<MediaController> mc_list = msm.getActiveSessions(null);
@@ -95,11 +90,11 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
         for (MediaController mc : mc_list) {
             MediaMetadata md = mc.getMetadata();
             Log.d(tag, md.getString(md.METADATA_KEY_ARTIST));
-        }*/
+        }
     }
+    */
 
     private void setRecentTracks(List<Track> tracks) {
-        String tag = "Love&Tag.Love.setRecentTracks";
         mRecentTracks = tracks;
         LinearLayout rtLayout;
         rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
@@ -149,7 +144,6 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
             } else {
                 Log.e(tag, "Log in failed");
             }
-            return;
         }
     }
 
@@ -209,7 +203,6 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
         Track mTrack;
         TextView mArtistView;
         TextView mTitleView;
-        ImageButton mLovedView;
         Context mContext;
 
         public ListEntry(Context context) {
@@ -218,7 +211,6 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
             View.inflate(context, R.layout.view_listentry, this);
             mArtistView = (TextView) findViewById(R.id.artist);
             mTitleView = (TextView) findViewById(R.id.title);
-            mLovedView = (ImageButton) findViewById(R.id.lovebutton);
             final ImageButton loveButton = (ImageButton) findViewById(R.id
                     .lovebutton);
             loveButton.setOnClickListener(new View.OnClickListener() {
@@ -226,7 +218,7 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
                     String tag;
                     tag = "Love&Tag.Love.ListEntry.loveButton.onClick";
                     mSwipeRefreshLayout.setRefreshing(true);
-                    if (false == mTrack.mLoved) {
+                    if (!mTrack.mLoved) {
                         LoveCall lc = new LoveCall();
                         lc.execute(mTrack);
                         Log.d(tag, "Submitted love");
@@ -238,7 +230,7 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
                 }
             });
             final ImageButton tagButton = (ImageButton) findViewById(R.id
-                    .tagbutton);
+                    .entry_tagbutton);
             tagButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     String tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
@@ -247,6 +239,7 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
                     // TODO: Maybe I should make the class parcellable
                     i.putExtra("artist", mTrack.mArtist);
                     i.putExtra("title", mTrack.mTitle);
+                    Log.d(tag, "Starting activity");
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));
                 }
@@ -270,12 +263,14 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
             mArtistView.setText(mTrack.mArtist);
             mTitleView.setText(mTrack.mTitle);
             Drawable d;
-            if (mTrack.mLoved == true) {
+            if (mTrack.mLoved) {
                 d = ContextCompat.getDrawable(mContext, R.drawable.lovetrue);
             } else {
                 d = ContextCompat.getDrawable(mContext, R.drawable.lovefalse);
             }
-            mLovedView.setImageDrawable(d);
+            final ImageButton loveButton = (ImageButton) findViewById(R.id
+                    .lovebutton);
+            loveButton.setImageDrawable(d);
         }
     }
 
@@ -285,7 +280,7 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
             Track track = params[0];
             boolean result = mLfs.unlove(track);
             String msg;
-            if (result == true) {
+            if (result) {
                 setResult(RESULT_OK);
                 msg = getString(R.string.unlove_success);
             } else {
@@ -305,10 +300,9 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
         @Override
         protected String doInBackground(Track... params) {
             Track track = params[0];
-            String tag = "Love&Tag.Love.LoveCall.doInBackground";
             boolean result = mLfs.love(track);
             String msg;
-            if (result == true) {
+            if (result) {
                 setResult(RESULT_OK);
                 msg = getString(R.string.love_success);
             } else {
@@ -328,7 +322,6 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
         List<Track> mTempTracks = new ArrayList<>();
         @Override
         protected String doInBackground(String... params) {
-            String tag = "Love&Tag.Love.GetRecent.doInBackground";
             mTempTracks = mLfs.getRecent();
             return "";
         }
@@ -341,10 +334,8 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
 
         @Override
         protected String doInBackground(Track... params) {
-            String tag = "Love&Tag.Love.IsLovedCall.doInBackground";
             mReturnTrack = params[0];
-            boolean is_loved = mLfs.isLoved(mReturnTrack);
-            mReturnTrack.mLoved = is_loved;
+            mReturnTrack.mLoved = mLfs.isLoved(mReturnTrack);
             return "";
         }
 
