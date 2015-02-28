@@ -108,7 +108,6 @@ public class TagInput extends ActionBarActivity {
                 if (mActiveTagList.size() == 0) {
                     return;
                 }
-                Intent resultData = new Intent();
                 Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
                         mActiveTagList.toString());
                 TagCall tc = new TagCall();
@@ -128,7 +127,7 @@ public class TagInput extends ActionBarActivity {
         loveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mTrack.mLoved == true) {
+                if (mTrack.mLoved) {
                     UnloveCall ulc = new UnloveCall();
                     ulc.execute(mTrack);
                 } else {
@@ -162,7 +161,7 @@ public class TagInput extends ActionBarActivity {
         mTrack.mLoved = loved;
         ImageButton love_button = (ImageButton) findViewById(R.id.tag_love_button);
         Drawable d;
-        if (loved == true) {
+        if (loved) {
             d = ContextCompat.getDrawable(this, R.drawable.lovetrue);
         } else {
             d = ContextCompat.getDrawable(this, R.drawable.lovefalse);
@@ -177,7 +176,6 @@ public class TagInput extends ActionBarActivity {
     }
 
     private void addToList(List<String> tag_list, boolean active) {
-        String tag = "Love&Tag.TagInput.addToList";
         if (active) {
             mActiveTagList.addAll(tag_list);
         } else {
@@ -242,7 +240,6 @@ public class TagInput extends ActionBarActivity {
         List<String> mTempTags = new ArrayList<>();
         @Override
         protected String doInBackground(String... params) {
-            String tag = "Love&Tag.TagInput.GetExistingCall.doInBackground";
             mTempTags = mLfs.getTags();
             return "";
         }
@@ -262,19 +259,13 @@ public class TagInput extends ActionBarActivity {
     }
 
     public class ActiveAdapter extends ArrayAdapter<ActiveElement> {
-        private final Context context;
-        private final ArrayList<ActiveElement> values;
-
         public ActiveAdapter(Context context, ArrayList<ActiveElement>
                 values) {
             super(context, android.R.layout.simple_list_item_1, values);
-            this.context = context;
-            this.values = values;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            String tag = "Love&Tag.TagInput.ActiveAdapter.getView";
             View view = super.getView(position, convertView, parent);
             TextView textView = (TextView) view.findViewById(android.R.id.text1);
             ActiveElement ae = getItem(position);
@@ -292,10 +283,8 @@ public class TagInput extends ActionBarActivity {
 
         @Override
         protected String doInBackground(Track... params) {
-            String tag = "Love&Tag.TagInput.IsLovedCall.doInBackground";
             mReturnTrack = params[0];
-            boolean is_loved = mLfs.isLoved(mReturnTrack);
-            mReturnTrack.mLoved = is_loved;
+            mReturnTrack.mLoved = mLfs.isLoved(mReturnTrack);
             return "";
         }
 
@@ -310,7 +299,7 @@ public class TagInput extends ActionBarActivity {
             Track track = params[0];
             boolean result = mLfs.unlove(track);
             String msg;
-            if (result == true) {
+            if (result) {
                 msg = getString(R.string.unlove_success);
             } else {
                 msg = getString(R.string.unlove_failed);
@@ -328,10 +317,9 @@ public class TagInput extends ActionBarActivity {
         @Override
         protected String doInBackground(Track... params) {
             Track track = params[0];
-            String tag = "Love&Tag.TagInput.LoveCall.doInBackground";
             boolean result = mLfs.love(track);
             String msg;
-            if (result == true) {
+            if (result) {
                 msg = getString(R.string.love_success);
             } else {
                 msg = getString(R.string.love_failed);
@@ -352,11 +340,10 @@ public class TagInput extends ActionBarActivity {
             String artist = params[0];
             String title = params[1];
             String tag_cat = params[2];
-            String tag = "Love&Tag.Love.TagCall.doInBackground";
             Track track = new Track(artist, title, false);
             boolean result = mLfs.tag(track, tag_cat);
             String msg;
-            if (result == true) {
+            if (result) {
                 setResult(RESULT_OK);
                 msg = getString(R.string.tag_success);
             } else {

@@ -38,7 +38,7 @@ public class LastfmSession {
         mContext = App.getContext();
         String ss;
         ss = mContext.getString(R.string.session_setting);
-        mSettings = mContext.getSharedPreferences(ss, mContext.MODE_MULTI_PROCESS);
+        mSettings = mContext.getSharedPreferences(ss, Context.MODE_MULTI_PROCESS);
         mUrlMaker = new UrlMaker();
         passiveLogin();
     }
@@ -57,14 +57,14 @@ public class LastfmSession {
 
     public boolean isLoggedIn() {
         passiveLogin();
-        return mSessionKey != "";
+        return !mSessionKey.equals("");
     }
 
     public boolean unlove(Track track) {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        Map<String, String> restparams = new HashMap<String, String>();
+        Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.unlove");
         restparams.put("sk", mSessionKey);
         restparams.put("track", track.mTitle);
@@ -85,7 +85,7 @@ public class LastfmSession {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        Map<String, String> restparams = new HashMap<String, String>();
+        Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.love");
         restparams.put("sk", mSessionKey);
         restparams.put("track", track.mTitle);
@@ -107,7 +107,7 @@ public class LastfmSession {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        Map<String, String> rest_params = new HashMap<String, String>();
+        Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.addTags");
         rest_params.put("sk", mSessionKey);
         rest_params.put("track", track.mTitle);
@@ -127,18 +127,17 @@ public class LastfmSession {
     }
 
     public List<Track> getRecent () {
-        String tag = "Love&Tag.LastfmSession.getRecent";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        Map<String, String> rest_params = new HashMap<String, String>();
+        Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "user.getRecentTracks");
         rest_params.put("user", mUsername);
         // This is so we get loved information too
         rest_params.put("extended", "1");
         rest_params.put("limit", "25");
         String urlString = mUrlMaker.fromHashmap(rest_params);
-        Map<String, List<String>> list_map = new HashMap<String, List<String>>();
+        Map<String, List<String>> list_map = new HashMap<>();
         list_map.put("artist", Arrays.asList("lfm", "recenttracks",
                                              "track", "artist", "name"));
         list_map.put("title", Arrays.asList("lfm", "recenttracks",
@@ -165,28 +164,28 @@ public class LastfmSession {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        Map<String, String> rest_params = new HashMap<String, String>();
+        Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.getInfo");
         rest_params.put("artist", orig_track.mArtist);
         rest_params.put("track", orig_track.mTitle);
         rest_params.put("username", mUsername);
         String urlString = mUrlMaker.fromHashmap(rest_params);
-        Map<String, List<String>> list_map = new HashMap<String, List<String>>();
+        Map<String, List<String>> list_map = new HashMap<>();
         list_map.put("loved", Arrays.asList("lfm", "track", "userloved"));
         XmlPullParser parser;
         String is_loved;
-        List<String> topTags = new ArrayList<>();
         try {
             parser = getUrlResponse(urlString);
             // We get a list, but there's only one item in it
-            for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
-                Log.d(tag, map.toString());
-                is_loved = map.get("loved");
-                if (is_loved.equals("1")){
-                    return true;
-                }
-                return false;
+            List<Map<String,String>> results = getTagsFromLists(parser,
+                    list_map);
+            if (results.size() != 1) {
+                Log.wtf(tag, "Got more than one result");
             }
+            Map<String, String> map = results.get(0);
+            Log.d(tag, map.toString());
+            is_loved = map.get("loved");
+            return is_loved.equals("1");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -199,12 +198,12 @@ public class LastfmSession {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        Map<String, String> rest_params = new HashMap<String, String>();
+        Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "user.getTopTags");
         rest_params.put("user", mUsername);
         rest_params.put("limit", "10");
         String urlString = mUrlMaker.fromHashmap(rest_params);
-        Map<String, List<String>> list_map = new HashMap<String, List<String>>();
+        Map<String, List<String>> list_map = new HashMap<>();
         list_map.put("tag", Arrays.asList("lfm", "toptags", "tag", "name"));
         XmlPullParser parser;
         List<String> topTags = new ArrayList<>();
@@ -228,7 +227,7 @@ public class LastfmSession {
         int eventType = parser.getEventType();
         List<String> CurrentPos = new ArrayList<>();
         List<Map<String, String>> returnList = new ArrayList<>();
-        Map<String, String> oneMap = new HashMap<String, String>();
+        Map<String, String> oneMap = new HashMap<>();
 
         String name;
         while(eventType != XmlPullParser.END_DOCUMENT) {
@@ -250,7 +249,7 @@ public class LastfmSession {
                             oneMap.put(entry.getKey(), text);
                             if(oneMap.size() == tag_list_map.size()) {
                                 returnList.add(oneMap);
-                                oneMap = new HashMap<String, String>();
+                                oneMap = new HashMap<>();
                             }
                         }
                     }
@@ -268,19 +267,18 @@ public class LastfmSession {
         Log.d(tag, "Setting session key");
         // TODO: Make this a constant
         ss = mContext.getString(R.string.session_setting);
-        mSettings.edit().putString(ss, sk).commit();
+        mSettings.edit().putString(ss, sk).apply();
         mSessionKey = sk;
     }
 
     private void saveUsername(String username) {
         String us = mContext.getString(R.string.username_setting);
-        mSettings.edit().putString(us, username).commit();
+        mSettings.edit().putString(us, username).apply();
         mUsername = username;
     }
 
     public boolean logIn(String username, String authToken) {
-        String tag = "Love&Tag.LastfmSession.logIn";
-        Map<String, String> rest_params = new HashMap<String, String>();
+        Map<String, String> rest_params = new HashMap<>();
         rest_params.put("authToken", authToken);
         rest_params.put("method", "auth.getMobileSession");
         rest_params.put("username", username);
@@ -310,7 +308,7 @@ public class LastfmSession {
         }
         catch (XmlPullParserException e) {
             e.printStackTrace();
-            return parser;
+            return null;
         }
 
         try {
@@ -323,7 +321,7 @@ public class LastfmSession {
         } catch (Exception e) {
             Log.e(tag, "Exception: " + e.getMessage());
             e.printStackTrace();
-            return parser;
+            return null;
         }
         try {
             parser = pullParserFactory.newPullParser();
@@ -345,7 +343,6 @@ public class LastfmSession {
         int eventType = parser.getEventType();
 
         while(eventType != XmlPullParser.END_DOCUMENT) {
-            String name;
             String debug;
             debug = parser.getText();
             if (debug != null) {
@@ -383,7 +380,7 @@ public class LastfmSession {
 
             switch(eventType) {
                 case XmlPullParser.START_TAG:
-                    name = parser.getName().toString();
+                    name = parser.getName();
                     Log.d(tag, "|" + name + "|");
                     if (name.equals("key")) {
                         String result = parser.nextText();
@@ -418,7 +415,7 @@ class UrlMaker {
         url.append(mContext.getString(R.string.base_url));
         String delim = "";
         for (String key : params.keySet()) {
-            String raw_value = (String) params.get(key);
+            String raw_value = params.get(key);
             if (raw_value == null) {
                 raw_value = "null";
             }
@@ -456,7 +453,7 @@ class UrlMaker {
         return api_sig;
     }
     public static <T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
-        List<T> list = new ArrayList<T>(c);
+        List<T> list = new ArrayList<>(c);
         java.util.Collections.sort(list);
         return list;
     }

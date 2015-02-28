@@ -37,7 +37,7 @@ public class TagWidget extends AppWidgetProvider {
             mNowPlaying = new Track(artist, title, false);
             Log.d(tag, "Got new track: " + mNowPlaying.mTitle + " (" + action +
                     ")");
-            Intent i = new Intent(context,  UpdateService.class);
+            Intent i = new Intent(context, UpdateService.class);
             i.setAction(tag_widget_new_track_action);
             i.putExtra("artist", artist);
             i.putExtra("title", title);
