@@ -47,6 +47,22 @@ public class TagInput extends ActionBarActivity {
     };
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        final String tag = "Love&Tag.TagInput.onNewIntent";
+        String artist = intent.getStringExtra("artist");
+        String title = intent.getStringExtra("title");
+        Log.i(tag, "Track: " + title + ", " + artist);
+        mTrack = new Track(artist, title);
+        updateTrack();
+    }
+
+    private void updateTrack() {
+        ((TextView) findViewById(R.id.tag_artist)).setText(mTrack.mArtist);
+        ((TextView) findViewById(R.id.tag_title)).setText(mTrack.mTitle);
+        checkLoved();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String tag = "Love&Tag.TagInput.onCreate";
@@ -61,14 +77,10 @@ public class TagInput extends ActionBarActivity {
                     R.integer.rc_log_in));
             return;
         }
-        String artist = this.getIntent().getStringExtra("artist");
-        String title = this.getIntent().getStringExtra("title");
-        Log.d(tag, "Track: " + title + ", " + artist);
-        mTrack = new Track(artist, title);
         setContentView(R.layout.activity_tag_input);
-        ((TextView) findViewById(R.id.tag_artist)).setText(artist);
-        ((TextView) findViewById(R.id.tag_title)).setText(title);
-        checkLoved();
+        // Because this activity has a default launchMode,
+        // we have to call this manually
+        onNewIntent(this.getIntent());
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
         final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
         final Button okButton = (Button) findViewById(R.id.tag_ok);
