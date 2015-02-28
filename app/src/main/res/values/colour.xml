@@ -8,4 +8,6 @@
  <color name="action_bar_text">#FF0000</color>
  <color name="text_random">#FF00FF</color>
  <color name="scroll_bar">#FF0000</color>
+ <color name="tag_active_background">#FF6060</color>
+ <color name="tag_inactive_background">#FFd0d0</color>
 </resources>

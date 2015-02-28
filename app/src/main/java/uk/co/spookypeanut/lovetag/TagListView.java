@@ -16,17 +16,28 @@ public class TagListView extends ListView {
     }
 
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        int top = child.getTop();
-        int bottom = child.getBottom();
-        int height = bottom - top;
-        int width = child.getWidth();
+        double xscale = 0.95;
+        double yscale = 0.9;
+
+        int vmidy = (child.getBottom() + child.getTop()) / 2;
+        int vheight = child.getBottom() - child.getTop();
+        int vmidx = (child.getRight() + child.getLeft()) / 2;
+        int vwidth = child.getRight() - child.getLeft();
+
+        int height = (int) (vheight * yscale);
+        int width = (int) (vwidth * xscale);
+        int top = vmidy - height / 2;
+        int bottom = vmidy + height / 2;
+        int left = vmidx - width / 2;
+        int right = vmidx + width / 2;
+
         int pointHeight = (int) (width * 0.1);
 
-        Point a = new Point(0, top);
-        Point b = new Point(width - pointHeight, top);
-        Point c = new Point(width, top + height / 2);
-        Point d = new Point(width - pointHeight, bottom);
-        Point e = new Point(0, bottom);
+        Point a = new Point(left, top);
+        Point b = new Point(right - pointHeight, top);
+        Point c = new Point(right, top + height / 2);
+        Point d = new Point(right - pointHeight, bottom);
+        Point e = new Point(left, bottom);
 
         Path path = new Path();
         path.moveTo(a.x, a.y);
@@ -36,9 +47,9 @@ public class TagListView extends ListView {
         path.lineTo(e.x, e.y);
 
         Paint line_colour = new Paint();
-        line_colour.setColor(Color.GREEN);
+        line_colour.setColor(getResources().getColor(R.color
+                .tag_inactive_background));
         canvas.drawPath(path, line_colour);
-        boolean returnValue = super.drawChild(canvas, child, drawingTime);
-        return returnValue;
+        return super.drawChild(canvas, child, drawingTime);
     }
 }
