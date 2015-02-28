@@ -3,9 +3,6 @@ package uk.co.spookypeanut.lovetag;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Created by hbush on 16/12/14.
- */
 public class Md5Maker {
     public String encode(String to_be_encoded) {
         try {
@@ -14,9 +11,9 @@ public class Md5Maker {
             byte messageDigest[] = digest.digest();
 
             // Create Hex String
-            StringBuffer hexString = new StringBuffer();
-            for (int i = 0; i < messageDigest.length; i++) {
-                String h = Integer.toHexString(0xFF & messageDigest[i]);
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
                 while (h.length() < 2)
                     h = "0" + h;
                 hexString.append(h);

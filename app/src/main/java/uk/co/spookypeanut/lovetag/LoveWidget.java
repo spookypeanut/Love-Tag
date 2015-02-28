@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -19,7 +20,7 @@ public class LoveWidget extends AppWidgetProvider {
     Track mNowPlaying;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         String tag = "Love&Tag.LoveWidget.onReceive";
         String action = intent.getAction();
         if (action == null) {
