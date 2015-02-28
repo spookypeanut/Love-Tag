@@ -49,7 +49,6 @@ public class TagWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         String tag = "Love&Tag.TagWidget.onUpdate";
         Log.d(tag, "Starting");
-        // There may be multiple widgets active, so update all of them
         Intent i = new Intent(context, UpdateService.class);
         context.startService(i);
     }
@@ -175,7 +174,7 @@ public class TagWidget extends AppWidgetProvider {
             Log.i(tag, "Track: " + i.getStringExtra("artist") + ", " +
                     i.getStringExtra("title"));
             PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                    0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+                    0, i, PendingIntent.FLAG_CANCEL_CURRENT);
             views.setOnClickPendingIntent(R.id.tw_button, pendingIntent);
 
             return views;
