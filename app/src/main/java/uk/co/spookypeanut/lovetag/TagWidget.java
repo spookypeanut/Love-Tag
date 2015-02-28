@@ -175,7 +175,7 @@ public class TagWidget extends AppWidgetProvider {
             Log.i(tag, "Track: " + i.getStringExtra("artist") + ", " +
                     i.getStringExtra("title"));
             PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                    0, i, 0);
+                    0, i, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.tw_button, pendingIntent);
 
             return views;
