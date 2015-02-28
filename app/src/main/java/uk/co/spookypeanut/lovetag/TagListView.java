@@ -22,19 +22,13 @@ public class TagListView extends ListView {
         int height = child.getHeight();
         int top = child.getTop();
         int bottom = child.getBottom();
-        int pointHeight = (int) (height * 0.75);
+        int pointHeight = (int) (width * 0.1);
 
         Point a = new Point(0, top);
-        Point b = new Point(width, top);
-        Point c = new Point(width, top + height - pointHeight);
-        //mPointedHeight is the length of the triangle... in this case we have it dynamic and can be changed.
-        Point d = new Point((width/2)+(pointHeight/2),
-                top + height - pointHeight);
-        Point e = new Point((width/2), top + height);// this is the sharp
-        // point of the triangle
-        Point f = new Point((width/2)-(pointHeight/2),
-                top + height - pointHeight);
-        Point g = new Point(0, top + height - pointHeight);
+        Point b = new Point(width - pointHeight, top);
+        Point c = new Point(width, top + height / 2);
+        Point d = new Point(width - pointHeight, bottom);
+        Point e = new Point(0, bottom);
 
         Path path = new Path();
         path.moveTo(a.x, a.y);
@@ -42,8 +36,6 @@ public class TagListView extends ListView {
         path.lineTo(c.x, c.y);
         path.lineTo(d.x, d.y);
         path.lineTo(e.x, e.y);
-        path.lineTo(f.x, f.y);
-        path.lineTo(g.x, g.y);
 
         Paint line_colour = new Paint();
         line_colour.setColor(Color.GREEN);
