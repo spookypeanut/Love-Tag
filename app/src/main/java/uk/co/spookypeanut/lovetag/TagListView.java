@@ -16,12 +16,10 @@ public class TagListView extends ListView {
     }
 
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        boolean returnValue = super.drawChild(canvas, child, drawingTime);
-
-        int width = child.getWidth();
-        int height = child.getHeight();
         int top = child.getTop();
         int bottom = child.getBottom();
+        int height = bottom - top;
+        int width = child.getWidth();
         int pointHeight = (int) (width * 0.1);
 
         Point a = new Point(0, top);
@@ -40,6 +38,7 @@ public class TagListView extends ListView {
         Paint line_colour = new Paint();
         line_colour.setColor(Color.GREEN);
         canvas.drawPath(path, line_colour);
+        boolean returnValue = super.drawChild(canvas, child, drawingTime);
         return returnValue;
     }
 }
