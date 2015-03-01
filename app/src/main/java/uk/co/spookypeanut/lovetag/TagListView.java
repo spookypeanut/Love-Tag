@@ -20,20 +20,20 @@ public class TagListView extends ListView {
 
     protected boolean drawChild(@NonNull Canvas canvas, @NonNull View child,
                                 long drawingTime) {
-        double xscale = 0.95;
-        double yscale = 0.9;
+        double xScale = 0.95;
+        double yScale = 0.9;
 
-        int vmidy = (child.getBottom() + child.getTop()) / 2;
-        int vheight = child.getBottom() - child.getTop();
-        int vmidx = (child.getRight() + child.getLeft()) / 2;
-        int vwidth = child.getRight() - child.getLeft();
+        int vMidY = (child.getBottom() + child.getTop()) / 2;
+        int vHeight = child.getBottom() - child.getTop();
+        int vMidX = (child.getRight() + child.getLeft()) / 2;
+        int vWidth = child.getRight() - child.getLeft();
 
-        int height = (int) (vheight * yscale);
-        int width = (int) (vwidth * xscale);
-        int top = vmidy - height / 2;
-        int bottom = vmidy + height / 2;
-        int left = vmidx - width / 2;
-        int right = vmidx + width / 2;
+        int height = (int) (vHeight * yScale);
+        int width = (int) (vWidth * xScale);
+        int top = vMidY - height / 2;
+        int bottom = vMidY + height / 2;
+        int left = vMidX - width / 2;
+        int right = vMidX + width / 2;
 
         int pointHeight = (int) (width * 0.1);
 
