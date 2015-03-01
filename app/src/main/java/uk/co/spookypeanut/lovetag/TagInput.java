@@ -27,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 
 public class TagInput extends ActionBarActivity {
@@ -193,6 +195,7 @@ public class TagInput extends ActionBarActivity {
     }
 
     private void updateList() {
+        Collections.sort(mTagList);
         mTagAdaptor.notifyDataSetChanged();
     }
 
