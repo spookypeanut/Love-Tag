@@ -6,34 +6,37 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ListView;
+import android.util.Log;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-public class TagListView extends ListView {
-    boolean mActive = false;
+public class TagListEntryView extends TextView {
 
-    public TagListView(Context context, AttributeSet attrs) {
+    public TagListEntryView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        String tag = "Love&Tag.TagListEntryView";
+        Log.d(tag, "Constructor");
     }
 
-    protected boolean drawChild(@NonNull Canvas canvas, @NonNull View child,
-                                long drawingTime) {
+    @Override
+    protected void onDraw(Canvas canvas) {
+        drawBackground(canvas);
+        super.onDraw(canvas);
+    }
+
+    private void drawBackground(Canvas canvas) {
+        String tag = "Love&Tag.TagListEntryView.drawBackground";
+        Log.d(tag, "Starting");
         double xScale = 0.95;
         double yScale = 0.9;
 
-        int vMidY = (child.getBottom() + child.getTop()) / 2;
-        int vHeight = child.getBottom() - child.getTop();
-        int vMidX = (child.getRight() + child.getLeft()) / 2;
-        int vWidth = child.getRight() - child.getLeft();
-
-        int height = (int) (vHeight * yScale);
-        int width = (int) (vWidth * xScale);
-        int top = vMidY - height / 2;
-        int bottom = vMidY + height / 2;
-        int left = vMidX - width / 2;
-        int right = vMidX + width / 2;
+        int height = getHeight();
+        int width = getWidth();
+        int top = 0;
+        int bottom = height;
+        int left = 0;
+        int right = width;
 
         int pointHeight = (int) (width * 0.1);
 
@@ -54,7 +57,7 @@ public class TagListView extends ListView {
         Paint line_paint = new Paint();
         int fill_ref;
         int line_ref;
-        if (mActive) {
+        if (true) {
             fill_ref = R.color.tag_active_background;
             line_ref = R.color.tag_active_line;
         } else {
@@ -65,6 +68,5 @@ public class TagListView extends ListView {
         fill_paint.setColor(R.getColor(fill_ref));
         line_paint.setColor(R.getColor(line_ref));
         canvas.drawPath(path, fill_paint);
-        return super.drawChild(canvas, child, drawingTime);
     }
 }

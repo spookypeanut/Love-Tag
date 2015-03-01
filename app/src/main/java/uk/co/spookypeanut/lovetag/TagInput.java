@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,7 @@ public class TagInput extends ActionBarActivity {
     Track mTrack;
     LastfmSession mLfs;
     final TagList mTagList = new TagList();
-    ActiveAdapter mTagAdaptor;
+    TagAdapter mTagAdaptor;
     private TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) { }
         public void beforeTextChanged(CharSequence s, int st, int c, int a) { }
@@ -80,8 +81,8 @@ public class TagInput extends ActionBarActivity {
         final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
         final Button okButton = (Button) findViewById(R.id.tag_ok);
         final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
-        mTagAdaptor = new ActiveAdapter(this, mTagList);
-        TagListView tagListView = (TagListView) findViewById(R.id.tagList);
+        mTagAdaptor = new TagAdapter(this, mTagList);
+        ListView tagListView = (ListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
         tagEntry.addTextChangedListener(inputTextWatcher);
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
@@ -229,18 +230,22 @@ public class TagInput extends ActionBarActivity {
         }
     }
 
-    public class ActiveAdapter extends ArrayAdapter<Tag> {
-        public ActiveAdapter(Context context, ArrayList<Tag> values) {
-            super(context, android.R.layout.simple_list_item_1, values);
+    public class TagAdapter extends ArrayAdapter<Tag> {
+        public TagAdapter(Context context, ArrayList<Tag> values) {
+            super(context, R.layout.view_taglistentry, values);
+            String tag = "Love&Tag.TagInput.TagAdapter";
+            Log.d(tag, "Constructor");
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            String tag = "Love&Tag.TagInput.ActiveAdaptor.getView";
+            Log.d(tag, "Starting" + position);
             View view = super.getView(position, convertView, parent);
             TextView textView = (TextView) view.findViewById(android.R.id.text1);
-            Tag tag = getItem(position);
-            textView.setText(tag.mName);
-            if (tag.mActive) {
+            Tag tag_obj = getItem(position);
+            textView.setText(tag_obj.mName);
+            if (tag_obj.mActive) {
                 textView.setTextColor(Color.BLACK);
             } else {
                 textView.setTextColor(Color.LTGRAY);

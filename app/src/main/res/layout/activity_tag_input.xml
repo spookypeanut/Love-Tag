@@ -67,7 +67,7 @@
         android:singleLine="true"
         android:hint="@string/tag_hint"/>
 
-    <uk.co.spookypeanut.lovetag.TagListView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:id="@+id/tagList"
