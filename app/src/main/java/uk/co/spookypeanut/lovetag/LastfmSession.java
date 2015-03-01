@@ -193,7 +193,7 @@ public class LastfmSession {
         return false;
     }
 
-    public List<String> getTags() {
+    public TagList getTags() {
         String tag = "Love&Tag.LastfmSession.getTags";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
@@ -206,12 +206,12 @@ public class LastfmSession {
         Map<String, List<String>> list_map = new HashMap<>();
         list_map.put("tag", Arrays.asList("lfm", "toptags", "tag", "name"));
         XmlPullParser parser;
-        List<String> topTags = new ArrayList<>();
+        TagList topTags = new TagList();
         try {
             parser = getUrlResponse(urlString);
             for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
                 Log.d(tag, map.toString());
-                topTags.add(map.get("tag"));
+                topTags.add(new Tag(map.get("tag")));
             }
         }
         catch (Exception e) {

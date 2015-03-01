@@ -10,4 +10,6 @@
  <color name="scroll_bar">#FF0000</color>
  <color name="tag_active_background">#FF6060</color>
  <color name="tag_inactive_background">#FFd0d0</color>
+    <color name="tag_active_line">#000000</color>
+    <color name="tag_inactive_line">#808080</color>
 </resources>

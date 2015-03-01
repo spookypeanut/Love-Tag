@@ -22,21 +22,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class TagInput extends ActionBarActivity {
     Track mTrack;
     LastfmSession mLfs;
-    final ArrayList<String> mActiveTagList = new ArrayList<>();
-    final ArrayList<String> mInactiveTagList = new ArrayList<>();
-    final ArrayList<ActiveElement> mAllTagList = new ArrayList<>();
+    final TagList mTagList = new TagList();
     ActiveAdapter mTagAdaptor;
     private TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) { }
@@ -85,8 +80,8 @@ public class TagInput extends ActionBarActivity {
         final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
         final Button okButton = (Button) findViewById(R.id.tag_ok);
         final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
-        mTagAdaptor = new ActiveAdapter(this, mAllTagList);
-        ListView tagListView = (ListView) findViewById(R.id.tagList);
+        mTagAdaptor = new ActiveAdapter(this, mTagList);
+        TagListView tagListView = (TagListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
         tagEntry.addTextChangedListener(inputTextWatcher);
         tagEntry.setOnKeyListener(new View.OnKeyListener() {
@@ -98,8 +93,10 @@ public class TagInput extends ActionBarActivity {
                          keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
                         // When enter is pressed in the field,
                         // add the tag and reset the input
-                        String current_text = tagEntry.getText().toString();
-                        addToList(Arrays.asList(current_text), true);
+                        Tag tag = new Tag(tagEntry.getText().toString());
+                        tag.mActive = true;
+                        mTagList.add(tag);
+                        updateList();
                         tagEntry.setText("");
                         tagEntry.requestFocus();
                         return true;
@@ -113,18 +110,22 @@ public class TagInput extends ActionBarActivity {
             public void onClick(View v) {
                 String current_text = tagEntry.getText().toString();
                 if (!current_text.equals("")) {
+                    Tag tag = new Tag(current_text);
                     // If something is entered in the input box,
-                    // assume it's a tag
-                    addToList(Arrays.asList(current_text), true);
+                    // assume it's a tag to be used
+                    tag.mActive = true;
+                    mTagList.add(tag);
+                    updateList();
                 }
-                if (mActiveTagList.size() == 0) {
+                if (mTagList.size() == 0) {
                     return;
                 }
+                TagList active = mTagList.getActiveList();
                 Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
-                        mActiveTagList.toString());
+                        active.toString());
                 TagCall tc = new TagCall();
                 tc.execute(mTrack.mArtist, mTrack.mTitle,
-                           TextUtils.join(",", mActiveTagList));
+                        TextUtils.join(",", active));
                 // TODO: Put a little "working" animation in
             }
         });
@@ -152,10 +153,8 @@ public class TagInput extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int index, long id) {
-                ActiveElement item = mAllTagList.get(index);
-                List<String> tag_list = Arrays.asList(item.mLabel);
-                removeFromList(tag_list);
-                addToList(tag_list, !item.mActive);
+                boolean previous = mTagList.get(index).mActive;
+                mTagList.get(index).mActive = !previous;
                 updateOkButton();
                 updateList();
             }
@@ -181,33 +180,11 @@ public class TagInput extends ActionBarActivity {
         love_button.setImageDrawable(d);
     }
 
-    private void removeFromList(List<String> tag_list) {
-        mActiveTagList.removeAll(tag_list);
-        mInactiveTagList.removeAll(tag_list);
-        updateList();
-    }
-
-    private void addToList(List<String> tag_list, boolean active) {
-        if (active) {
-            mActiveTagList.addAll(tag_list);
-        } else {
-            mInactiveTagList.addAll(tag_list);
-        }
-        ArrayList<String> remove = new ArrayList<>();
-        for (String t : mInactiveTagList) {
-            if (mActiveTagList.contains(t)) {
-                remove.add(t);
-            }
-        }
-        mInactiveTagList.removeAll(remove);
-        updateList();
-    }
-
     private void updateOkButton() {
         final Button okButton = (Button) findViewById(R.id.tag_ok);
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
         String current_text = tagEntry.getText().toString();
-        if (mActiveTagList.size() == 0 && current_text.equals("")) {
+        if (mTagList.getActiveList().size() == 0 && current_text.equals("")) {
             okButton.setEnabled(false);
         } else {
             okButton.setEnabled(true);
@@ -215,15 +192,6 @@ public class TagInput extends ActionBarActivity {
     }
 
     private void updateList() {
-        mAllTagList.clear();
-        for (String t : mActiveTagList) {
-            ActiveElement ae = new ActiveElement(t, true);
-            mAllTagList.add(ae);
-        }
-        for (String t : mInactiveTagList) {
-            ActiveElement ae = new ActiveElement(t, false);
-            mAllTagList.add(ae);
-        }
         mTagAdaptor.notifyDataSetChanged();
     }
 
@@ -249,30 +217,20 @@ public class TagInput extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     private class GetExistingCall extends AsyncTask<String, String, String> {
-        List<String> mTempTags = new ArrayList<>();
+        TagList mFreqTags = new TagList();
         @Override
         protected String doInBackground(String... params) {
-            mTempTags = mLfs.getTags();
+            mFreqTags = mLfs.getTags();
             return "";
         }
         protected void onPostExecute(String result) {
-            addToList(mTempTags, false);
+            mTagList.addAll(mFreqTags);
+            updateList();
         }
     }
 
-    private class ActiveElement {
-        String mLabel;
-        boolean mActive;
-
-        public ActiveElement(String label, boolean active) {
-            mLabel = label;
-            mActive = active;
-        }
-    }
-
-    public class ActiveAdapter extends ArrayAdapter<ActiveElement> {
-        public ActiveAdapter(Context context, ArrayList<ActiveElement>
-                values) {
+    public class ActiveAdapter extends ArrayAdapter<Tag> {
+        public ActiveAdapter(Context context, ArrayList<Tag> values) {
             super(context, android.R.layout.simple_list_item_1, values);
         }
 
@@ -280,9 +238,9 @@ public class TagInput extends ActionBarActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
             TextView textView = (TextView) view.findViewById(android.R.id.text1);
-            ActiveElement ae = getItem(position);
-            textView.setText(ae.mLabel);
-            if (ae.mActive) {
+            Tag tag = getItem(position);
+            textView.setText(tag.mName);
+            if (tag.mActive) {
                 textView.setTextColor(Color.BLACK);
             } else {
                 textView.setTextColor(Color.LTGRAY);
