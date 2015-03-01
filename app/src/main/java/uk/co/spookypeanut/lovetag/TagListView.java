@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
@@ -17,7 +18,8 @@ public class TagListView extends ListView {
         super(context, attrs);
     }
 
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+    protected boolean drawChild(@NonNull Canvas canvas, @NonNull View child,
+                                long drawingTime) {
         double xscale = 0.95;
         double yscale = 0.9;
 
