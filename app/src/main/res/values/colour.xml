@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- includes menu button -->
- <color name="text_primary">#00FFFF</color>
- <color name="accent">#FF0000</color>
- <color name="text_secondary">#00FF00</color>
- <color name="action_bar_background">#FF3030</color>
- <color name="action_bar_text">#FF0000</color>
- <color name="text_random">#FF00FF</color>
- <color name="scroll_bar">#FF0000</color>
- <color name="tag_active_background">#FF6060</color>
- <color name="tag_inactive_background">#FFd0d0</color>
+    <color name="text_primary">#00FFFF</color>
+    <color name="accent">#FF0000</color>
+    <color name="text_secondary">#00FF00</color>
+    <color name="action_bar_background">#FF3030</color>
+    <color name="action_bar_text">#FF0000</color>
+    <color name="text_random">#FF00FF</color>
+    <color name="scroll_bar">#FF0000</color>
+    <color name="tag_active_background">#FF6060</color>
+    <color name="tag_inactive_background">#FFd0d0</color>
     <color name="tag_active_line">#000000</color>
     <color name="tag_inactive_line">#808080</color>
 </resources>
