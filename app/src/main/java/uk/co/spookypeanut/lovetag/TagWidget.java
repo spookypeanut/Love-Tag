@@ -166,7 +166,7 @@ public class TagWidget extends AppWidgetProvider {
                     R.layout.tag_widget);
 
             Intent i = new Intent();
-            i.setClass(context, TagInput.class);
+            i.setClass(context, TagInputActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Track track = getTrack();
             i.putExtra("artist", track.mArtist);

@@ -28,7 +28,7 @@
                 android:value=".TrackListActivity" />
         </activity>
         <activity
-            android:name=".TagInput"
+            android:name=".TagInputActivity"
             android:label="@string/title_activity_tag_input"
             android:parentActivityName=".TrackListActivity" >
             <meta-data

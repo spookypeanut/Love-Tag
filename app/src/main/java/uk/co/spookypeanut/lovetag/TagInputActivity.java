@@ -2,7 +2,6 @@ package uk.co.spookypeanut.lovetag;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,13 +26,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 
-public class TagInput extends ActionBarActivity {
+public class TagInputActivity extends ActionBarActivity {
     Track mTrack;
     LastfmSession mLfs;
+    TagList mOrigTags = new TagList();
     final TagList mTagList = new TagList();
     TagAdapter mTagAdaptor;
     private TextWatcher inputTextWatcher = new TextWatcher() {
@@ -79,6 +78,9 @@ public class TagInput extends ActionBarActivity {
         // Because this activity has a default launchMode,
         // we have to call this manually
         onNewIntent(this.getIntent());
+        GetTagsCall gec = new GetTagsCall();
+        gec.execute(mTrack);
+        Log.d(tag, "Tags on track: " + mOrigTags.toString());
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
         final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
         final Button okButton = (Button) findViewById(R.id.tag_ok);
@@ -113,22 +115,32 @@ public class TagInput extends ActionBarActivity {
             public void onClick(View v) {
                 String current_text = tagEntry.getText().toString();
                 if (!current_text.equals("")) {
-                    Tag tag = new Tag(current_text);
+                    Tag tag_obj = new Tag(current_text);
                     // If something is entered in the input box,
                     // assume it's a tag to be used
-                    tag.mActive = true;
-                    mTagList.add(tag);
+                    tag_obj.mActive = true;
+                    mTagList.add(tag_obj);
                     updateList();
                 }
                 if (mTagList.size() == 0) {
                     return;
                 }
-                TagList active = mTagList.getActiveList();
+                TagList for_tagging = mTagList.getActiveList();
+                for_tagging.removeAll(mOrigTags);
+                Log.d(tag, "For tagging: " + for_tagging.toString());
+                TagList for_untagging = (TagList) mOrigTags.clone();
+                for_untagging.removeAll(mTagList.getActiveList());
+                Log.d(tag, "For untagging: " + for_untagging.toString());
                 Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
-                        active.toString());
+                        for_tagging.toString());
                 TagCall tc = new TagCall();
                 tc.execute(mTrack.mArtist, mTrack.mTitle,
-                        TextUtils.join(",", active));
+                        TextUtils.join(",", for_tagging));
+                for (Tag tag_obj : for_untagging) {
+                    UntagCall uc = new UntagCall();
+                    uc.execute(mTrack.mArtist, mTrack.mTitle, tag_obj.mName);
+
+                }
                 // TODO: Put a little "working" animation in
             }
         });
@@ -162,8 +174,6 @@ public class TagInput extends ActionBarActivity {
                 updateList();
             }
         });
-        GetExistingCall gec = new GetExistingCall();
-        gec.execute();
     }
 
     private void checkLoved() {
@@ -220,14 +230,19 @@ public class TagInput extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    private class GetExistingCall extends AsyncTask<String, String, String> {
+    private class GetTagsCall extends AsyncTask<Track, String, String> {
         TagList mFreqTags = new TagList();
+        TagList mTrackTags = new TagList();
         @Override
-        protected String doInBackground(String... params) {
-            mFreqTags = mLfs.getTags();
+        protected String doInBackground(Track... params) {
+            Track t = params[0];
+            mTrackTags = mLfs.getTrackTags(t);
+            mFreqTags = mLfs.getGlobalTags();
             return "";
         }
         protected void onPostExecute(String result) {
+            mTagList.addAll(mTrackTags);
+            mOrigTags = mTrackTags;
             mTagList.addAll(mFreqTags);
             updateList();
         }
@@ -327,8 +342,35 @@ public class TagInput extends ActionBarActivity {
             }
             return msg;
         }
+
         protected void onPostExecute(String result) {
             String tag = "Love&Tag.Love.TagCall.onPostExecute";
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+            Log.i(tag, result);
+            finish();
+        }
+    }
+
+    private class UntagCall extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String artist = params[0];
+            String title = params[1];
+            String tag_name = params[2];
+            Track track = new Track(artist, title);
+            boolean result = mLfs.untag(track, tag_name);
+            String msg;
+            if (result) {
+                setResult(RESULT_OK);
+                msg = getString(R.string.untag_success);
+            } else {
+                setResult(RESULT_CANCELED);
+                msg = getString(R.string.untag_failed);
+            }
+            return msg;
+        }
+        protected void onPostExecute(String result) {
+            String tag = "Love&Tag.Love.UntagCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             finish();

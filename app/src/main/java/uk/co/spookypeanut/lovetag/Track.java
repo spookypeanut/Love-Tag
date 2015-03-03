@@ -1,21 +1,20 @@
 package uk.co.spookypeanut.lovetag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Track {
     String mArtist;
     String mTitle;
-    boolean mLoved;
+    boolean mLoved = false;
+
     public Track(String artist, String title) {
         mArtist = artist;
         mTitle = title;
-        mLoved = false;
     }
-
     public Track(String artist, String title, boolean loved) {
-        mArtist = artist;
-        mTitle = title;
+        this(artist, title);
         mLoved = loved;
     }
     public Track(Map<String, String> params) {

@@ -251,8 +251,8 @@ public class LastfmSession {
         return false;
     }
 
-    public TagList getTags() {
-        String tag = "Love&Tag.LastfmSession.getTags";
+    public TagList getGlobalTags() {
+        String tag = "Love&Tag.LastfmSession.getGlobalTags";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }

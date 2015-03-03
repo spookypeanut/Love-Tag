@@ -5,7 +5,7 @@ public class Tag implements Comparable {
     boolean mActive;
     boolean mPresent;
     public Tag(String name) {
-        mName = name;
+        mName = name.toLowerCase();
         mActive = false;
         mPresent = false;
     }
