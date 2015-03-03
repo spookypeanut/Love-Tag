@@ -159,6 +159,41 @@ public class LastfmSession {
         return recentTracks;
     }
 
+    public TagList getTrackTags(Track orig_track) {
+        String tag = "Love&Tag.LastfmSession.getTrackTags";
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> rest_params = new HashMap<>();
+        rest_params.put("method", "track.getTags");
+        rest_params.put("artist", orig_track.mArtist);
+        rest_params.put("track", orig_track.mTitle);
+        rest_params.put("user", mUsername);
+        String urlString = mUrlMaker.fromHashmap(rest_params);
+        Map<String, List<String>> list_map = new HashMap<>();
+        list_map.put("tag", Arrays.asList("lfm", "tags", "tag", "name"));
+        XmlPullParser parser;
+        TagList tags = new TagList();
+        try {
+            parser = getUrlResponse(urlString);
+            List<Map<String,String>> results = getTagsFromLists(parser,
+                    list_map);
+            for (Map<String, String> map : results) {
+                Log.d(tag, map.toString());
+                Tag t = new Tag(map.get("tag"));
+                t.mPresent = true;
+                t.mActive = true;
+                tags.add(t);
+            }
+            return tags;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new TagList();
+
+    }
+
     public boolean isLoved(Track orig_track) {
         String tag = "Love&Tag.LastfmSession.isLoved";
         if (!isLoggedIn()) {
