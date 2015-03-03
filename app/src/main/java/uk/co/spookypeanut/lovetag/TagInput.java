@@ -245,14 +245,11 @@ public class TagInput extends ActionBarActivity {
             String tag = "Love&Tag.TagInput.ActiveAdaptor.getView";
             Log.d(tag, "Starting" + position);
             View view = super.getView(position, convertView, parent);
-            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            TagListEntryView textView;
+            textView = (TagListEntryView) view.findViewById(android.R.id.text1);
             Tag tag_obj = getItem(position);
             textView.setText(tag_obj.mName);
-            if (tag_obj.mActive) {
-                textView.setTextColor(Color.BLACK);
-            } else {
-                textView.setTextColor(Color.LTGRAY);
-            }
+            textView.mActive = tag_obj.mActive;
             return view;
         }
     }

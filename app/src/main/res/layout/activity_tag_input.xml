@@ -67,13 +67,32 @@
         android:singleLine="true"
         android:hint="@string/tag_hint"/>
 
-    <ListView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/tagList"
-        android:layout_weight="10"
-        android:divider="@null"
-        android:dividerHeight="0dp"/>
+        android:layout_weight="10">
+
+        <Space
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"/>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/tagList"
+            android:layout_weight="10"
+            android:divider="@null"
+            android:dividerHeight="5dp"/>
+
+        <Space
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            />
+    </LinearLayout>
+
 
     <LinearLayout
         android:orientation="horizontal"

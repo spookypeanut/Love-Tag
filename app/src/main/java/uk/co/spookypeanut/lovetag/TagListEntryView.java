@@ -3,6 +3,7 @@ package uk.co.spookypeanut.lovetag;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -15,10 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TagListEntryView extends TextView {
+    boolean mActive = false;
     List<Point> mPointList = new ArrayList<>();
     Paint mActiveFillPaint = new Paint();
     Paint mInactiveFillPaint = new Paint();
+    int mActiveDrawColour;
     Paint mActiveDrawPaint = new Paint();
+    int mInactiveDrawColour;
     Paint mInactiveDrawPaint = new Paint();
 
     public TagListEntryView(Context context, AttributeSet attrs) {
@@ -35,18 +39,22 @@ public class TagListEntryView extends TextView {
         mActiveFillPaint.setColor(r.getColor(col_ref));
         col_ref = R.color.tag_inactive_background;
         mInactiveFillPaint.setColor(r.getColor(col_ref));
-        col_ref = R.color.tag_active_line;
-        mActiveDrawPaint.setColor(r.getColor(col_ref));
-        col_ref = R.color.tag_inactive_line;
-        mInactiveDrawPaint.setColor(r.getColor(col_ref));
+        mActiveDrawColour = r.getColor(R.color.tag_active_line);
+        mActiveDrawPaint.setColor(mActiveDrawColour);
+        mInactiveDrawColour = r.getColor(R.color.tag_inactive_line);
+        mInactiveDrawPaint.setColor(mInactiveDrawColour);
     }
 
     @Override
     protected void onSizeChanged(int width, int height, int old_w, int old_h) {
-        int top = 0;
-        int bottom = height;
-        int left = 0;
-        int right = width;
+        double x_scale = 1;
+        double y_scale = 1;
+        int x_diff = (int) (((1 - x_scale) / 2) * width);
+        int y_diff = (int) (((1 - y_scale) / 2) * height);
+        int top = 0 + y_diff;
+        int bottom = height - y_diff;
+        int left = 0 + x_diff;
+        int right = width - x_diff;
 
         int pointHeight = (int) (width * 0.1);
 
@@ -77,11 +85,12 @@ public class TagListEntryView extends TextView {
             p = mPointList.get(index);
             path.lineTo(p.x, p.y);
         }
-        // TODO: do active detection here
-        if (true) {
+        if (mActive) {
             canvas.drawPath(path, mActiveFillPaint);
+            this.setTextColor(mActiveDrawColour);
         } else {
             canvas.drawPath(path, mInactiveFillPaint);
+            this.setTextColor(mInactiveDrawColour);
         }
     }
 }
