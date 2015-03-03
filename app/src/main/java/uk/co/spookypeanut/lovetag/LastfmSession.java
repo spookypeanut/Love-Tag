@@ -126,6 +126,29 @@ public class LastfmSession {
         }
     }
 
+    public boolean untag(Track track, String tag_name) {
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
+        }
+        Map<String, String> rest_params = new HashMap<>();
+        rest_params.put("method", "track.removeTag");
+        rest_params.put("sk", mSessionKey);
+        rest_params.put("track", track.mTitle);
+        rest_params.put("artist", track.mArtist);
+        rest_params.put("tag", tag_name);
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(rest_params);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public List<Track> getRecent () {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
