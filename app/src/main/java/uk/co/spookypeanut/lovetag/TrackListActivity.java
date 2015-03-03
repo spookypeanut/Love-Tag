@@ -27,7 +27,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class TrackListActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
@@ -235,7 +235,7 @@ public class TrackList extends ActionBarActivity implements SwipeRefreshLayout.O
                 public void onClick(View v) {
                     String tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
                     Intent i = new Intent();
-                    i.setClass(App.getContext(), TagInput.class);
+                    i.setClass(App.getContext(), TagInputActivity.class);
                     // TODO: Maybe I should make the class parcellable
                     i.putExtra("artist", mTrack.mArtist);
                     i.putExtra("title", mTrack.mTitle);
