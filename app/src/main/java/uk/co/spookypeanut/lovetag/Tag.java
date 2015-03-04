@@ -28,4 +28,16 @@ public class Tag implements Comparable {
         // Don't sort by name, to try to keep existing pattern
         return 0;
     }
+
+    public boolean equals(Object other) {
+        // Note that .equals() and .compareTo() seem incompatible,
+        // but it's all dependent on your point of view. This is used to make
+        // .contains() on a TagList work
+        if (!(other instanceof Tag)) {
+            throw new ClassCastException("Comparing invalid items");
+        }
+        Tag other_tag = (Tag) other;
+        return mName.equals(other_tag.mName);
+    }
+
 }
