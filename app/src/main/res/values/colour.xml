@@ -6,6 +6,7 @@
     <color name="text_secondary">#00FF00</color>
     <color name="action_bar_background">#FF3030</color>
     <color name="action_bar_text">#FF0000</color>
+    <color name="notification_bar">#a01010</color>
     <color name="text_random">#FF00FF</color>
     <color name="scroll_bar">#FF0000</color>
     <color name="tag_active_background">#FF6060</color>
