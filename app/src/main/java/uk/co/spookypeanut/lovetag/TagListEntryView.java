@@ -3,13 +3,10 @@ package uk.co.spookypeanut.lovetag;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,8 +24,6 @@ public class TagListEntryView extends TextView {
 
     public TagListEntryView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        String tag = "Love&Tag.TagListEntryView";
-        Log.d(tag, "Constructor");
         init();
     }
 
@@ -73,11 +68,7 @@ public class TagListEntryView extends TextView {
     }
 
     private void drawBackground(Canvas canvas) {
-        String tag = "Love&Tag.TagListEntryView.drawBackground";
-        Log.d(tag, "Starting");
-
         Path path = new Path();
-
         Point p;
         p = mPointList.get(0);
         path.moveTo(p.x, p.y);
