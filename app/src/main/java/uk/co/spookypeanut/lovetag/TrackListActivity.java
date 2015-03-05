@@ -188,6 +188,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     }
 
     private void updateAll() {
+        if (!mLfs.isLoggedIn()) return;
         mSwipeRefreshLayout.setRefreshing(true);
         updateRecent();
         updatePod();
@@ -202,6 +203,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     }
 
     private void updateRecent() {
+        if (!mLfs.isLoggedIn()) return;
         GetRecent gr = new GetRecent();
         gr.execute();
     }
