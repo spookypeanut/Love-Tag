@@ -198,6 +198,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         String tag = "Love&Tag.Love.updatePod";
         if (mNowPlaying == null || ! mLfs.isLoggedIn()) return;
         TrackInfoCall ilc = new TrackInfoCall();
+        Log.d(tag, mNowPlaying.toString());
         ilc.execute(mNowPlaying);
         Log.d(tag, "Checking if " + mNowPlaying.mTitle + " is loved");
     }
