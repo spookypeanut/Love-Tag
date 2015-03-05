@@ -32,6 +32,10 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
     Track mNowPlaying;
+    // This is never visible. It's the autocorrected version of the currently
+    // playing track, so we don't end up having both "burnout" and "Burnout"
+    // in the list
+    Track mAlternatePodTrack;
     List<Track> mRecentTracks;
     ListEntry mPodView;
 //    MediaController mMediaController;
@@ -102,6 +106,9 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         List<Track> present_list = new ArrayList<>();
         if (mNowPlaying != null) {
             present_list.add(mNowPlaying);
+        }
+        if (mAlternatePodTrack != null) {
+            present_list.add(mAlternatePodTrack);
         }
         for (Track track : tracks) {
             if (!track.isIn(present_list)) {
@@ -189,7 +196,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     private void updatePod() {
         String tag = "Love&Tag.Love.updatePod";
         if (mNowPlaying == null || ! mLfs.isLoggedIn()) return;
-        IsLovedCall ilc = new IsLovedCall();
+        TrackInfoCall ilc = new TrackInfoCall();
         ilc.execute(mNowPlaying);
         Log.d(tag, "Checking if " + mNowPlaying.mTitle + " is loved");
     }
@@ -329,18 +336,21 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
             setRecentTracks(mTempTracks);
         }
     }
-    private class IsLovedCall extends AsyncTask<Track, String, String> {
-        Track mReturnTrack;
+    private class TrackInfoCall extends AsyncTask<Track, String, String> {
+        Track mNewTrack;
+        Track mOrigTrack;
 
         @Override
         protected String doInBackground(Track... params) {
-            mReturnTrack = params[0];
-            mReturnTrack.mLoved = mLfs.isLoved(mReturnTrack);
+            mNewTrack = mLfs.getTrackInfo(params[0]);
+            mOrigTrack = params[0];
+            mOrigTrack.mLoved = mNewTrack.mLoved;
             return "";
         }
 
         protected void onPostExecute(String result) {
-            setPodTrack(mReturnTrack);
+            setPodTrack(mOrigTrack);
+            mAlternatePodTrack = mNewTrack;
         }
     }
 }
