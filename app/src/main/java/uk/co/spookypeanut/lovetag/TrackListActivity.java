@@ -160,9 +160,9 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
             String tag = "Love&Tag.Love.mReceiver.onReceive";
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
+            if (artist == null) return;
             String title = intent.getStringExtra("track");
             Log.d(tag, "Got new track: " + title + " (" + action + ")");
-            if (artist == null) return;
             mNowPlaying = new Track(artist, title, false);
             updatePod();
         }
