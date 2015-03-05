@@ -218,7 +218,11 @@ public class LastfmSession {
     }
 
     public boolean isLoved(Track orig_track) {
-        String tag = "Love&Tag.LastfmSession.isLoved";
+        return getTrackInfo(orig_track).mLoved;
+    }
+
+    public Track getTrackInfo(Track orig_track) {
+        String tag = "Love&Tag.LastfmSession.getTrackInfo";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
@@ -226,12 +230,15 @@ public class LastfmSession {
         rest_params.put("method", "track.getInfo");
         rest_params.put("artist", orig_track.mArtist);
         rest_params.put("track", orig_track.mTitle);
+        // Always autocorrect: if you want the original name, you have it
+        rest_params.put("autocorrect", "1");
         rest_params.put("username", mUsername);
         String urlString = mUrlMaker.fromHashmap(rest_params);
         Map<String, List<String>> list_map = new HashMap<>();
         list_map.put("loved", Arrays.asList("lfm", "track", "userloved"));
+        list_map.put("artist", Arrays.asList("lfm", "track", "artist", "name"));
+        list_map.put("title", Arrays.asList("lfm", "track", "name"));
         XmlPullParser parser;
-        String is_loved;
         try {
             parser = getUrlResponse(urlString);
             // We get a list, but there's only one item in it
@@ -242,13 +249,13 @@ public class LastfmSession {
             }
             Map<String, String> map = results.get(0);
             Log.d(tag, map.toString());
-            is_loved = map.get("loved");
-            return is_loved.equals("1");
+            Track new_track = new Track(map);
+            return new_track;
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public TagList getGlobalTags() {
