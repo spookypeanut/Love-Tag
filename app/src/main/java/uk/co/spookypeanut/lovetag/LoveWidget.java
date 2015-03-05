@@ -105,7 +105,6 @@ public class LoveWidget extends AppWidgetProvider {
                 Log.d(tag, "Session already logged in");
             }
             mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-            getTrack();
         }
 
         public void setTrack(Track track) {
