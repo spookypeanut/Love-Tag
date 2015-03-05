@@ -41,6 +41,7 @@ public class LoveWidget extends AppWidgetProvider {
         test = context.getString(R.string.metachanged);
         if (action.equals(test)) {
             String artist = intent.getStringExtra("artist");
+            if (artist == null) return;
             String title = intent.getStringExtra("track");
             mNowPlaying = new Track(artist, title, false);
             Log.d(tag, "Got new track: " + mNowPlaying.mTitle + " (" + action +
@@ -136,6 +137,7 @@ public class LoveWidget extends AppWidgetProvider {
             AppWidgetManager mgr = AppWidgetManager.getInstance(this);
             if (action != null && action.equals(love_widget_click_action)) {
                 Track track = getTrack();
+                if (track == null) return;
                 if (track.mLoved) {
                     Toast.makeText(this, "Unloving " + track.mTitle,
                             Toast.LENGTH_SHORT).show();
