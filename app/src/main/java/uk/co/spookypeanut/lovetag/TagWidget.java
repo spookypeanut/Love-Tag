@@ -95,7 +95,6 @@ public class TagWidget extends AppWidgetProvider {
                 Log.d(tag, "Session already logged in");
             }
             mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-            getTrack();
         }
 
         public void setTrack(Track track) {
@@ -132,6 +131,7 @@ public class TagWidget extends AppWidgetProvider {
             AppWidgetManager mgr = AppWidgetManager.getInstance(this);
             if (action != null && action.equals(tag_widget_new_track_action)) {
                 String artist = intent.getStringExtra("artist");
+                if (artist == null) return;
                 String title = intent.getStringExtra("title");
                 mgr.updateAppWidget(me, buildUpdate(this, artist, title));
                 return;
@@ -149,13 +149,6 @@ public class TagWidget extends AppWidgetProvider {
             // Construct the RemoteViews object
             Log.d(tag, "Setting text view");
             views.setTextViewText(R.id.tw_label, title);
-            // TODO: This is rather wasteful, we don't need to connect to
-            // last.fm on every change of track
-            /*
-            if (mLfs.isLoved(track)) {
-                track.mLoved = true;
-                setTrack(track);
-            }*/
             return views;
         }
 
@@ -169,10 +162,9 @@ public class TagWidget extends AppWidgetProvider {
             i.setClass(context, TagInputActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Track track = getTrack();
+            if (track == null || track.mArtist == null) return views;
             i.putExtra("artist", track.mArtist);
             i.putExtra("title", track.mTitle);
-            Log.i(tag, "Track: " + i.getStringExtra("artist") + ", " +
-                    i.getStringExtra("title"));
             PendingIntent pendingIntent = PendingIntent.getActivity(context,
                     0, i, PendingIntent.FLAG_CANCEL_CURRENT);
             views.setOnClickPendingIntent(R.id.tw_button, pendingIntent);
