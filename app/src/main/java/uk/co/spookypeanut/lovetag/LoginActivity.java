@@ -6,6 +6,7 @@ package uk.co.spookypeanut.lovetag;
  */
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -78,6 +79,12 @@ public class LoginActivity extends Activity {
         md5m = new Md5Maker();
         String authToken = md5m.encode(username + md5m.encode(password));
         new CallAPI().execute(username, authToken);
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Logging into last.fm...");
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     private class CallAPI extends AsyncTask<String, String, String> {
