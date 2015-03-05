@@ -14,18 +14,27 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="loveunknown.svg">
+   sodipodi:docname="lovefalse.svg">
   <defs
-     id="defs4" />
+     id="defs4">
+    <filter
+       inkscape:collect="always"
+       id="filter3792">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="3.0343205"
+         id="feGaussianBlur3794" />
+    </filter>
+  </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#000000"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="291.70089"
+     inkscape:cx="-199.72768"
      inkscape:cy="180.11683"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -43,7 +52,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -52,6 +61,20 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-540.36218)">
+    <g
+       style="fill:none;stroke-width:28.28026888000000127;stroke-miterlimit:4;stroke-dasharray:none;stroke:#ffffff;stroke-linejoin:round;filter:url(#filter3792)"
+       transform="matrix(0.67422092,0,0,0.74180661,39.025623,576.11341)"
+       id="g2985">
+      <path
+         inkscape:connector-curvature="0"
+         d="M 297.29747,550.86823 C 283.52243,535.43191 249.1268,505.33855 220.86277,483.99412 137.11867,420.75228 125.72108,411.5999 91.719238,380.29088 29.03471,322.57071 2.413622,264.58086 2.5048478,185.95124 2.5493594,147.56739 5.1656152,132.77929 15.914734,110.15398 34.151433,71.768267 61.014996,43.244667 95.360052,25.799457 119.68545,13.443675 131.6827,7.9542046 172.30448,7.7296236 c 42.49329,-0.234834 51.43863,4.7197234 76.43471,18.4518354 30.42451,16.714318 61.7399,52.435708 68.21323,77.810591 l 3.9981,15.6724 9.85963,-21.584508 c 55.71617,-121.972928 233.59836,-120.148052 295.50229,3.031588 19.63767,39.07605 21.79364,122.51317 4.38012,169.51287 -22.71527,61.30937 -65.38001,108.05053 -164.00634,179.67658 -64.68082,46.97364 -137.88474,118.04586 -142.98067,128.02803 -5.91548,11.58753 -0.28216,1.8159 -26.40808,-27.46078 z"
+         id="path2987"
+         style="fill:none;stroke-width:28.28026888;stroke-miterlimit:4;stroke-dasharray:none;stroke:#ffffff;stroke-linejoin:round" />
+      <g
+         style="fill:none;stroke-width:28.28026888;stroke-miterlimit:4;stroke-dasharray:none;stroke:#ffffff;stroke-linejoin:round"
+         transform="translate(129.28571,-64.285714)"
+         id="g2989" />
+    </g>
     <g
        id="layer1-4"
        transform="matrix(0.67422092,0,0,0.74180661,39.025623,576.11341)"
