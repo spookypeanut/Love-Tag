@@ -33,4 +33,8 @@ public class Track {
         }
         return false;
     }
+
+    public String toString() {
+        return ("\"" + mTitle + "\", by " + mArtist + " (" + mLoved + ")");
+    }
 }
