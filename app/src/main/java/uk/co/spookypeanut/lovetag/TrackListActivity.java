@@ -249,7 +249,6 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
                     String tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInputActivity.class);
-                    // TODO: Maybe I should make the class parcellable
                     i.putExtra("artist", mTrack.mArtist);
                     i.putExtra("title", mTrack.mTitle);
                     Log.d(tag, "Starting activity");
