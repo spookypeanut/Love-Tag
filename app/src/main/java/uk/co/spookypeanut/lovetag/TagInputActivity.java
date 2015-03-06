@@ -36,6 +36,11 @@ public class TagInputActivity extends ActionBarActivity {
     LastfmSession mLfs;
     TagList mOrigTags = new TagList();
     final TagList mTagList = new TagList();
+    // This keeps a track of tags that have actually been manually untagged,
+    // so that we don't accidentally remove all existing tags because we
+    // haven't managed to get the tags from last.fm yet. I'm not sure this
+    // *could* happen, but I don't want to risk it.
+    TagList mActallyUntagged = new TagList();
     TagAdapter mTagAdaptor;
     private TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) { }
@@ -139,6 +144,7 @@ public class TagInputActivity extends ActionBarActivity {
                 tc.execute(mTrack.mArtist, mTrack.mTitle,
                         TextUtils.join(",", for_tagging));
                 for (Tag tag_obj : for_untagging) {
+                    if (!mActallyUntagged.contains(tag_obj)) continue;
                     UntagCall uc = new UntagCall();
                     uc.execute(mTrack.mArtist, mTrack.mTitle, tag_obj.mName);
                 }
@@ -170,6 +176,11 @@ public class TagInputActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int index, long id) {
                 boolean previous = mTagList.get(index).mActive;
+                if (previous) {
+                    // If we are de-activating the tag, we should also
+                    // add it to the actually deactivated list
+                    mActallyUntagged.add(mTagList.get(index));
+                }
                 mTagList.get(index).mActive = !previous;
                 updateOkButton();
                 updateList();
