@@ -1,5 +1,6 @@
 package uk.co.spookypeanut.lovetag;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -139,9 +141,8 @@ public class TagInputActivity extends ActionBarActivity {
                 for (Tag tag_obj : for_untagging) {
                     UntagCall uc = new UntagCall();
                     uc.execute(mTrack.mArtist, mTrack.mTitle, tag_obj.mName);
-
                 }
-                // TODO: Put a little "working" animation in
+                showWaitingDialog();
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -174,6 +175,12 @@ public class TagInputActivity extends ActionBarActivity {
                 updateList();
             }
         });
+    }
+
+    private void showWaitingDialog() {
+        FrameLayout pd = (FrameLayout) findViewById(R.id
+                .progressBarHolder);
+        pd.setVisibility(FrameLayout.VISIBLE);
     }
 
     private void checkLoved() {

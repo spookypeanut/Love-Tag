@@ -18,6 +18,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends Activity {
@@ -79,12 +81,12 @@ public class LoginActivity extends Activity {
         md5m = new Md5Maker();
         String authToken = md5m.encode(username + md5m.encode(password));
         new CallAPI().execute(username, authToken);
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setMessage("Logging into last.fm...");
-        dialog.setIndeterminate(true);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        showWaitingDialog();
+    }
+
+    private void showWaitingDialog() {
+        FrameLayout pd = (FrameLayout) findViewById(R.id.login_progress);
+        pd.setVisibility(FrameLayout.VISIBLE);
     }
 
     private class CallAPI extends AsyncTask<String, String, String> {
