@@ -360,6 +360,14 @@ public class LastfmSession {
         return true;
     }
 
+    public void logOut() {
+        SharedPreferences.Editor spe = mSettings.edit();
+        String ss = mContext.getString(R.string.session_setting);
+        spe.remove(ss);
+        String us = mContext.getString(R.string.username_setting);
+        spe.remove(us).apply();
+    }
+
     protected XmlPullParser getUrlResponse(String urlString) {
         String tag = "Love&Tag.LastfmSession.getUrlResponse";
         Log.v(tag, "url: " + urlString);

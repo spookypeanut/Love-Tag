@@ -171,7 +171,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_love, menu);
+        getMenuInflater().inflate(R.menu.menu_track_list, menu);
         return true;
     }
 
@@ -182,7 +182,9 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            mLfs.logOut();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
