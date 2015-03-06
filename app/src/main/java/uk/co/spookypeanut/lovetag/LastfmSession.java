@@ -33,24 +33,22 @@ public class LastfmSession {
     String mSessionKey = "";
     String mUsername;
     UrlMaker mUrlMaker;
+    static final String PREFS_NAME = "LastfmSession";
+    static final String SESSION_KEY = "session_key";
+    static final String USERNAME = "username";
 
     public LastfmSession() {
         mContext = App.getContext();
-        String ss;
-        // TODO: Is this right? I think this ss should be something else
-        ss = mContext.getString(R.string.session_setting);
-        mSettings = mContext.getSharedPreferences(ss, Context.MODE_MULTI_PROCESS);
+        mSettings = mContext.getSharedPreferences(PREFS_NAME, 0);
         mUrlMaker = new UrlMaker();
         passiveLogin();
     }
 
     private void passiveLogin() {
         String tag = "Love&Tag.LastfmSession.passiveLogin";
-        String ss = mContext.getString(R.string.session_setting);
-        String us = mContext.getString(R.string.username_setting);
-        if (mSettings.contains(ss)) {
-            mSessionKey = mSettings.getString(ss, "");
-            mUsername = mSettings.getString(us, "");
+        if (mSettings.contains(SESSION_KEY)) {
+            mSessionKey = mSettings.getString(SESSION_KEY, "");
+            mUsername = mSettings.getString(USERNAME, "");
         } else {
             Log.i(tag, "Couldn't log in");
         }
@@ -250,8 +248,7 @@ public class LastfmSession {
             }
             Map<String, String> map = results.get(0);
             Log.d(tag, map.toString());
-            Track new_track = new Track(map);
-            return new_track;
+            return new Track(map);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -328,18 +325,14 @@ public class LastfmSession {
     }
 
     private void setSessionKey(String sk) {
-        String ss;
         String tag = "Love&Tag.LastfmSession.setSessionKey";
         Log.d(tag, "Setting session key");
-        // TODO: Make this a constant
-        ss = mContext.getString(R.string.session_setting);
-        mSettings.edit().putString(ss, sk).apply();
+        mSettings.edit().putString(SESSION_KEY, sk).apply();
         mSessionKey = sk;
     }
 
     private void saveUsername(String username) {
-        String us = mContext.getString(R.string.username_setting);
-        mSettings.edit().putString(us, username).apply();
+        mSettings.edit().putString(USERNAME, username).apply();
         mUsername = username;
     }
 
@@ -362,11 +355,7 @@ public class LastfmSession {
     }
 
     public void logOut() {
-        SharedPreferences.Editor spe = mSettings.edit();
-        String ss = mContext.getString(R.string.session_setting);
-        spe.remove(ss);
-        String us = mContext.getString(R.string.username_setting);
-        spe.remove(us).apply();
+        mSettings.edit().remove(SESSION_KEY).remove(USERNAME).apply();
     }
 
     protected XmlPullParser getUrlResponse(String urlString) {
