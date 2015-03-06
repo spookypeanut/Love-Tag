@@ -37,6 +37,7 @@ public class LastfmSession {
     public LastfmSession() {
         mContext = App.getContext();
         String ss;
+        // TODO: Is this right? I think this ss should be something else
         ss = mContext.getString(R.string.session_setting);
         mSettings = mContext.getSharedPreferences(ss, Context.MODE_MULTI_PROCESS);
         mUrlMaker = new UrlMaker();
