@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -44,12 +45,10 @@ public class TagListEntryView extends TextView {
     protected void onSizeChanged(int width, int height, int old_w, int old_h) {
         double x_scale = 1;
         double y_scale = 1;
-        int x_diff = (int) (((1 - x_scale) / 2) * width);
-        int y_diff = (int) (((1 - y_scale) / 2) * height);
-        int top = 0 + y_diff;
-        int bottom = height - y_diff;
-        int left = 0 + x_diff;
-        int right = width - x_diff;
+        int left = (int) (((1 - x_scale) / 2) * width);
+        int top = (int) (((1 - y_scale) / 2) * height);
+        int bottom = height - top;
+        int right = width - left;
 
         int pointHeight = (int) (width * 0.1);
 
@@ -62,7 +61,7 @@ public class TagListEntryView extends TextView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         drawBackground(canvas);
         super.onDraw(canvas);
     }

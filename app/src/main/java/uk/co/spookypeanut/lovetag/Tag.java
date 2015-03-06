@@ -1,5 +1,7 @@
 package uk.co.spookypeanut.lovetag;
 
+import android.support.annotation.NonNull;
+
 public class Tag implements Comparable {
     String mName;
     boolean mActive;
@@ -12,7 +14,7 @@ public class Tag implements Comparable {
     public String toString() {
         return mName;
     }
-    public int compareTo(Object other) {
+    public int compareTo(@NonNull Object other) {
         if (!(other instanceof Tag)) {
             throw new ClassCastException("Comparing invalid items");
         }
