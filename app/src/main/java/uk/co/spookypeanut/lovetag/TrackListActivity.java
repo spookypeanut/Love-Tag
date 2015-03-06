@@ -44,7 +44,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_love);
+        setContentView(R.layout.activity_track_list);
 
         IntentFilter iF = new IntentFilter();
         // TODO: use a global list for these
