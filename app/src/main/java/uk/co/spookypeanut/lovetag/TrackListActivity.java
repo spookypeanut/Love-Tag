@@ -47,15 +47,11 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         setContentView(R.layout.activity_track_list);
 
         IntentFilter iF = new IntentFilter();
-        // TODO: use a global list for these
         iF.addAction("com.android.music.metachanged");
         iF.addAction("com.android.music.playstatechanged");
-        iF.addAction("com.android.music.playbackcomplete");
-        iF.addAction("com.android.music.queuechanged");
         registerReceiver(mReceiver, iF);
 
         mPodView = new ListEntry(mCurrentContext);
-
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mUrlMaker = new UrlMaker();
