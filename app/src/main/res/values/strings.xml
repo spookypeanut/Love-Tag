@@ -26,4 +26,7 @@
     <string name="metachanged">com.android.music.metachanged</string>
     <string name="tag_hint">Enter new tag</string>
     <string name="tw_button_description">Press to tag currently playing track</string>
+    <string name="tag_input_ok_button">Tag Track</string>
+    <string name="tag_input_cancel_button">Cancel</string>
+    <string name="ti_love_button_desc">Love Button</string>
 </resources>
