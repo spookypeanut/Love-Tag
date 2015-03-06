@@ -30,6 +30,7 @@
         <activity
             android:name=".TagInputActivity"
             android:label="@string/title_activity_tag_input"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".TrackListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
