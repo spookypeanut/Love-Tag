@@ -15,7 +15,9 @@ import java.util.List;
 
 public class TagListEntryView extends TextView {
     boolean mActive = false;
-    List<Point> mPointList = new ArrayList<>();
+    List<Point> mBorderPointList = new ArrayList<>();
+    Point mHoleCentre = new Point();
+    int mHoleRadius;
     Paint mActiveFillPaint = new Paint();
     Paint mInactiveFillPaint = new Paint();
     int mActiveDrawColour;
@@ -43,21 +45,25 @@ public class TagListEntryView extends TextView {
 
     @Override
     protected void onSizeChanged(int width, int height, int old_w, int old_h) {
-        double x_scale = 1;
-        double y_scale = 1;
-        int left = (int) (((1 - x_scale) / 2) * width);
-        int top = (int) (((1 - y_scale) / 2) * height);
+        int left = 0;
+        int top = 0;
         int bottom = height - top;
         int right = width - left;
 
         int pointHeight = (int) (width * 0.1);
 
-        mPointList.add(new Point(left, top));
-        mPointList.add(new Point(right - pointHeight, top));
-        mPointList.add(new Point(right, top + height / 2));
-        mPointList.add(new Point(right - pointHeight, bottom));
-        mPointList.add(new Point(left, bottom));
+        int hole_centre_x = right - pointHeight;
+        int hole_centre_y = height / 2;
+        mHoleCentre = new Point(hole_centre_x, hole_centre_y);
+        // Can't do this based on height, because then there are bigger holes
+        // for multi-line tags
+        mHoleRadius = width / 50;
 
+        mBorderPointList.add(new Point(left, top));
+        mBorderPointList.add(new Point(right - pointHeight, top));
+        mBorderPointList.add(new Point(right, top + height / 2));
+        mBorderPointList.add(new Point(right - pointHeight, bottom));
+        mBorderPointList.add(new Point(left, bottom));
     }
 
     @Override
@@ -68,13 +74,17 @@ public class TagListEntryView extends TextView {
 
     private void drawBackground(Canvas canvas) {
         Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
         Point p;
-        p = mPointList.get(0);
+        p = mBorderPointList.get(0);
         path.moveTo(p.x, p.y);
-        for (int index=1; index<mPointList.size(); index++) {
-            p = mPointList.get(index);
+        for (int index=1; index< mBorderPointList.size(); index++) {
+            p = mBorderPointList.get(index);
             path.lineTo(p.x, p.y);
         }
+        path.moveTo(mHoleCentre.x, mHoleCentre.y);
+        path.addCircle(mHoleCentre.x, mHoleCentre.y,
+                       mHoleRadius, Path.Direction.CW);
         if (mActive) {
             canvas.drawPath(path, mActiveFillPaint);
             this.setTextColor(mActiveDrawColour);
