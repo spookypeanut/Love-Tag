@@ -30,8 +30,8 @@ public class TagWidget extends AppWidgetProvider {
         Log.d(tag, "non-null action: " + intent.getAction());
         super.onReceive(context, intent);
 
-        String test = context.getString(R.string.metachanged);
-        if (action.equals(test)) {
+        if (action.equals(TrackListActivity.METACHANGED) ||
+                action.equals(TrackListActivity.PLAYSTATECHANGED)) {
             String artist = intent.getStringExtra("artist");
             String title = intent.getStringExtra("track");
             mNowPlaying = new Track(artist, title, false);

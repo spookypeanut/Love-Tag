@@ -41,14 +41,18 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
 //    MediaController mMediaController;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    public final static String METACHANGED = "com.android.music.metachanged";
+    public final static String PLAYSTATECHANGED = "com.android.music" +
+                                                  ".playstatechanged";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_list);
 
         IntentFilter iF = new IntentFilter();
-        iF.addAction("com.android.music.metachanged");
-        iF.addAction("com.android.music.playstatechanged");
+        iF.addAction(METACHANGED);
+        iF.addAction(PLAYSTATECHANGED);
         registerReceiver(mReceiver, iF);
 
         mPodView = new ListEntry(mCurrentContext);
