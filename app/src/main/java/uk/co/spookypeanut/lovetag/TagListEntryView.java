@@ -3,6 +3,7 @@ package uk.co.spookypeanut.lovetag;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -18,8 +19,8 @@ public class TagListEntryView extends TextView {
     List<Point> mBorderPointList = new ArrayList<>();
     Point mHoleCentre = new Point();
     int mHoleRadius;
-    Paint mActiveFillPaint = new Paint();
-    Paint mInactiveFillPaint = new Paint();
+    Paint mActiveFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    Paint mInactiveFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     int mActiveDrawColour;
     Paint mActiveDrawPaint = new Paint();
     int mInactiveDrawColour;
@@ -32,11 +33,14 @@ public class TagListEntryView extends TextView {
 
     private void init() {
         Resources r = getResources();
-        int col_ref;
-        col_ref = R.color.tag_active_background;
-        mActiveFillPaint.setColor(r.getColor(col_ref));
-        col_ref = R.color.tag_inactive_background;
-        mInactiveFillPaint.setColor(r.getColor(col_ref));
+        mActiveFillPaint.setColor(r.getColor(R.color.tag_active_background));
+        mActiveFillPaint.setShadowLayer(4, 0, 6,
+                r.getColor(R.color.tag_active_shadow));
+        setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
+        mInactiveFillPaint.setColor(r.getColor(R.color.tag_inactive_background));
+        mInactiveFillPaint.setShadowLayer(4, 0, 6,
+                r.getColor(R.color.tag_inactive_shadow));
+        setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
         mActiveDrawColour = r.getColor(R.color.tag_active_line);
         mActiveDrawPaint.setColor(mActiveDrawColour);
         mInactiveDrawColour = r.getColor(R.color.tag_inactive_line);
@@ -45,8 +49,9 @@ public class TagListEntryView extends TextView {
 
     @Override
     protected void onSizeChanged(int width, int height, int old_w, int old_h) {
-        int left = 0;
-        int top = 0;
+        int offset = 4;
+        int left = offset;
+        int top = offset;
         int bottom = height - top;
         int right = width - left;
 
