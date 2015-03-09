@@ -217,7 +217,13 @@ public class LastfmSession {
     }
 
     public boolean isLoved(Track orig_track) {
-        return getTrackInfo(orig_track).mLoved;
+        String tag = "Love&Tag.LastfmSession.isLoved";
+        Track info = getTrackInfo(orig_track);
+        if (info == null) {
+            Log.e(tag, "Call to getTrackInfo failed");
+            return false;
+        }
+        return info.mLoved;
     }
 
     public Track getTrackInfo(Track orig_track) {
