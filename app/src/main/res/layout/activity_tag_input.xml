@@ -88,7 +88,7 @@
             android:layout_height="fill_parent"
             android:id="@+id/tagList"
             android:divider="@null"
-            android:dividerHeight="5dp"
+            android:dividerHeight="0dp"
             android:layout_weight="10"/>
 
         <Space

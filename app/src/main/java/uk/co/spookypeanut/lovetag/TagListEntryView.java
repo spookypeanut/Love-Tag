@@ -3,7 +3,6 @@ package uk.co.spookypeanut.lovetag;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -25,6 +24,8 @@ public class TagListEntryView extends TextView {
     Paint mActiveDrawPaint = new Paint();
     int mInactiveDrawColour;
     Paint mInactiveDrawPaint = new Paint();
+    final int mDropShadowRadius = 2;
+    final int mDropShadowDistance = 4;
 
     public TagListEntryView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,12 +35,12 @@ public class TagListEntryView extends TextView {
     private void init() {
         Resources r = getResources();
         mActiveFillPaint.setColor(r.getColor(R.color.tag_active_background));
-        mActiveFillPaint.setShadowLayer(4, 0, 6,
-                r.getColor(R.color.tag_active_shadow));
+        mActiveFillPaint.setShadowLayer(mDropShadowRadius, 0,
+                mDropShadowDistance, r.getColor(R.color.tag_active_shadow));
         setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
         mInactiveFillPaint.setColor(r.getColor(R.color.tag_inactive_background));
-        mInactiveFillPaint.setShadowLayer(4, 0, 6,
-                r.getColor(R.color.tag_inactive_shadow));
+        mInactiveFillPaint.setShadowLayer(mDropShadowRadius, 0,
+                mDropShadowDistance, r.getColor(R.color.tag_inactive_shadow));
         setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
         mActiveDrawColour = r.getColor(R.color.tag_active_line);
         mActiveDrawPaint.setColor(mActiveDrawColour);
@@ -49,7 +50,7 @@ public class TagListEntryView extends TextView {
 
     @Override
     protected void onSizeChanged(int width, int height, int old_w, int old_h) {
-        int offset = 4;
+        int offset = 8;
         int left = offset;
         int top = offset;
         int bottom = height - top;
