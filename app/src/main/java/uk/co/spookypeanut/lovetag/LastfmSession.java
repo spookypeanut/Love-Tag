@@ -36,6 +36,7 @@ public class LastfmSession {
     static final String PREFS_NAME = "LastfmSession";
     static final String SESSION_KEY = "session_key";
     static final String USERNAME = "username";
+    static final short RETRIES = 5;
 
     public LastfmSession() {
         mContext = App.getContext();
@@ -364,14 +365,12 @@ public class LastfmSession {
         mSettings.edit().remove(SESSION_KEY).remove(USERNAME).apply();
     }
 
-    protected XmlPullParser getUrlResponse(String urlString) {
+    private XmlPullParser getUrlResponse(String urlString) {
         String tag = "Love&Tag.LastfmSession.getUrlResponse";
         Log.v(tag, "url: " + urlString);
 
-        InputStream in;
+        InputStream in = null;
         XmlPullParserFactory pullParserFactory;
-        XmlPullParser parser;
-        parser = null;
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
         }
@@ -379,18 +378,26 @@ public class LastfmSession {
             e.printStackTrace();
             return null;
         }
-
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-            urlConnection.setRequestProperty("Accept","*_/*"); // Remove the underscore
-            in = new BufferedInputStream(urlConnection.getInputStream());
-        } catch (Exception e) {
-            Log.e(tag, "Exception: " + e.getMessage());
-            e.printStackTrace();
-            return null;
+        XmlPullParser parser = null;
+        short try_number = 0;
+        while (in == null) {
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+                urlConnection.setRequestProperty("Accept","*_/*"); // Remove the underscore
+                in = new BufferedInputStream(urlConnection.getInputStream());
+            } catch (Exception e) {
+                in = null;
+                Log.e(tag, "Try number " + try_number +
+                           " failed: " + e.getMessage());
+                e.printStackTrace();
+                if (try_number > RETRIES) {
+                    Log.e(tag, "Failed after " + RETRIES + " attempts");
+                    return null;
+                }
+            }
         }
         try {
             parser = pullParserFactory.newPullParser();
