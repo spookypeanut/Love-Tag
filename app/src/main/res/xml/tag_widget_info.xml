@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (c) 2014 Henry Bush
+ * Distributed under the GNU GPL v3. For full terms see the file COPYING.
+ -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
                     android:minWidth="40dp"
                     android:minHeight="40dp"

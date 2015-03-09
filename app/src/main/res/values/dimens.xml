@@ -1,3 +1,7 @@
+<!--
+ * Copyright (c) 2014 Henry Bush
+ * Distributed under the GNU GPL v3. For full terms see the file COPYING.
+ -->
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
