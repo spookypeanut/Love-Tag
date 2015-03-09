@@ -38,8 +38,8 @@ public class LoveWidget extends AppWidgetProvider {
             context.startService(i);
             return;
         }
-        test = context.getString(R.string.metachanged);
-        if (action.equals(test)) {
+        if (action.equals(TrackListActivity.METACHANGED) ||
+                action.equals(TrackListActivity.PLAYSTATECHANGED)) {
             String artist = intent.getStringExtra("artist");
             if (artist == null) return;
             String title = intent.getStringExtra("track");
