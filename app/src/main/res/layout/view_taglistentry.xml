@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (c) 2014 Henry Bush
+ * Distributed under the GNU GPL v3. For full terms see the file COPYING.
+ -->
 <uk.co.spookypeanut.lovetag.TagListEntryView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:layout_width="fill_parent"
