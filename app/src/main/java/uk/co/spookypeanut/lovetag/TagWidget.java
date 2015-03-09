@@ -1,5 +1,10 @@
 package uk.co.spookypeanut.lovetag;
 
+/**
+ * Copyright (c) 2014 Henry Bush
+ * Distributed under the GNU GPL v3. For full terms see the file COPYING.
+ */
+
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;

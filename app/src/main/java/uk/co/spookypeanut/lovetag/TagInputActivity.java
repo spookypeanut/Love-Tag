@@ -1,5 +1,10 @@
 package uk.co.spookypeanut.lovetag;
 
+/**
+ * Copyright (c) 2014 Henry Bush
+ * Distributed under the GNU GPL v3. For full terms see the file COPYING.
+ */
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -28,7 +33,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 
 public class TagInputActivity extends ActionBarActivity {
     Track mTrack;
