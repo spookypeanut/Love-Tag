@@ -40,7 +40,6 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     List<Track> mRecentTracks;
     TextView mErrorMessage;
     ListEntry mPodView;
-//    MediaController mMediaController;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public final static String METACHANGED = "com.android.music.metachanged";
@@ -85,20 +84,6 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         super.onResume();
         updateAll();
     }
-
-    /*
-    private void setMediaController() {
-        // To possibly be re-introduced later
-        String tag = "Love&Tag.Love.setMediaController";
-        MediaSessionManager msm = (MediaSessionManager) getSystemService(MEDIA_SESSION_SERVICE);
-        List<MediaController> mc_list = msm.getActiveSessions(null);
-        Log.d(tag, "Found " + mc_list.size());
-        for (MediaController mc : mc_list) {
-            MediaMetadata md = mc.getMetadata();
-            Log.d(tag, md.getString(md.METADATA_KEY_ARTIST));
-        }
-    }
-    */
 
     private void setNoTracks() {
         LinearLayout rtLayout;
