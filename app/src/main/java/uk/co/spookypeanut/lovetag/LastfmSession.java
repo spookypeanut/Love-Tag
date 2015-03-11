@@ -379,7 +379,7 @@ public class LastfmSession {
             return null;
         }
         XmlPullParser parser = null;
-        short try_number = 0;
+        short try_number = 1;
         while (in == null) {
             try {
                 URL url = new URL(urlString);
@@ -392,6 +392,7 @@ public class LastfmSession {
                 in = null;
                 Log.e(tag, "Try number " + try_number +
                            " failed: " + e.getMessage());
+                try_number += 1;
                 e.printStackTrace();
                 if (try_number > RETRIES) {
                     Log.e(tag, "Failed after " + RETRIES + " attempts");
