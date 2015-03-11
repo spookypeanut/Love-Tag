@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,8 +99,23 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     }
     */
 
+    private void setNoTracks() {
+        LinearLayout rtLayout;
+        rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
+        ProgressBar progress;
+        progress = (ProgressBar)findViewById(R.id.initialProgressBar);
+        progress.setVisibility(View.GONE);
+        TextView message = new TextView(mCurrentContext);
+        message.setText(getString(R.string.tracklist_problems_communicating));
+        rtLayout.addView(message);
+    }
+
     private void setRecentTracks(List<Track> tracks) {
         mRecentTracks = tracks;
+        if (tracks.size() == 0) {
+            setNoTracks();
+            return;
+        }
         LinearLayout rtLayout;
         rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
         rtLayout.removeAllViews();

@@ -31,4 +31,6 @@
     <string name="tag_input_ok_button">Tag Track</string>
     <string name="tag_input_cancel_button">Cancel</string>
     <string name="ti_love_button_desc">Love Button</string>
+    <string name="tracklist_problems_communicating">Problems communicating
+        with Last.fm: pull down to retry</string>
 </resources>
