@@ -253,6 +253,10 @@ public class LastfmSession {
         XmlPullParser parser;
         try {
             parser = getUrlResponse(urlString);
+            if (parser == null) {
+                Log.e(tag, "getUrlResponse invalid");
+                return null;
+            }
             // We get a list, but there's only one item in it
             List<Map<String,String>> results = getTagsFromLists(parser,
                     list_map);
@@ -265,8 +269,8 @@ public class LastfmSession {
         }
         catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public TagList getGlobalTags() {

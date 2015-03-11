@@ -38,6 +38,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     // in the list
     Track mAlternatePodTrack;
     List<Track> mRecentTracks;
+    TextView mErrorMessage;
     ListEntry mPodView;
 //    MediaController mMediaController;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -105,9 +106,12 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         ProgressBar progress;
         progress = (ProgressBar)findViewById(R.id.initialProgressBar);
         progress.setVisibility(View.GONE);
-        TextView message = new TextView(mCurrentContext);
-        message.setText(getString(R.string.tracklist_problems_communicating));
-        rtLayout.addView(message);
+        if (mErrorMessage == null) {
+            mErrorMessage = new TextView(mCurrentContext);
+            rtLayout.addView(mErrorMessage);
+        }
+        String msg = getString(R.string.tracklist_problems_communicating);
+        mErrorMessage.setText(msg);
     }
 
     private void setRecentTracks(List<Track> tracks) {
