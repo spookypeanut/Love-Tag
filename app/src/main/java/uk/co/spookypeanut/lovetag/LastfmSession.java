@@ -150,6 +150,7 @@ public class LastfmSession {
     }
 
     public List<Track> getRecent () {
+        String tag = "Love&Tag.LastfmSession.getRecent";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
@@ -172,6 +173,11 @@ public class LastfmSession {
         List<Track> recentTracks = new ArrayList<>();
         try {
             parser = getUrlResponse(urlString);
+            if (parser == null) {
+                Log.w(tag,"Invalid parser from getUrlResponse, " +
+                          "returning empty list");
+                return new ArrayList<>();
+            }
             for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
                 recentTracks.add(new Track(map));
             }
@@ -408,9 +414,10 @@ public class LastfmSession {
         }
         catch (XmlPullParserException e) {
             e.printStackTrace();
+            return null;
         }
-        return parser;
     }
+
     private boolean getBoolean(String url) throws
             XmlPullParserException, IOException {
         String tag = "Love&Tag.LastfmSession.getBoolean";
