@@ -108,6 +108,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         mRecentTracks = tracks;
         if (tracks.size() == 0) {
             setNoTracks();
+            mSwipeRefreshLayout.setRefreshing(false);
             return;
         }
         LinearLayout rtLayout;
@@ -204,24 +205,27 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         String tag = "Love&Tag.TrackListActivity.updateAll";
         Log.d(tag, "Updating");
         if (!mLfs.isLoggedIn()) return;
-        mSwipeRefreshLayout.setRefreshing(true);
-        updateRecent();
         updatePod();
+        if (updateRecent()) {
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
     }
 
-    private void updatePod() {
+    private boolean updatePod() {
         String tag = "Love&Tag.TrackListActivity.updatePod";
-        if (mNowPlaying == null || ! mLfs.isLoggedIn()) return;
+        if (mNowPlaying == null || ! mLfs.isLoggedIn()) return false;
         Log.d(tag, mNowPlaying.toString());
         TrackInfoCall ilc = new TrackInfoCall();
         ilc.execute(mNowPlaying);
         Log.d(tag, "Checking if " + mNowPlaying.mTitle + " is loved");
+        return true;
     }
 
-    private void updateRecent() {
-        if (!mLfs.isLoggedIn()) return;
+    private boolean updateRecent() {
+        if (!mLfs.isLoggedIn()) return false;
         GetRecent gr = new GetRecent();
         gr.execute();
+        return true;
     }
 
     public class ListEntry extends LinearLayout {
