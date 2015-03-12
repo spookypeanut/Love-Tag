@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/recentTracksLayout">
                 <ProgressBar
-                    android:id="@+id/initialProgressBar"
+                    android:id="@+id/tl_initialProgressBar"
                     style="?android:attr/progressBarStyleLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -33,4 +33,5 @@
     <string name="ti_love_button_desc">Love Button</string>
     <string name="tracklist_problems_communicating">Problems communicating
         with Last.fm: pull down to retry</string>
+    <string name="ti_connectionwarning">Problems communicating with Last.fm</string>
 </resources>

@@ -298,6 +298,7 @@ public class LastfmSession {
         }
         catch (Exception e) {
             e.printStackTrace();
+            topTags.mValid = false;
         }
         return topTags;
     }

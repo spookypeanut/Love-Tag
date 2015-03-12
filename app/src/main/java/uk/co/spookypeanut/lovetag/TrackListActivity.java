@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -94,12 +95,15 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         LinearLayout rtLayout;
         rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
         ProgressBar progress;
-        progress = (ProgressBar)findViewById(R.id.initialProgressBar);
+        progress = (ProgressBar)findViewById(R.id.tl_initialProgressBar);
         if (progress != null) progress.setVisibility(View.GONE);
-        if (mErrorMessage == null) {
-            mErrorMessage = new TextView(mCurrentContext);
-            rtLayout.addView(mErrorMessage);
+        if (mErrorMessage != null) {
+            return;
         }
+        mErrorMessage = new TextView(mCurrentContext);
+        mErrorMessage.setTextSize(18);
+        mErrorMessage.setGravity(Gravity.CENTER_HORIZONTAL);
+        rtLayout.addView(mErrorMessage);
         String msg = getString(R.string.tracklist_problems_communicating);
         mErrorMessage.setText(msg);
     }

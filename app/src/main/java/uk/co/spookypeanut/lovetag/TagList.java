@@ -10,7 +10,8 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class TagList extends ArrayList<Tag> {
-    public TagList() {}
+    // This is just a way to pass another flag back with the list
+    boolean mValid = true;
 
     public TagList getActiveList() {
         TagList tl = new TagList();

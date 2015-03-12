@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +89,7 @@ public class TagInputActivity extends ActionBarActivity {
         // Because this activity has a default launchMode,
         // we have to call this manually
         onNewIntent(this.getIntent());
+        findViewById(R.id.ti_initialProgressBar).setVisibility(View.VISIBLE);
         GetTagsCall gec = new GetTagsCall();
         gec.execute(mTrack);
         Log.d(tag, "Tags on track: " + mOrigTags.toString());
@@ -204,7 +206,8 @@ public class TagInputActivity extends ActionBarActivity {
 
     private void setLoved(boolean loved) {
         mTrack.mLoved = loved;
-        ImageButton love_button = (ImageButton) findViewById(R.id.tag_love_button);
+        ImageButton love_button = (ImageButton) findViewById(R.id
+                .tag_love_button);
         Drawable d;
         if (loved) {
             d = ContextCompat.getDrawable(this, R.drawable.lovetrue);
@@ -226,6 +229,7 @@ public class TagInputActivity extends ActionBarActivity {
     }
 
     private void updateList() {
+        findViewById(R.id.ti_initialProgressBar).setVisibility(View.GONE);
         Collections.sort(mTagList);
         mTagAdaptor.notifyDataSetChanged();
     }
@@ -255,6 +259,12 @@ public class TagInputActivity extends ActionBarActivity {
             return "";
         }
         protected void onPostExecute(String result) {
+            if (!mTrackTags.mValid || !mFreqTags.mValid) {
+                TextView warn;
+                warn = (TextView) findViewById(R.id.ti_connectionwarning);
+                warn.setText(R.string.ti_connectionwarning);
+                warn.setVisibility(View.VISIBLE);
+            }
             mTagList.addAll(mTrackTags);
             mOrigTags = mTrackTags;
             mTagList.addAll(mFreqTags);

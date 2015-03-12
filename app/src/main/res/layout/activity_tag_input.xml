@@ -77,6 +77,21 @@
         android:singleLine="true"
         android:hint="@string/tag_hint"/>
 
+    <ProgressBar
+        android:id="@+id/ti_initialProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/ti_connectionwarning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:gravity="center_horizontal"
+        android:textSize="18dp"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
