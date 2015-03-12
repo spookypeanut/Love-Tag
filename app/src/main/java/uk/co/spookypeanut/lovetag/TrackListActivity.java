@@ -49,6 +49,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String tag = "Love&Tag.TrackListActivity.onCreate";
         setContentView(R.layout.activity_track_list);
 
         IntentFilter iF = new IntentFilter();
@@ -58,6 +59,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
 
         mPodView = new ListEntry(mCurrentContext);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeLayout);
+        Log.d(tag, "setOnRefreshListener");
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mUrlMaker = new UrlMaker();
         // This snippet should be used whenever getting a session. It's
@@ -71,17 +73,20 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
                     R.integer.rc_log_in));
             return;
         }
-        updateAll();
     }
 
     @Override
     public void onRefresh() {
+        String tag = "Love&Tag.TrackListActivity.onRefresh";
+        Log.d(tag, "Updating");
         updateAll();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        String tag = "Love&Tag.TrackListActivity.onResume";
+        Log.d(tag, "Updating");
         updateAll();
     }
 
@@ -90,7 +95,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
         ProgressBar progress;
         progress = (ProgressBar)findViewById(R.id.initialProgressBar);
-        progress.setVisibility(View.GONE);
+        if (progress != null) progress.setVisibility(View.GONE);
         if (mErrorMessage == null) {
             mErrorMessage = new TextView(mCurrentContext);
             rtLayout.addView(mErrorMessage);
@@ -146,7 +151,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String tag = "Love&Tag.Love.onActivityResult";
+        String tag = "Love&Tag.TrackListActivity.onActivityResult";
         Log.i(tag, "Starting");
         Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
         // Check which request we're responding to
@@ -162,7 +167,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String tag = "Love&Tag.Love.mReceiver.onReceive";
+            String tag = "Love&Tag.TrackListActivity.mReceiver.onReceive";
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
             if (artist == null) return;
@@ -196,6 +201,8 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     }
 
     private void updateAll() {
+        String tag = "Love&Tag.TrackListActivity.updateAll";
+        Log.d(tag, "Updating");
         if (!mLfs.isLoggedIn()) return;
         mSwipeRefreshLayout.setRefreshing(true);
         updateRecent();
@@ -203,10 +210,10 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     }
 
     private void updatePod() {
-        String tag = "Love&Tag.Love.updatePod";
+        String tag = "Love&Tag.TrackListActivity.updatePod";
         if (mNowPlaying == null || ! mLfs.isLoggedIn()) return;
-        TrackInfoCall ilc = new TrackInfoCall();
         Log.d(tag, mNowPlaying.toString());
+        TrackInfoCall ilc = new TrackInfoCall();
         ilc.execute(mNowPlaying);
         Log.d(tag, "Checking if " + mNowPlaying.mTitle + " is loved");
     }
@@ -234,7 +241,8 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
             loveButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     String tag;
-                    tag = "Love&Tag.Love.ListEntry.loveButton.onClick";
+                    tag = "Love&Tag.TrackListActivity.ListEntry.loveButton" +
+                            ".onClick";
                     mSwipeRefreshLayout.setRefreshing(true);
                     if (!mTrack.mLoved) {
                         LoveCall lc = new LoveCall();
@@ -251,7 +259,8 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
                     .entry_tagbutton);
             tagButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    String tag = "Love&Tag.Love.ListEntry.tagButton.onClick";
+                    String tag = "Love&Tag.TrackListActivity.ListEntry" +
+                            ".tagButton.onClick";
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInputActivity.class);
                     i.putExtra("artist", mTrack.mArtist);
@@ -264,9 +273,9 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         }
 
         public void setMusic(Track track) {
-            String tag = "Love&Tag.Love.ListEntry.setMusic";
+            String tag = "Love&Tag.TrackListActivity.ListEntry.setMusic";
             mTrack = track;
-            Log.v(tag, "Adding: " + mTrack.mArtist +
+            Log.d(tag, "Adding: " + mTrack.mArtist +
                     ", " + mTrack.mTitle +
                     ", " + String.valueOf(mTrack.mLoved));
             try {
@@ -307,7 +316,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
             return msg;
         }
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.Love.UnloveCall.onPostExecute";
+            String tag = "Love&Tag.TrackListActivity.UnloveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             updateAll();
@@ -329,7 +338,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
             return msg;
         }
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.Love.LoveCall.onPostExecute";
+            String tag = "Love&Tag.TrackListActivity.LoveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             updateAll();
@@ -349,6 +358,10 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
     private class TrackInfoCall extends AsyncTask<Track, String, String> {
         Track mNewTrack;
         Track mOrigTrack;
+        TrackInfoCall() {
+            String tag = "Love&Tag.TrackListActivity.TrackInfoCall";
+            Log.d(tag, "Constructor");
+        }
 
         @Override
         protected String doInBackground(Track... params) {

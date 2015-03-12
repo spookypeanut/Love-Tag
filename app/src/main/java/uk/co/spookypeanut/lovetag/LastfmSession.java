@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -235,6 +236,7 @@ public class LastfmSession {
 
     public Track getTrackInfo(Track orig_track) {
         String tag = "Love&Tag.LastfmSession.getTrackInfo";
+        Log.d(tag, "Getting info of " + orig_track.toString());
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
@@ -390,22 +392,26 @@ public class LastfmSession {
         }
         XmlPullParser parser = null;
         short try_number = 1;
+        URL url;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            Log.e(tag, "Malformed url: " + urlString);
+            return null;
+        }
         while (in == null) {
             try {
-                URL url = new URL(urlString);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-                urlConnection.setRequestProperty("Accept","*_/*"); // Remove the underscore
                 in = new BufferedInputStream(urlConnection.getInputStream());
-            } catch (Exception e) {
+            } catch (IOException e) {
                 in = null;
                 Log.e(tag, "Try number " + try_number +
                            " failed: " + e.getMessage());
                 try_number += 1;
-                e.printStackTrace();
                 if (try_number > RETRIES) {
                     Log.e(tag, "Failed after " + RETRIES + " attempts");
+                    e.printStackTrace();
                     return null;
                 }
             }
@@ -414,12 +420,12 @@ public class LastfmSession {
             parser = pullParserFactory.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
-            return parser;
         }
         catch (XmlPullParserException e) {
             e.printStackTrace();
             return null;
         }
+        return parser;
     }
 
     private boolean getBoolean(String url) throws
