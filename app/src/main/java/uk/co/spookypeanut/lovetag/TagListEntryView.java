@@ -86,8 +86,7 @@ public class TagListEntryView extends TextView {
     private void drawBackground(Canvas canvas) {
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
-        Point p;
-        p = mBorderPointList.get(0);
+        Point p = mBorderPointList.get(0);
         path.moveTo(p.x, p.y);
         for (int index=1; index< mBorderPointList.size(); index++) {
             p = mBorderPointList.get(index);
