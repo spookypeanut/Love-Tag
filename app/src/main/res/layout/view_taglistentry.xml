@@ -10,6 +10,7 @@
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:paddingStart="30dp"
+    android:singleLine="true"
+    android:paddingStart="20dp"
     android:paddingEnd="30dp"/>
 
