@@ -390,7 +390,7 @@ public class LastfmSession {
             e.printStackTrace();
             return null;
         }
-        XmlPullParser parser = null;
+        XmlPullParser parser;
         short try_number = 1;
         URL url;
         try {
