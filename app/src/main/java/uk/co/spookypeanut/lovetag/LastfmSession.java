@@ -64,10 +64,8 @@ public class LastfmSession {
         return !mSessionKey.equals("");
     }
 
-    public boolean unlove(Track track) {
-        if (!isLoggedIn()) {
-            throw(new IllegalStateException("Session is not logged in"));
-        }
+    public boolean unlove(Track orig_track) {
+        Track track = preTrackAction(orig_track);
         Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.unlove");
         restparams.put("sk", mSessionKey);
@@ -85,10 +83,8 @@ public class LastfmSession {
             return false;
         }
     }
-    public boolean love(Track track) {
-        if (!isLoggedIn()) {
-            throw(new IllegalStateException("Session is not logged in"));
-        }
+    public boolean love(Track orig_track) {
+        Track track = preTrackAction(orig_track);
         Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.love");
         restparams.put("sk", mSessionKey);
@@ -107,10 +103,8 @@ public class LastfmSession {
         }
     }
 
-    public boolean tag(Track track, String tag_cat) {
-        if (!isLoggedIn()) {
-            throw(new IllegalStateException("Session is not logged in"));
-        }
+    public boolean tag(Track orig_track, String tag_cat) {
+        Track track = preTrackAction(orig_track);
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.addTags");
         rest_params.put("sk", mSessionKey);
@@ -130,10 +124,8 @@ public class LastfmSession {
         }
     }
 
-    public boolean untag(Track track, String tag_name) {
-        if (!isLoggedIn()) {
-            throw(new IllegalStateException("Session is not logged in"));
-        }
+    public boolean untag(Track orig_track, String tag_name) {
+        Track track = preTrackAction(orig_track);
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.removeTag");
         rest_params.put("sk", mSessionKey);
@@ -194,13 +186,11 @@ public class LastfmSession {
 
     public TagList getTrackTags(Track orig_track) {
         String tag = "Love&Tag.LastfmSession.getTrackTags";
-        if (!isLoggedIn()) {
-            throw(new IllegalStateException("Session is not logged in"));
-        }
+        Track track = preTrackAction(orig_track);
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.getTags");
-        rest_params.put("artist", orig_track.mArtist);
-        rest_params.put("track", orig_track.mTitle);
+        rest_params.put("artist", track.mArtist);
+        rest_params.put("track", track.mTitle);
         rest_params.put("user", mUsername);
         String urlString = mUrlMaker.fromHashmap(rest_params);
         Map<String, List<String>> list_map = new HashMap<>();
@@ -235,6 +225,12 @@ public class LastfmSession {
             return false;
         }
         return info.mLoved;
+    }
+
+    private Track preTrackAction(Track orig_track) {
+        // We do this so that we're always loving the auto-corrected version.
+        // It does slow things down a little though.
+        return getTrackInfo(orig_track);
     }
 
     public Track getTrackInfo(Track orig_track) {
