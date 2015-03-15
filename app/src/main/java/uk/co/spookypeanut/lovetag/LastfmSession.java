@@ -57,6 +57,9 @@ public class LastfmSession {
     }
 
     public boolean isLoggedIn() {
+        if (!mSessionKey.equals("")) {
+            return true;
+        }
         passiveLogin();
         return !mSessionKey.equals("");
     }
