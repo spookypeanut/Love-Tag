@@ -55,7 +55,7 @@ public class TagListEntryView extends TextView {
 
     @Override
     protected void onSizeChanged(int width, int height, int old_w, int old_h) {
-        int offset = 8;
+        final int offset = 8;
         int left = offset;
         int top = offset;
         int bottom = height - top;
