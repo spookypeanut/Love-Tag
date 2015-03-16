@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import uk.co.spookypeanut.lovetag.util.IabHelper;
 import uk.co.spookypeanut.lovetag.util.IabResult;
+import uk.co.spookypeanut.lovetag.util.Purchase;
 
 public class TrackListActivity extends ActionBarActivity implements
         SwipeRefreshLayout.OnRefreshListener {
@@ -38,6 +39,8 @@ public class TrackListActivity extends ActionBarActivity implements
     Context mCurrentContext = this;
     Track mNowPlaying;
     IabHelper mHelper;
+    static final String ITEM_SKU = "uk.co.spookypeanut.loveandtag.donate";
+    static final int RC_DONATE = 137;
 
     // This is never visible. It's the autocorrected version of the currently
     // playing track, so we don't end up having both "burnout" and "Burnout"
@@ -163,8 +166,10 @@ public class TrackListActivity extends ActionBarActivity implements
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String tag = "Love&Tag.TrackListActivity.onActivityResult";
-        Log.i(tag, "Starting");
         Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
+        if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
         // Check which request we're responding to
         if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
             if (resultCode == RESULT_OK) {
@@ -172,6 +177,7 @@ public class TrackListActivity extends ActionBarActivity implements
             } else {
                 Log.e(tag, "Log in failed");
             }
+            return;
         }
     }
 
@@ -186,6 +192,24 @@ public class TrackListActivity extends ActionBarActivity implements
             Log.d(tag, "Got new track: " + title + " (" + action + ")");
             mNowPlaying = new Track(artist, title, false);
             updatePod();
+        }
+    };
+
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
+            = new IabHelper.OnIabPurchaseFinishedListener() {
+        final String tag = "mPurchaseFinishedList";
+        public void onIabPurchaseFinished(IabResult result,
+                                          Purchase purchase)
+        {
+            if (result.isFailure()) {
+                // Handle error
+                Log.e(tag, "Failure in purchase");
+                return;
+            }
+            if (purchase.getSku().equals(ITEM_SKU)) {
+                Log.e(tag, "Purchase succeeded");
+            }
+
         }
     };
 
@@ -216,6 +240,7 @@ public class TrackListActivity extends ActionBarActivity implements
                          Log.d(tag, "In-app Billing setup failed: " + result);
                      } else {
                          Log.d(tag, "In-app Billing is set up OK");
+                         donateClicked();
                      }
                  }
             });
@@ -228,6 +253,11 @@ public class TrackListActivity extends ActionBarActivity implements
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void donateClicked() {
+        mHelper.launchPurchaseFlow(this, ITEM_SKU, RC_DONATE,
+                mPurchaseFinishedListener, "mypurchasetoken");
     }
 
     private void updateAll() {
