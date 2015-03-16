@@ -28,12 +28,17 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import uk.co.spookypeanut.lovetag.util.IabHelper;
+import uk.co.spookypeanut.lovetag.util.IabResult;
 
-public class TrackListActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class TrackListActivity extends ActionBarActivity implements
+        SwipeRefreshLayout.OnRefreshListener {
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
     Track mNowPlaying;
+    IabHelper mHelper;
+
     // This is never visible. It's the autocorrected version of the currently
     // playing track, so we don't end up having both "burnout" and "Burnout"
     // in the list
@@ -63,6 +68,8 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         Log.d(tag, "setOnRefreshListener");
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mUrlMaker = new UrlMaker();
+        mHelper = new IabHelper(this, getString(R.string.billing_licence_key));
+
         // This snippet should be used whenever getting a session. It's
         // the most elegant way I can figure out to do this (the only
         // inelegance is duplication of this snippet)
@@ -72,7 +79,6 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
             i.setClass(this, LoginActivity.class);
             startActivityForResult(i, getResources().getInteger(
                     R.integer.rc_log_in));
-            return;
         }
     }
 
@@ -192,6 +198,7 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final String tag = "TrackListActivity.onOptionsItemSelected";
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -200,6 +207,24 @@ public class TrackListActivity extends ActionBarActivity implements SwipeRefresh
         if (id == R.id.action_logout) {
             mLfs.logOut();
             finish();
+            return true;
+        }
+        if (id == R.id.action_donate) {
+            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+                 public void onIabSetupFinished(IabResult result) {
+                     if (!result.isSuccess()) {
+                         Log.d(tag, "In-app Billing setup failed: " + result);
+                     } else {
+                         Log.d(tag, "In-app Billing is set up OK");
+                     }
+                 }
+            });
+
+//            Intent i = new Intent();
+//            i.setClass(App.getContext(), DonateActivity.class);
+//            Log.d(tag, "Starting donate activity");
+//            startActivityForResult(i, getResources().getInteger(
+//                    R.integer.rc_donate));
             return true;
         }
         return super.onOptionsItemSelected(item);
