@@ -12,8 +12,13 @@
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/lastfm_red</item>
+        <item name="titleTextStyle">@style/MyActionBarTitleText</item>
     </style>
 
+    <style name="MyActionBarTitleText"
+           parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
     <style name="WidgetLabel">
         <item name="android:paddingLeft">1dp</item>
         <item name="android:paddingBottom">1dp</item>
