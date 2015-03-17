@@ -8,6 +8,7 @@ package uk.co.spookypeanut.lovetag;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,7 +21,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends ActionBarActivity {
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
 
