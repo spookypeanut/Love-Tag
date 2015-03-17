@@ -177,7 +177,6 @@ public class TrackListActivity extends ActionBarActivity implements
             } else {
                 Log.e(tag, "Log in failed");
             }
-            return;
         }
     }
 
