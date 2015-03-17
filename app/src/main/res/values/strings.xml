@@ -12,7 +12,7 @@
     <string name="url_param_separator"><![CDATA[&]]></string>
     <string name="session_setting">uk.co.spookypeanut.loveandtag.sessionkey</string>
     <string name="username_setting">uk.co.spookypeanut.loveandtag.usernamekey</string>
-    <string name="title_activity_tag_input">TagInput</string>
+    <string name="title_activity_tag_input">Enter tags</string>
 
     <string name="love_success">Love succeeded</string>
     <string name="love_failed">Love failed</string>
