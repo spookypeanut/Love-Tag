@@ -8,6 +8,7 @@ package uk.co.spookypeanut.lovetag;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -39,17 +40,17 @@ public class TagListEntryView extends TextView {
 
     private void init() {
         Resources r = getResources();
-        mActiveFillPaint.setColor(r.getColor(R.color.tag_active_background));
+        mActiveFillPaint.setColor(r.getColor(R.color.lastfm_red ));
         mActiveFillPaint.setShadowLayer(mDropShadowRadius, 0,
-                mDropShadowDistance, r.getColor(R.color.tag_active_shadow));
+                mDropShadowDistance, r.getColor(R.color.shadow_grey));
         setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
-        mInactiveFillPaint.setColor(r.getColor(R.color.tag_inactive_background));
+        mInactiveFillPaint.setColor(r.getColor(R.color.pale_lastfm_red));
         mInactiveFillPaint.setShadowLayer(mDropShadowRadius, 0,
-                mDropShadowDistance, r.getColor(R.color.tag_inactive_shadow));
+                mDropShadowDistance, r.getColor(R.color.shadow_grey));
         setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
-        mActiveDrawColour = r.getColor(R.color.tag_active_line);
+        mActiveDrawColour = Color.WHITE;
         mActiveDrawPaint.setColor(mActiveDrawColour);
-        mInactiveDrawColour = r.getColor(R.color.tag_inactive_line);
+        mInactiveDrawColour = Color.WHITE;
         mInactiveDrawPaint.setColor(mInactiveDrawColour);
     }
 

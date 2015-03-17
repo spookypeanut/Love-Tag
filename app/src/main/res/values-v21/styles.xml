@@ -5,8 +5,8 @@
  -->
 <resources>
     <style name="AppTheme" parent="AppTheme.Base">
-        <item name="android:colorPrimary">@color/action_bar_background</item>
-        <item name="android:colorPrimaryDark">@color/notification_bar</item>
+        <item name="android:colorPrimary">@color/lastfm_red</item>
+        <item name="android:colorPrimaryDark">@color/dark_lastfm_red</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
