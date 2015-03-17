@@ -5,7 +5,6 @@ package uk.co.spookypeanut.lovetag;
  * Distributed under the GNU GPL v3. For full terms see the file COPYING.
  */
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

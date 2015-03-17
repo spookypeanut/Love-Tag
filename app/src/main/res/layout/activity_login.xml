@@ -19,6 +19,7 @@
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/lastfm_red_logo"
+        android:contentDescription="@string/lastfm_logo_description"
         android:paddingBottom="16dp"/>
 
     <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"

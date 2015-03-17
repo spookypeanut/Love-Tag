@@ -22,7 +22,6 @@
     <string name="tag_failed">Tag failed</string>
     <string name="untag_success">Untag succeeded</string>
     <string name="untag_failed">Untag failed</string>
-    <string name="appwidget_text"></string>
     <string name="add_widget">Add widget</string>
     <string name="love_widget_click_action">LOVE_WIDGET_CLICK_ACTION</string>
     <string name="widget_not_logged_in_message">"Not logged in: please open the app"</string>
@@ -35,4 +34,5 @@
     <string name="tracklist_problems_communicating">Problems communicating
         with Last.fm: pull down to retry</string>
     <string name="ti_connectionwarning">Problems communicating with Last.fm</string>
+    <string name="lastfm_logo_description">Android logo</string>
 </resources>
