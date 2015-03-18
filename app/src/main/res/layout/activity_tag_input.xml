@@ -25,7 +25,7 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="title"
+                android:text=""
                 android:id="@+id/tag_title"
                 android:singleLine="true"
                 android:textAlignment="gravity"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="artist"
+                android:text=""
                 android:id="@+id/tag_artist"
                 android:paddingLeft="4dp"
                 android:singleLine="true"
@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:gravity="center_horizontal"
-        android:textSize="18dp"/>
+        android:textSize="18sp"/>
 
     <LinearLayout
         android:orientation="horizontal"
