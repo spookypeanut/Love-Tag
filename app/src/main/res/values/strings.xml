@@ -35,4 +35,9 @@
         with Last.fm: pull down to retry</string>
     <string name="ti_connectionwarning">Problems communicating with Last.fm</string>
     <string name="lastfm_logo_description">Android logo</string>
+    <string name="lastfm_history_label">Last.fm History</string>
+    <string name="playing_on_device_label">Playing on Device</string>
+    <string name="love_widget_button_label">Love track</string>
+    <string name="tl_tag_button">Tag button</string>
+    <string name="tl_love_button">Love button</string>
 </resources>

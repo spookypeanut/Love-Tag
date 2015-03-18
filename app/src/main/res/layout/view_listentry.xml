@@ -32,7 +32,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="-"
             android:id="@+id/title"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
@@ -46,7 +45,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="-"
             android:id="@+id/artist"
             android:ellipsize="middle"
             android:textStyle="italic"/>
@@ -60,6 +58,7 @@
         android:layout_weight="0"
         android:src="@drawable/tag"
         android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/tl_tag_button"
         />
 
     <ImageButton
@@ -69,6 +68,7 @@
         android:src="@drawable/loveunknown"
         android:layout_weight="0"
         android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/tl_love_button"
         />
 
 </LinearLayout>

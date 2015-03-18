@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Playing on Device"
+        android:text="@string/playing_on_device_label"
         android:id="@+id/podLabel"
         android:layout_gravity="right"
         android:visibility="gone"/>
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Last.fm History"
+        android:text="@string/lastfm_history_label"
         android:id="@+id/historyLabel"
         android:layout_gravity="right"/>
 
