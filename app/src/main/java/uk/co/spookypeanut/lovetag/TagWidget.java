@@ -37,6 +37,7 @@ public class TagWidget extends AppWidgetProvider {
         if (action.equals(TrackListActivity.METACHANGED) ||
                 action.equals(TrackListActivity.PLAYSTATECHANGED)) {
             String artist = intent.getStringExtra("artist");
+            if (artist == null) return;
             String title = intent.getStringExtra("track");
             Log.d(tag, "Got new track: " + title + " (" + action + ")");
             Intent i = new Intent(context, UpdateService.class);
