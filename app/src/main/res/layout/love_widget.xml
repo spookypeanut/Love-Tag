@@ -14,7 +14,7 @@
         android:layout_height="fill_parent"
         android:id="@+id/loveWidgetButton"
         android:src="@drawable/lovefalse"
-        android:contentDescription="@string/love_widget_button_label"
+        android:contentDescription="@string/lw_button_description"
         android:background="#00000000"/>
 
     <TextView

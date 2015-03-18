@@ -4,15 +4,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file COPYING.
  -->
 <resources>
-
-    <string name="app_name">Love &amp; Tag</string>
-    <string name="action_logout">Logout</string>
-    <string name="action_donate">Donate</string>
-    <string name="base_url">https://ws.audioscrobbler.com/2.0/?</string>
-    <string name="url_param_separator"><![CDATA[&]]></string>
-    <string name="session_setting">uk.co.spookypeanut.loveandtag.sessionkey</string>
-    <string name="username_setting">uk.co.spookypeanut.loveandtag.usernamekey</string>
-    <string name="title_activity_tag_input">Enter tags</string>
+    <string name="app_name">Love&amp;Tag</string>
 
     <string name="love_success">Love succeeded</string>
     <string name="love_failed">Love failed</string>
@@ -22,22 +14,26 @@
     <string name="tag_failed">Tag failed</string>
     <string name="untag_success">Untag succeeded</string>
     <string name="untag_failed">Untag failed</string>
-    <string name="add_widget">Add widget</string>
-    <string name="love_widget_click_action">LOVE_WIDGET_CLICK_ACTION</string>
-    <string name="widget_not_logged_in_message">"Not logged in: please open the app"</string>
-    <string name="metachanged">com.android.music.metachanged</string>
-    <string name="tag_hint">Enter new tag</string>
-    <string name="tw_button_description">Press to tag currently playing track</string>
-    <string name="tag_input_ok_button">Tag Track</string>
-    <string name="tag_input_cancel_button">Cancel</string>
-    <string name="ti_love_button_desc">Love Button</string>
-    <string name="tracklist_problems_communicating">Problems communicating
-        with Last.fm: pull down to retry</string>
-    <string name="ti_connectionwarning">Problems communicating with Last.fm</string>
-    <string name="lastfm_logo_description">Android logo</string>
-    <string name="lastfm_history_label">Last.fm History</string>
-    <string name="playing_on_device_label">Playing on Device</string>
-    <string name="love_widget_button_label">Love track</string>
+
+    <string name="tl_playing_on_device_label">Playing on Device</string>
+    <string name="tl_lastfm_history_label">Last.fm History</string>
     <string name="tl_tag_button">Tag button</string>
     <string name="tl_love_button">Love button</string>
+    <string name="tl_action_logout">Logout</string>
+    <string name="tl_action_donate">Donate</string>
+    <string name="tl_problems_communicating">Problems communicating
+        with Last.fm: pull down to retry</string>
+
+    <string name="ti_activity_title">Enter tags</string>
+    <string name="ti_tag_hint">Enter new tag</string>
+    <string name="ti_ok_button">Tag Track</string>
+    <string name="ti_cancel_button">Cancel</string>
+    <string name="ti_love_button_desc">Love Track</string>
+    <string name="ti_connection_warning">Problems communicating with Last.fm</string>
+
+    <string name="widget_not_logged_in_message">"Not logged in: please open the app"</string>
+    <string name="tw_button_description">Press to tag currently playing track</string>
+    <string name="lw_button_description">Press to love currently playing track</string>
+
+    <string name="lastfm_logo_description">Last.fm logo</string>
 </resources>

@@ -261,7 +261,7 @@ public class TagInputActivity extends ActionBarActivity {
             if (!mTrackTags.mValid || !mFreqTags.mValid) {
                 TextView warn;
                 warn = (TextView) findViewById(R.id.ti_connectionwarning);
-                warn.setText(R.string.ti_connectionwarning);
+                warn.setText(R.string.ti_connection_warning);
                 warn.setVisibility(View.VISIBLE);
             }
             mTagList.addAll(mTrackTags);

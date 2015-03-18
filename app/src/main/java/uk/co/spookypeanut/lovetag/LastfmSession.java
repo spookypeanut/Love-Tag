@@ -493,6 +493,8 @@ public class LastfmSession {
 class UrlMaker {
     Context mContext;
     Md5Maker mMd5Maker;
+    static final String BASE_URL = "https://ws.audioscrobbler.com/2.0/?";
+    static final String URL_PARAM_SEP = "&";
     public UrlMaker() {
         mContext = App.getContext();
         mMd5Maker = new Md5Maker();
@@ -506,7 +508,7 @@ class UrlMaker {
         }
 
         StringBuilder url = new StringBuilder();
-        url.append(mContext.getString(R.string.base_url));
+        url.append(BASE_URL);
         String delim = "";
         for (String key : params.keySet()) {
             String raw_value = params.get(key);
@@ -517,7 +519,7 @@ class UrlMaker {
             try {
                 value = URLEncoder.encode(raw_value, "utf-8");
                 url.append(delim).append(key).append("=").append(value);
-                delim = mContext.getString(R.string.url_param_separator);
+                delim = URL_PARAM_SEP;
             }
             catch (UnsupportedEncodingException e) {
                 Log.e(tag, "raw_value: " + raw_value);

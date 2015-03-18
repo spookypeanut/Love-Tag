@@ -75,7 +75,7 @@
         android:imeActionLabel="Add"
         android:lines="1"
         android:singleLine="true"
-        android:hint="@string/tag_hint"/>
+        android:hint="@string/ti_tag_hint"/>
 
     <ProgressBar
         android:id="@+id/ti_initialProgressBar"
@@ -126,7 +126,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tag_input_ok_button"
+            android:text="@string/ti_ok_button"
             android:id="@+id/tag_ok"
             android:layout_weight="1"
             style="?android:attr/buttonBarButtonStyle"
@@ -135,7 +135,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tag_input_cancel_button"
+            android:text="@string/ti_cancel_button"
             android:id="@+id/tag_cancel"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1"/>

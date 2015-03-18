@@ -26,7 +26,7 @@
         </activity>
         <activity
             android:name=".TagInputActivity"
-            android:label="@string/title_activity_tag_input"
+            android:label="@string/ti_activity_title"
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".TrackListActivity" >
             <meta-data
@@ -34,7 +34,7 @@
                 android:value=".TrackListActivity" />
         </activity>
 
-        <receiver android:name=".LoveWidget" android:label="Love&amp;Tag:Love">
+        <receiver android:name=".LoveWidget" android:label="Love&amp;Tag: Love">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.android.music.metachanged" />
@@ -46,7 +46,7 @@
                 android:resource="@xml/love_widget_info" />
         </receiver>
         <service android:name=".LoveWidget$UpdateService" />
-        <receiver android:name=".TagWidget" android:label="Love&amp;Tag:Tag">
+        <receiver android:name=".TagWidget" android:label="Love&amp;Tag: Tag">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.android.music.metachanged" />

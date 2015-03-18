@@ -113,7 +113,7 @@ public class TrackListActivity extends ActionBarActivity implements
         mErrorMessage.setTextSize(18);
         mErrorMessage.setGravity(Gravity.CENTER_HORIZONTAL);
         rtLayout.addView(mErrorMessage);
-        String msg = getString(R.string.tracklist_problems_communicating);
+        String msg = getString(R.string.tl_problems_communicating);
         mErrorMessage.setText(msg);
     }
 
