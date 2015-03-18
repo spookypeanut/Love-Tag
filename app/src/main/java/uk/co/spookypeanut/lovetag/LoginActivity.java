@@ -90,7 +90,7 @@ public class LoginActivity extends ActionBarActivity {
     private class CallAPI extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            String tag = "Love&Tag.CallAPI.doInBackground";
+            final String tag = "CallAPI.doInBackground";
             String username = params[0];
             String authToken = params[1];
             LastfmSession lfs;

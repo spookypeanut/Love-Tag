@@ -55,7 +55,7 @@ public class TagInputActivity extends ActionBarActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        final String tag = "Love&Tag.TagInputActivity.onNewIntent";
+        final String tag = "TagInputActivity.onNewIntent";
         String artist = intent.getStringExtra("artist");
         String title = intent.getStringExtra("title");
         Log.i(tag, "Track: " + title + ", " + artist);
@@ -72,7 +72,7 @@ public class TagInputActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final String tag = "Love&Tag.TagInputActivity.onCreate";
+        final String tag = "TagInputActivity.onCreate";
         // This snippet should be used whenever getting a session. It's
         // the most elegant way I can figure out to do this (the only
         // inelegance is duplication of this snippet)
@@ -274,7 +274,7 @@ public class TagInputActivity extends ActionBarActivity {
     public class TagAdapter extends ArrayAdapter<Tag> {
         public TagAdapter(Context context, ArrayList<Tag> values) {
             super(context, R.layout.view_taglistentry, values);
-            String tag = "Love&Tag.TagInputActivity.TagAdapter";
+            final String tag = "TagInputActivity.TagAdapter";
             Log.v(tag, "Constructor");
         }
 
@@ -318,7 +318,7 @@ public class TagInputActivity extends ActionBarActivity {
             return msg;
         }
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.TagInputActivity.UnloveCall.onPostExecute";
+            final String tag = "TagInputActivity.UnloveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             checkLoved();
@@ -338,7 +338,7 @@ public class TagInputActivity extends ActionBarActivity {
             return msg;
         }
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.TagInputActivity.LoveCall.onPostExecute";
+            final String tag = "TagInputActivity.LoveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             checkLoved();
@@ -365,7 +365,7 @@ public class TagInputActivity extends ActionBarActivity {
         }
 
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.Love.TagCall.onPostExecute";
+            final String tag = "Love.TagCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             finish();
@@ -391,7 +391,7 @@ public class TagInputActivity extends ActionBarActivity {
             return msg;
         }
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.Love.UntagCall.onPostExecute";
+            final String tag = "Love.UntagCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             finish();

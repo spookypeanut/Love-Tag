@@ -58,7 +58,7 @@ public class TrackListActivity extends ActionBarActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String tag = "Love&Tag.TrackListActivity.onCreate";
+        final String tag = "TrackListActivity.onCreate";
         setContentView(R.layout.activity_track_list);
 
         IntentFilter iF = new IntentFilter();
@@ -87,7 +87,7 @@ public class TrackListActivity extends ActionBarActivity implements
 
     @Override
     public void onRefresh() {
-        String tag = "Love&Tag.TrackListActivity.onRefresh";
+        final String tag = "TrackListActivity.onRefresh";
         Log.d(tag, "Updating");
         updateAll();
     }
@@ -95,7 +95,7 @@ public class TrackListActivity extends ActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        String tag = "Love&Tag.TrackListActivity.onResume";
+        final String tag = "TrackListActivity.onResume";
         Log.d(tag, "Updating");
         updateAll();
     }
@@ -165,7 +165,7 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String tag = "Love&Tag.TrackListActivity.onActivityResult";
+        final String tag = "TrackListActivity.onActivityResult";
         Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
         if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
             return;
@@ -183,7 +183,7 @@ public class TrackListActivity extends ActionBarActivity implements
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String tag = "Love&Tag.TrackListActivity.mReceiver.onReceive";
+            final String tag = "TrackListActivity.mReceiver.onReceive";
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
             if (artist == null) return;
@@ -260,7 +260,7 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     private void updateAll() {
-        String tag = "Love&Tag.TrackListActivity.updateAll";
+        final String tag = "TrackListActivity.updateAll";
         Log.d(tag, "Updating");
         if (!mLfs.isLoggedIn()) return;
         updatePod();
@@ -270,7 +270,7 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     private boolean updatePod() {
-        String tag = "Love&Tag.TrackListActivity.updatePod";
+        final String tag = "TrackListActivity.updatePod";
         if (mNowPlaying == null || ! mLfs.isLoggedIn()) return false;
         Log.d(tag, mNowPlaying.toString());
         TrackInfoCall ilc = new TrackInfoCall();
@@ -302,9 +302,8 @@ public class TrackListActivity extends ActionBarActivity implements
                     .lovebutton);
             loveButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    String tag;
-                    tag = "Love&Tag.TrackListActivity.ListEntry.loveButton" +
-                            ".onClick";
+                    final String tag = "TrackListActivity.ListEntry" +
+                                       ".loveButton.onClick";
                     mSwipeRefreshLayout.setRefreshing(true);
                     if (!mTrack.mLoved) {
                         LoveCall lc = new LoveCall();
@@ -321,8 +320,8 @@ public class TrackListActivity extends ActionBarActivity implements
                     .entry_tagbutton);
             tagButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    String tag = "Love&Tag.TrackListActivity.ListEntry" +
-                            ".tagButton.onClick";
+                    final String tag = "TrackListActivity.ListEntry" +
+                                       ".tagButton.onClick";
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInputActivity.class);
                     i.putExtra("artist", mTrack.mArtist);
@@ -335,7 +334,7 @@ public class TrackListActivity extends ActionBarActivity implements
         }
 
         public void setMusic(Track track) {
-            String tag = "Love&Tag.TrackListActivity.ListEntry.setMusic";
+            final String tag = "TrackListActivity.ListEntry.setMusic";
             mTrack = track;
             Log.d(tag, "Adding: " + mTrack.mArtist +
                     ", " + mTrack.mTitle +
@@ -378,7 +377,7 @@ public class TrackListActivity extends ActionBarActivity implements
             return msg;
         }
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.TrackListActivity.UnloveCall.onPostExecute";
+            final String tag = "TrackListActivity.UnloveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             updateAll();
@@ -400,7 +399,7 @@ public class TrackListActivity extends ActionBarActivity implements
             return msg;
         }
         protected void onPostExecute(String result) {
-            String tag = "Love&Tag.TrackListActivity.LoveCall.onPostExecute";
+            final String tag = "TrackListActivity.LoveCall.onPostExecute";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             updateAll();
@@ -421,7 +420,7 @@ public class TrackListActivity extends ActionBarActivity implements
         Track mNewTrack;
         Track mOrigTrack;
         TrackInfoCall() {
-            String tag = "Love&Tag.TrackListActivity.TrackInfoCall";
+            final String tag = "TrackListActivity.TrackInfoCall";
             Log.d(tag, "Constructor");
         }
 

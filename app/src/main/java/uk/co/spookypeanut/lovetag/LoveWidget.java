@@ -25,7 +25,7 @@ public class LoveWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-        String tag = "Love&Tag.LoveWidget.onReceive";
+        final String tag = "LoveWidget.onReceive";
         String action = intent.getAction();
         if (action == null) {
             Log.d(tag, "null action");
@@ -58,7 +58,7 @@ public class LoveWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        String tag = "Love&Tag.LoveWidget.onUpdate";
+        final String tag = "LoveWidget.onUpdate";
         Log.d(tag, "Starting");
         // There may be multiple widgets active, so update all of them
         Intent i = new Intent(context, UpdateService.class);
@@ -68,7 +68,7 @@ public class LoveWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
-        String tag = "Love&Tag.LoveWidget.onEnabled";
+        final String tag = "LoveWidget.onEnabled";
         LastfmSession lfs = new LastfmSession();
         if (!lfs.isLoggedIn()) {
             Log.d(tag, "Session not logged in");
@@ -89,14 +89,14 @@ public class LoveWidget extends AppWidgetProvider {
         private SharedPreferences mSettings;
         public UpdateService() {
             super("LoveWidget$UpdateService");
-            String tag = "Love&Tag.LoveWidget.UpdateService";
+            final String tag = "LoveWidget.UpdateService";
             Log.d(tag, "Constructor");
         }
 
         @Override
         public void onCreate() {
             super.onCreate();
-            String tag = "Love&Tag.LoveWidget.UpdateService.onCreate";
+            final String tag = "LoveWidget.UpdateService.onCreate";
             Log.d(tag, "Starting");
             mLfs = new LastfmSession();
             if (!mLfs.isLoggedIn()) {
@@ -131,7 +131,7 @@ public class LoveWidget extends AppWidgetProvider {
 
         @Override
         public void onHandleIntent(Intent intent) {
-            String tag = "Love&Tag.LoveWidget.UpdateService.onHandleIntent";
+            final String tag = "LoveWidget.UpdateService.onHandleIntent";
             String action = intent.getAction();
             Log.d(tag, "Handling intent: " + action);
             ComponentName me = new ComponentName(this, LoveWidget.class);
@@ -163,7 +163,7 @@ public class LoveWidget extends AppWidgetProvider {
 
         private RemoteViews buildUpdate(Context context, String artist,
                                         String title) {
-            String tag = "Love&Tag.LoveWidget.UpdateService.buildUpdate (CSS)";
+            final String tag = "LoveWidget.UpdateService.buildUpdate (CSS)";
             Log.d(tag, "Found track: " + artist + ", " + title);
             Track track = new Track(artist, title);
             setTrack(track);
@@ -185,7 +185,7 @@ public class LoveWidget extends AppWidgetProvider {
         }
 
         private RemoteViews buildUpdate(Context context) {
-            String tag = "Love&Tag.LoveWidget.UpdateService.buildUpdate";
+            final String tag = "LoveWidget.UpdateService.buildUpdate";
             Log.d(tag, "Starting");
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.love_widget);
 

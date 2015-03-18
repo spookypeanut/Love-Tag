@@ -24,14 +24,14 @@ public class TagList extends ArrayList<Tag> {
     }
 
     public void addAll(TagList new_tags) {
-        String tag = "Love&Tag.TagList.addAll";
+        final String tag = "TagList.addAll";
         Log.d(tag, new_tags.toString());
         for (Tag new_tag : new_tags) {
             add(new_tag);
         }
     }
     public boolean add(Tag new_tag) {
-        String tag = "Love&Tag.TagList.add";
+        final String tag = "TagList.add";
         if (this.contains(new_tag)) {
             Log.d(tag, new_tag.mName + " is already there");
             return false;

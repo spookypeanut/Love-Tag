@@ -24,7 +24,7 @@ public class TagWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-        String tag = "Love&Tag.TagWidget.onReceive";
+        final String tag = "TagWidget.onReceive";
         String action = intent.getAction();
         if (action == null) {
             Log.d(tag, "null action");
@@ -50,7 +50,7 @@ public class TagWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        String tag = "Love&Tag.TagWidget.onUpdate";
+        final String tag = "TagWidget.onUpdate";
         Log.d(tag, "Starting");
         Intent i = new Intent(context, UpdateService.class);
         context.startService(i);
@@ -59,7 +59,7 @@ public class TagWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
-        String tag = "Love&Tag.TagWidget.onEnabled";
+        final String tag = "TagWidget.onEnabled";
         LastfmSession lfs = new LastfmSession();
         if (!lfs.isLoggedIn()) {
             Log.d(tag, "Session not logged in");
@@ -80,14 +80,14 @@ public class TagWidget extends AppWidgetProvider {
         private SharedPreferences mSettings;
         public UpdateService() {
             super("TagWidget$UpdateService");
-            String tag = "Love&Tag.TagWidget.UpdateService";
+            final String tag = "TagWidget.UpdateService";
             Log.d(tag, "Constructor");
         }
 
         @Override
         public void onCreate() {
             super.onCreate();
-            String tag = "Love&Tag.TagWidget.UpdateService.onCreate";
+            final String tag = "TagWidget.UpdateService.onCreate";
             Log.d(tag, "Starting");
             mLfs = new LastfmSession();
             if (!mLfs.isLoggedIn()) {
@@ -101,7 +101,7 @@ public class TagWidget extends AppWidgetProvider {
         }
 
         public void setTrack(Track track) {
-            String tag = "Love&Tag.TagWidget.UpdateService.setTrack";
+            final String tag = "TagWidget.UpdateService.setTrack";
             Log.d(tag, track.mTitle + ", " + track.mArtist);
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putString("tw_artist", track.mArtist);
@@ -110,7 +110,7 @@ public class TagWidget extends AppWidgetProvider {
         }
 
         public Track getTrack() {
-            String tag = "Love&Tag.TagWidget.UpdateService.getTrack";
+            final String tag = "TagWidget.UpdateService.getTrack";
             Track nowPlaying = null;
             String artist = mSettings.getString("tw_artist", "");
             String title = mSettings.getString("tw_title", "");
@@ -127,7 +127,7 @@ public class TagWidget extends AppWidgetProvider {
 
         @Override
         public void onHandleIntent(Intent intent) {
-            String tag = "Love&Tag.TagWidget.UpdateService.onHandleIntent";
+            final String tag = "TagWidget.UpdateService.onHandleIntent";
             String action = intent.getAction();
             Log.d(tag, "Handling intent: " + action);
             ComponentName me = new ComponentName(this, TagWidget.class);
@@ -144,7 +144,7 @@ public class TagWidget extends AppWidgetProvider {
 
         private RemoteViews buildUpdate(Context context, String artist,
                                         String title) {
-            String tag = "Love&Tag.TagWidget.UpdateService.buildUpdate (CSS)";
+            final String tag = "TagWidget.UpdateService.buildUpdate (CSS)";
             Log.d(tag, "Found track: " + artist + ", " + title);
             Track track = new Track(artist, title);
             setTrack(track);
@@ -156,7 +156,7 @@ public class TagWidget extends AppWidgetProvider {
         }
 
         private RemoteViews buildUpdate(Context context) {
-            String tag = "Love&Tag.TagWidget.UpdateService.buildUpdate";
+            final String tag = "TagWidget.UpdateService.buildUpdate";
             Log.d(tag, "Starting");
             RemoteViews views = new RemoteViews(context.getPackageName(),
                     R.layout.tag_widget);
