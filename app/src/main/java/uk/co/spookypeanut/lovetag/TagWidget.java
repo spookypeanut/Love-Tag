@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 public class TagWidget extends AppWidgetProvider {
     static final String tag_widget_new_track_action = "tag_widget_new_track";
-    Track mNowPlaying;
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
@@ -39,9 +38,7 @@ public class TagWidget extends AppWidgetProvider {
                 action.equals(TrackListActivity.PLAYSTATECHANGED)) {
             String artist = intent.getStringExtra("artist");
             String title = intent.getStringExtra("track");
-            mNowPlaying = new Track(artist, title, false);
-            Log.d(tag, "Got new track: " + mNowPlaying.mTitle + " (" + action +
-                    ")");
+            Log.d(tag, "Got new track: " + title + " (" + action + ")");
             Intent i = new Intent(context, UpdateService.class);
             i.setAction(tag_widget_new_track_action);
             i.putExtra("artist", artist);

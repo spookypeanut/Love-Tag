@@ -22,7 +22,6 @@ import android.widget.Toast;
 public class LoveWidget extends AppWidgetProvider {
     static final String love_widget_click_action = "love_widget_click";
     static final String love_widget_new_track_action = "love_widget_new_track";
-    Track mNowPlaying;
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
@@ -48,9 +47,7 @@ public class LoveWidget extends AppWidgetProvider {
             String artist = intent.getStringExtra("artist");
             if (artist == null) return;
             String title = intent.getStringExtra("track");
-            mNowPlaying = new Track(artist, title, false);
-            Log.d(tag, "Got new track: " + mNowPlaying.mTitle + " (" + action +
-                    ")");
+            Log.d(tag, "Got new track: " + title + " (" + action + ")");
             Intent i = new Intent(context,  UpdateService.class);
             i.setAction(love_widget_new_track_action);
             i.putExtra("artist", artist);
