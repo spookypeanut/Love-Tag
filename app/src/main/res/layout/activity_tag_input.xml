@@ -120,6 +120,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="?android:attr/buttonBarStyle"
         >
 
         <Button
@@ -128,6 +129,7 @@
             android:text="@string/tag_input_ok_button"
             android:id="@+id/tag_ok"
             android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
             android:enabled="false"/>
 
         <Button
@@ -135,6 +137,7 @@
             android:layout_height="wrap_content"
             android:text="@string/tag_input_cancel_button"
             android:id="@+id/tag_cancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>
