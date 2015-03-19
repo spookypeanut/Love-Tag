@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package uk.co.spookypeanut.lovetag.util;
+package uk.co.spookypeanut.loveandtag.util;
 
 import android.app.Activity;
 import android.app.PendingIntent;

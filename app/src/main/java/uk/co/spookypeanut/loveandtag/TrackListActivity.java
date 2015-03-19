@@ -1,4 +1,4 @@
-package uk.co.spookypeanut.lovetag;
+package uk.co.spookypeanut.loveandtag;
 
 /**
  * Copyright (c) 2014 Henry Bush
@@ -29,9 +29,9 @@ import android.widget.Toast;
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
-import uk.co.spookypeanut.lovetag.util.IabHelper;
-import uk.co.spookypeanut.lovetag.util.IabResult;
-import uk.co.spookypeanut.lovetag.util.Purchase;
+import uk.co.spookypeanut.loveandtag.util.IabHelper;
+import uk.co.spookypeanut.loveandtag.util.IabResult;
+import uk.co.spookypeanut.loveandtag.util.Purchase;
 
 public class TrackListActivity extends ActionBarActivity implements
         SwipeRefreshLayout.OnRefreshListener {

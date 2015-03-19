@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package uk.co.spookypeanut.lovetag.util;
+package uk.co.spookypeanut.loveandtag.util;
 
 // This code was converted from code at http://iharder.sourceforge.net/base64/
 // Lots of extraneous features were removed.

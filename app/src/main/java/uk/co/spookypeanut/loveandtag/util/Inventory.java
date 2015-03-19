@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package uk.co.spookypeanut.lovetag.util;
+package uk.co.spookypeanut.loveandtag.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

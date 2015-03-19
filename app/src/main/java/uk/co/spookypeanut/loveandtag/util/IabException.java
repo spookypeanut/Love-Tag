@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package uk.co.spookypeanut.lovetag.util;
+package uk.co.spookypeanut.loveandtag.util;
 
 /**
  * Exception thrown when something went wrong with in-app billing.

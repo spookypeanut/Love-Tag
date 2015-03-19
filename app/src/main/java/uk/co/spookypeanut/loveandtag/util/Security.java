@@ -13,13 +13,10 @@
  * limitations under the License.
  */
 
-package uk.co.spookypeanut.lovetag.util;
+package uk.co.spookypeanut.loveandtag.util;
 
 import android.text.TextUtils;
 import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 import java.security.InvalidKeyException;

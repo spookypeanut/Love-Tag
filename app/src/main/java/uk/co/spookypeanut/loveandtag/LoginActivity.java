@@ -1,4 +1,4 @@
-package uk.co.spookypeanut.lovetag;
+package uk.co.spookypeanut.loveandtag;
 
 /**
  * Copyright (c) 2014 Henry Bush

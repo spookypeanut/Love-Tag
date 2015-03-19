@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uk.co.spookypeanut.lovetag" >
+    package="uk.co.spookypeanut.loveandtag" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
-        android:name=".App"
+        android:name="uk.co.spookypeanut.loveandtag.App"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".TrackListActivity"
+            android:name="uk.co.spookypeanut.loveandtag.TrackListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,20 +21,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="uk.co.spookypeanut.loveandtag.LoginActivity"
             android:label="@string/title_activity_login">
         </activity>
         <activity
-            android:name=".TagInputActivity"
+            android:name="uk.co.spookypeanut.loveandtag.TagInputActivity"
             android:label="@string/ti_activity_title"
             android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".TrackListActivity" >
+            android:parentActivityName="uk.co.spookypeanut.loveandtag.TrackListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TrackListActivity" />
+                android:value="uk.co.spookypeanut.loveandtag.TrackListActivity" />
         </activity>
 
-        <receiver android:name=".LoveWidget" android:label="Love&amp;Tag: Love">
+        <receiver android:name="uk.co.spookypeanut.loveandtag.LoveWidget" android:label="Love&amp;Tag: Love">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.android.music.metachanged" />
@@ -45,8 +45,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/love_widget_info" />
         </receiver>
-        <service android:name=".LoveWidget$UpdateService" />
-        <receiver android:name=".TagWidget" android:label="Love&amp;Tag: Tag">
+        <service android:name="uk.co.spookypeanut.loveandtag.LoveWidget$UpdateService" />
+        <receiver android:name="uk.co.spookypeanut.loveandtag.TagWidget" android:label="Love&amp;Tag: Tag">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.android.music.metachanged" />
@@ -57,7 +57,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/tag_widget_info" />
         </receiver>
-        <service android:name=".TagWidget$UpdateService" />
+        <service android:name="uk.co.spookypeanut.loveandtag.TagWidget$UpdateService" />
     </application>
 
 </manifest>
