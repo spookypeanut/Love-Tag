@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidObjectException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -65,7 +66,16 @@ public class LastfmSession {
     }
 
     public boolean unlove(Track orig_track) {
-        Track track = preTrackAction(orig_track);
+        final String tag = "LastfmSession.unlove";
+        Track track;
+        try {
+            track = preTrackAction(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "preTrackAction failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
         Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.unlove");
         restparams.put("sk", mSessionKey);
@@ -84,7 +94,16 @@ public class LastfmSession {
         }
     }
     public boolean love(Track orig_track) {
-        Track track = preTrackAction(orig_track);
+        final String tag = "LastfmSession.love";
+        Track track;
+        try {
+            track = preTrackAction(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "preTrackAction failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
         Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.love");
         restparams.put("sk", mSessionKey);
@@ -104,7 +123,16 @@ public class LastfmSession {
     }
 
     public boolean tag(Track orig_track, String tag_cat) {
-        Track track = preTrackAction(orig_track);
+        final String tag = "LastfmSession.tag";
+        Track track;
+        try {
+            track = preTrackAction(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "preTrackAction failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.addTags");
         rest_params.put("sk", mSessionKey);
@@ -125,7 +153,16 @@ public class LastfmSession {
     }
 
     public boolean untag(Track orig_track, String tag_name) {
-        Track track = preTrackAction(orig_track);
+        final String tag = "LastfmSession.untag";
+        Track track;
+        try {
+            track = preTrackAction(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "preTrackAction failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.removeTag");
         rest_params.put("sk", mSessionKey);
@@ -186,7 +223,15 @@ public class LastfmSession {
 
     public TagList getTrackTags(Track orig_track) {
         final String tag = "LastfmSession.getTrackTags";
-        Track track = preTrackAction(orig_track);
+        Track track;
+        try {
+            track = preTrackAction(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "preTrackAction failed, aborting");
+            e.printStackTrace();
+            return new TagList();
+        }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.getTags");
         rest_params.put("artist", track.mArtist);
@@ -219,7 +264,15 @@ public class LastfmSession {
 
     public boolean isLoved(Track orig_track) {
         final String tag = "LastfmSession.isLoved";
-        Track info = getTrackInfo(orig_track);
+        Track info;
+        try {
+            info = getTrackInfo(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "getTrackInfo failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
         if (info == null) {
             Log.e(tag, "Call to getTrackInfo failed");
             return false;
@@ -227,17 +280,22 @@ public class LastfmSession {
         return info.mLoved;
     }
 
-    private Track preTrackAction(Track orig_track) {
+    private Track preTrackAction(Track orig_track) throws
+            InvalidObjectException {
         // We do this so that we're always loving the auto-corrected version.
         // It does slow things down a little though.
         return getTrackInfo(orig_track);
     }
 
-    public Track getTrackInfo(Track orig_track) {
+    public Track getTrackInfo(Track orig_track) throws InvalidObjectException {
         final String tag = "LastfmSession.getTrackInfo";
         Log.d(tag, "Getting info of " + orig_track.toString());
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
+        }
+        if (orig_track.mArtist == "" || orig_track.mTitle == "") {
+            final String msg = "Track has no artist or title";
+            throw new InvalidObjectException(msg);
         }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.getInfo");

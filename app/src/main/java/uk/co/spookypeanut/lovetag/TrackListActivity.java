@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 import uk.co.spookypeanut.lovetag.util.IabHelper;
@@ -147,6 +148,9 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     private void setPodTrack(Track track) {
+        if (track == null) {
+            return;
+        }
         mPodView.setMusic(track);
 
         LinearLayout podLayout;
@@ -426,7 +430,13 @@ public class TrackListActivity extends ActionBarActivity implements
 
         @Override
         protected String doInBackground(Track... params) {
-            mNewTrack = mLfs.getTrackInfo(params[0]);
+            try {
+                mNewTrack = mLfs.getTrackInfo(params[0]);
+            }
+            catch (InvalidObjectException e) {
+                e.printStackTrace();
+                return "";
+            }
             mOrigTrack = params[0];
             if (mNewTrack != null) {
                 mOrigTrack.mLoved = mNewTrack.mLoved;
