@@ -65,27 +65,8 @@ public class LoveWidget extends AppWidgetProvider {
         context.startService(i);
     }
 
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-        final String tag = "LoveWidget.onEnabled";
-        LastfmSession lfs = new LastfmSession();
-        if (!lfs.isLoggedIn()) {
-            Log.d(tag, "Session not logged in");
-            int msg_id = R.string.widget_not_logged_in_message;
-            Toast.makeText(context, msg_id, Toast.LENGTH_SHORT).show();
-        } else {
-            Log.d(tag, "Session already logged in");
-        }
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
     public static class UpdateService extends IntentService {
-        LastfmSession mLfs;
+        LastfmSession mLfs = new LastfmSession();
         private SharedPreferences mSettings;
         public UpdateService() {
             super("LoveWidget$UpdateService");
@@ -96,17 +77,12 @@ public class LoveWidget extends AppWidgetProvider {
         @Override
         public void onCreate() {
             super.onCreate();
-            final String tag = "LoveWidget.UpdateService.onCreate";
-            Log.d(tag, "Starting");
-            mLfs = new LastfmSession();
-            if (!mLfs.isLoggedIn()) {
-                Log.d(tag, "Session not logged in");
-                int msg_id = R.string.widget_not_logged_in_message;
-                Toast.makeText(this, msg_id, Toast.LENGTH_SHORT).show();
-            } else {
-                Log.d(tag, "Session already logged in");
-            }
+            tryLogin();
             mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        }
+
+        private boolean tryLogin() {
+            return mLfs.isLoggedIn();
         }
 
         public void setTrack(Track track) {
@@ -166,28 +142,34 @@ public class LoveWidget extends AppWidgetProvider {
             final String tag = "LoveWidget.UpdateService.buildUpdate (CSS)";
             Log.d(tag, "Found track: " + artist + ", " + title);
             Track track = new Track(artist, title);
+            // Construct the RemoteViews object
+            String text;
+            if (tryLogin()) {
+                text = title;
+                if (mLfs.isLoved(track)) {
+                    track.mLoved = true;
+                }
+            } else {
+                text = getString(R.string.widget_not_logged_in_message);
+                track = new Track(null, null);
+            }
             setTrack(track);
             RemoteViews views = buildUpdate(context);
-            // Construct the RemoteViews object
             Log.d(tag, "Setting text view");
-            views.setTextViewText(R.id.loveWidgetLabel, title);
-            if (mLfs.isLoved(track)) {
-                track.mLoved = true;
-                setTrack(track);
+            views.setTextViewText(R.id.loveWidgetLabel, text);
+            if (track.mLoved) {
                 views.setImageViewResource(R.id.loveWidgetButton,
                         R.drawable.lovetrue);
             } else {
                 views.setImageViewResource(R.id.loveWidgetButton,
                         R.drawable.lovefalse);
             }
-
             return views;
         }
 
         private RemoteViews buildUpdate(Context context) {
-            final String tag = "LoveWidget.UpdateService.buildUpdate";
-            Log.d(tag, "Starting");
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.love_widget);
+            tryLogin();
 
             Intent i = new Intent(this, LoveWidget.class);
             i.setAction(love_widget_click_action);

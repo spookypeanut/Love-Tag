@@ -56,27 +56,8 @@ public class TagWidget extends AppWidgetProvider {
         context.startService(i);
     }
 
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-        final String tag = "TagWidget.onEnabled";
-        LastfmSession lfs = new LastfmSession();
-        if (!lfs.isLoggedIn()) {
-            Log.d(tag, "Session not logged in");
-            int msg_id = R.string.widget_not_logged_in_message;
-            Toast.makeText(context, msg_id, Toast.LENGTH_SHORT).show();
-        } else {
-            Log.d(tag, "Session already logged in");
-        }
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
     public static class UpdateService extends IntentService {
-        LastfmSession mLfs;
+        LastfmSession mLfs = new LastfmSession();
         private SharedPreferences mSettings;
         public UpdateService() {
             super("TagWidget$UpdateService");
@@ -87,17 +68,12 @@ public class TagWidget extends AppWidgetProvider {
         @Override
         public void onCreate() {
             super.onCreate();
-            final String tag = "TagWidget.UpdateService.onCreate";
-            Log.d(tag, "Starting");
-            mLfs = new LastfmSession();
-            if (!mLfs.isLoggedIn()) {
-                Log.d(tag, "Session not logged in");
-                int msg_id = R.string.widget_not_logged_in_message;
-                Toast.makeText(this, msg_id, Toast.LENGTH_SHORT).show();
-            } else {
-                Log.d(tag, "Session already logged in");
-            }
+            tryLogin();
             mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        }
+
+        private boolean tryLogin() {
+            return mLfs.isLoggedIn();
         }
 
         public void setTrack(Track track) {
@@ -148,10 +124,17 @@ public class TagWidget extends AppWidgetProvider {
             Log.d(tag, "Found track: " + artist + ", " + title);
             Track track = new Track(artist, title);
             setTrack(track);
+            String text;
+            if (tryLogin()) {
+                text = title;
+            } else {
+                text = getString(R.string.widget_not_logged_in_message);
+                setTrack(new Track(null, null));
+            }
             RemoteViews views = buildUpdate(context);
             // Construct the RemoteViews object
             Log.d(tag, "Setting text view");
-            views.setTextViewText(R.id.tw_label, title);
+            views.setTextViewText(R.id.tw_label, text);
             return views;
         }
 
@@ -160,7 +143,6 @@ public class TagWidget extends AppWidgetProvider {
             Log.d(tag, "Starting");
             RemoteViews views = new RemoteViews(context.getPackageName(),
                     R.layout.tag_widget);
-
             Intent i = new Intent();
             i.setClass(context, TagInputActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
