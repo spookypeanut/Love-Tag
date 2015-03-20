@@ -319,7 +319,7 @@ public class LastfmSession {
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
-        if (orig_track.mArtist == "" || orig_track.mTitle == "") {
+        if (orig_track.mArtist.equals("") || orig_track.mTitle.equals("")) {
             final String msg = "Track has no artist or title";
             throw new InvalidObjectException(msg);
         }
