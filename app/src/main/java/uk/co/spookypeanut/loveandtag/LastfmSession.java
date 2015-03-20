@@ -66,15 +66,19 @@ public class LastfmSession {
     }
 
     public boolean unlove(Track orig_track) {
+        return unlove(orig_track, false);
+    }
+
+    public boolean unlove(Track track, boolean pre_corrected) {
         final String tag = "LastfmSession.unlove";
-        Track track;
-        try {
-            track = preTrackAction(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
-            e.printStackTrace();
-            return false;
+        if (!pre_corrected) {
+            try {
+                track = autocorrectTrack(track);
+            } catch (InvalidObjectException e) {
+                Log.e(tag, "autocorrectTrack failed, aborting");
+                e.printStackTrace();
+                return false;
+            }
         }
         Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.unlove");
@@ -93,16 +97,21 @@ public class LastfmSession {
             return false;
         }
     }
+
     public boolean love(Track orig_track) {
+        return love(orig_track, false);
+    }
+
+    public boolean love(Track track, boolean pre_corrected) {
         final String tag = "LastfmSession.love";
-        Track track;
-        try {
-            track = preTrackAction(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
-            e.printStackTrace();
-            return false;
+        if (!pre_corrected) {
+            try {
+                track = autocorrectTrack(track);
+            } catch (InvalidObjectException e) {
+                Log.e(tag, "autocorrectTrack failed, aborting");
+                e.printStackTrace();
+                return false;
+            }
         }
         Map<String, String> restparams = new HashMap<>();
         restparams.put("method", "track.love");
@@ -123,15 +132,19 @@ public class LastfmSession {
     }
 
     public boolean tag(Track orig_track, String tag_cat) {
+        return tag(orig_track, tag_cat, false);
+    }
+
+    public boolean tag(Track track, String tag_cat, boolean pre_corrected) {
         final String tag = "LastfmSession.tag";
-        Track track;
-        try {
-            track = preTrackAction(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
-            e.printStackTrace();
-            return false;
+        if (!pre_corrected) {
+            try {
+                track = autocorrectTrack(track);
+            } catch (InvalidObjectException e) {
+                Log.e(tag, "autocorrectTrack failed, aborting");
+                e.printStackTrace();
+                return false;
+            }
         }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.addTags");
@@ -153,15 +166,19 @@ public class LastfmSession {
     }
 
     public boolean untag(Track orig_track, String tag_name) {
+        return untag(orig_track, tag_name, false);
+    }
+
+    public boolean untag(Track track, String tag_name, boolean pre_corrected) {
         final String tag = "LastfmSession.untag";
-        Track track;
-        try {
-            track = preTrackAction(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
-            e.printStackTrace();
-            return false;
+        if (!pre_corrected) {
+            try {
+                track = autocorrectTrack(track);
+            } catch (InvalidObjectException e) {
+                Log.e(tag, "autocorrectTrack failed, aborting");
+                e.printStackTrace();
+                return false;
+            }
         }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.removeTag");
@@ -222,15 +239,19 @@ public class LastfmSession {
     }
 
     public TagList getTrackTags(Track orig_track) {
+        return getTrackTags(orig_track, false);
+    }
+
+    public TagList getTrackTags(Track track, boolean pre_corrected) {
         final String tag = "LastfmSession.getTrackTags";
-        Track track;
-        try {
-            track = preTrackAction(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
-            e.printStackTrace();
-            return new TagList();
+        if (!pre_corrected) {
+            try {
+                track = autocorrectTrack(track);
+            } catch (InvalidObjectException e) {
+                Log.e(tag, "autocorrectTrack failed, aborting");
+                e.printStackTrace();
+                return new TagList();
+            }
         }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.getTags");
@@ -285,7 +306,7 @@ public class LastfmSession {
         return info.mLoved;
     }
 
-    private Track preTrackAction(Track orig_track) throws
+    private Track autocorrectTrack(Track orig_track) throws
             InvalidObjectException {
         // We do this so that we're always loving the auto-corrected version.
         // It does slow things down a little though.
