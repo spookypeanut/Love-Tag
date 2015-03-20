@@ -273,6 +273,11 @@ public class LastfmSession {
             e.printStackTrace();
             return false;
         }
+        catch (IllegalStateException e) {
+            Log.e(tag, "Not logged in, aborting");
+            e.printStackTrace();
+            return false;
+        }
         if (info == null) {
             Log.e(tag, "Call to getTrackInfo failed");
             return false;
