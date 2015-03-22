@@ -12,6 +12,7 @@ public class Track {
     String mArtist;
     String mTitle;
     boolean mLoved = false;
+    boolean mCorrected = false;
 
     public Track(String artist, String title) {
         mArtist = artist;

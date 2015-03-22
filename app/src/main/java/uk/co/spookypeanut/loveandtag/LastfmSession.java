@@ -69,10 +69,10 @@ public class LastfmSession {
         final String tag = "LastfmSession.unlove";
         Track track;
         try {
-            track = preTrackAction(orig_track);
+            track = autocorrectTrack(orig_track);
         }
         catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
+            Log.e(tag, "autocorrectTrack failed, aborting");
             e.printStackTrace();
             return false;
         }
@@ -97,10 +97,10 @@ public class LastfmSession {
         final String tag = "LastfmSession.love";
         Track track;
         try {
-            track = preTrackAction(orig_track);
+            track = autocorrectTrack(orig_track);
         }
         catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
+            Log.e(tag, "autocorrectTrack failed, aborting");
             e.printStackTrace();
             return false;
         }
@@ -126,10 +126,10 @@ public class LastfmSession {
         final String tag = "LastfmSession.tag";
         Track track;
         try {
-            track = preTrackAction(orig_track);
+            track = autocorrectTrack(orig_track);
         }
         catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
+            Log.e(tag, "autocorrectTrack failed, aborting");
             e.printStackTrace();
             return false;
         }
@@ -156,10 +156,10 @@ public class LastfmSession {
         final String tag = "LastfmSession.untag";
         Track track;
         try {
-            track = preTrackAction(orig_track);
+            track = autocorrectTrack(orig_track);
         }
         catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
+            Log.e(tag, "autocorrectTrack failed, aborting");
             e.printStackTrace();
             return false;
         }
@@ -212,7 +212,9 @@ public class LastfmSession {
                 return new ArrayList<>();
             }
             for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
-                recentTracks.add(new Track(map));
+                Track t = new Track(map);
+                t.mCorrected = true;
+                recentTracks.add(t);
             }
         }
         catch (Exception e) {
@@ -225,10 +227,10 @@ public class LastfmSession {
         final String tag = "LastfmSession.getTrackTags";
         Track track;
         try {
-            track = preTrackAction(orig_track);
+            track = autocorrectTrack(orig_track);
         }
         catch (InvalidObjectException e) {
-            Log.e(tag, "preTrackAction failed, aborting");
+            Log.e(tag, "autocorrectTrack failed, aborting");
             e.printStackTrace();
             return new TagList();
         }
@@ -285,10 +287,14 @@ public class LastfmSession {
         return info.mLoved;
     }
 
-    private Track preTrackAction(Track orig_track) throws
+    private Track autocorrectTrack(Track orig_track) throws
             InvalidObjectException {
         // We do this so that we're always loving the auto-corrected version.
         // It does slow things down a little though.
+        if (orig_track.mCorrected) {
+            // If this track has already been corrected, just return it as-is
+            return orig_track;
+        }
         return getTrackInfo(orig_track);
     }
 
@@ -329,7 +335,9 @@ public class LastfmSession {
             }
             Map<String, String> map = results.get(0);
             Log.d(tag, map.toString());
-            return new Track(map);
+            Track t = new Track(map);
+            t.mCorrected = true;
+            return t;
         }
         catch (Exception e) {
             e.printStackTrace();
