@@ -30,15 +30,15 @@ import java.util.List;
 import java.util.Map;
 
 public class LastfmSession {
+    static final String PREFS_NAME = "LastfmSession";
+    static final String SESSION_KEY = "session_key";
+    static final String USERNAME = "username";
+    static final short RETRIES = 5;
     Context mContext;
     SharedPreferences mSettings;
     String mSessionKey = "";
     String mUsername;
     UrlMaker mUrlMaker;
-    static final String PREFS_NAME = "LastfmSession";
-    static final String SESSION_KEY = "session_key";
-    static final String USERNAME = "username";
-    static final short RETRIES = 5;
 
     public LastfmSession() {
         mContext = App.getContext();
@@ -575,14 +575,21 @@ public class LastfmSession {
 }
 
 class UrlMaker {
-    Context mContext;
-    Md5Maker mMd5Maker;
     static final String BASE_URL = "https://ws.audioscrobbler.com/2.0/?";
     static final String URL_PARAM_SEP = "&";
+    Context mContext;
+    Md5Maker mMd5Maker;
     public UrlMaker() {
         mContext = App.getContext();
         mMd5Maker = new Md5Maker();
     }
+
+    public static <T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
+        List<T> list = new ArrayList<>(c);
+        java.util.Collections.sort(list);
+        return list;
+    }
+
     public String fromHashmap(Map<String, String> params) {
         final String tag = "LastfmSession.UrlMaker.fromHashmap";
         String api_key = mContext.getString(R.string.lastfm_api_key);
@@ -613,6 +620,7 @@ class UrlMaker {
         Log.d(tag, "Returning url: " + url.toString());
         return url.toString();
     }
+
     private String generateApiSig(Map<String, String> params) {
         final String tag = "LastfmSession.UrlMaker.generateApiSig";
         List<String> keys = asSortedList(params.keySet());
@@ -631,10 +639,5 @@ class UrlMaker {
         String api_sig = mMd5Maker.encode(pre_md5);
         Log.d(tag, "api_sig: " + api_sig);
         return api_sig;
-    }
-    public static <T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
-        List<T> list = new ArrayList<>(c);
-        java.util.Collections.sort(list);
-        return list;
     }
 }
