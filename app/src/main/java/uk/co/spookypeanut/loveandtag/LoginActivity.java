@@ -24,34 +24,6 @@ public class LoginActivity extends ActionBarActivity {
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
-
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.lovebutton || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        Button mLogInButton = (Button) findViewById(R.id.log_in_button);
-        mLogInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-    }
-
     /**
      * Attempts to sign in to the account specified by the login form.
      * If there are form errors (invalid username, missing fields, etc.), the
@@ -80,6 +52,34 @@ public class LoginActivity extends ActionBarActivity {
         String authToken = md5m.encode(username + md5m.encode(password));
         new LoginCall().execute(username, authToken);
         showWaitingDialog();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.lovebutton || id == EditorInfo.IME_NULL) {
+                    attemptLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Button mLogInButton = (Button) findViewById(R.id.log_in_button);
+        mLogInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptLogin();
+            }
+        });
     }
 
     private void showWaitingDialog() {

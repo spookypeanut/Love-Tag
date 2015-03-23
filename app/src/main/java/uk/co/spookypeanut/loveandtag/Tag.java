@@ -16,9 +16,7 @@ public class Tag implements Comparable {
         mActive = false;
         mPresent = false;
     }
-    public String toString() {
-        return mName;
-    }
+
     public int compareTo(@NonNull Object other) {
         if (!(other instanceof Tag)) {
             throw new ClassCastException("Comparing invalid items");
@@ -45,6 +43,10 @@ public class Tag implements Comparable {
         }
         Tag other_tag = (Tag) other;
         return mName.equals(other_tag.mName);
+    }
+
+    public String toString() {
+        return mName;
     }
 
 }

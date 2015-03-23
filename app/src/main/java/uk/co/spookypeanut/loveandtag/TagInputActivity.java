@@ -35,10 +35,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class TagInputActivity extends ActionBarActivity {
+    final TagList mTagList = new TagList();
     Track mTrack;
     LastfmSession mLfs;
     TagList mOrigTags = new TagList();
-    final TagList mTagList = new TagList();
     // This keeps a track of tags that have actually been manually untagged,
     // so that we don't accidentally remove all existing tags because we
     // haven't managed to get the tags from last.fm yet. I'm not sure this
@@ -46,27 +46,18 @@ public class TagInputActivity extends ActionBarActivity {
     TagList mActallyUntagged = new TagList();
     TagAdapter mTagAdaptor;
     private TextWatcher inputTextWatcher = new TextWatcher() {
-        public void afterTextChanged(Editable s) { }
         public void beforeTextChanged(CharSequence s, int st, int c, int a) { }
+
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             updateOkButton();
         }
+
+        public void afterTextChanged(Editable s) { }
     };
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        final String tag = "TagInputActivity.onNewIntent";
-        String artist = intent.getStringExtra("artist");
-        String title = intent.getStringExtra("title");
-        Log.i(tag, "Track: " + title + ", " + artist);
-        mTrack = new Track(artist, title);
-        updateTrack();
-    }
-
-    private void updateTrack() {
-        ((TextView) findViewById(R.id.tag_artist)).setText(mTrack.mArtist);
-        ((TextView) findViewById(R.id.tag_title)).setText(mTrack.mTitle);
-        checkLoved();
+    private void checkLoved() {
+        IsLovedCall ilc = new IsLovedCall();
+        ilc.execute(mTrack);
     }
 
     @Override
@@ -192,15 +183,29 @@ public class TagInputActivity extends ActionBarActivity {
         });
     }
 
-    private void showWaitingDialog() {
-        FrameLayout pd = (FrameLayout) findViewById(R.id
-                .progressBarHolder);
-        pd.setVisibility(FrameLayout.VISIBLE);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_tag_input, menu);
+        return true;
     }
 
-    private void checkLoved() {
-        IsLovedCall ilc = new IsLovedCall();
-        ilc.execute(mTrack);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        final String tag = "TagInputActivity.onNewIntent";
+        String artist = intent.getStringExtra("artist");
+        String title = intent.getStringExtra("title");
+        Log.i(tag, "Track: " + title + ", " + artist);
+        mTrack = new Track(artist, title);
+        updateTrack();
     }
 
     private void setLoved(boolean loved) {
@@ -216,6 +221,18 @@ public class TagInputActivity extends ActionBarActivity {
         love_button.setImageDrawable(d);
     }
 
+    private void showWaitingDialog() {
+        FrameLayout pd = (FrameLayout) findViewById(R.id
+                .progressBarHolder);
+        pd.setVisibility(FrameLayout.VISIBLE);
+    }
+
+    private void updateList() {
+        findViewById(R.id.ti_initialProgressBar).setVisibility(View.GONE);
+        Collections.sort(mTagList);
+        mTagAdaptor.notifyDataSetChanged();
+    }
+
     private void updateOkButton() {
         final Button okButton = (Button) findViewById(R.id.tag_ok);
         final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
@@ -227,26 +244,12 @@ public class TagInputActivity extends ActionBarActivity {
         }
     }
 
-    private void updateList() {
-        findViewById(R.id.ti_initialProgressBar).setVisibility(View.GONE);
-        Collections.sort(mTagList);
-        mTagAdaptor.notifyDataSetChanged();
+    private void updateTrack() {
+        ((TextView) findViewById(R.id.tag_artist)).setText(mTrack.mArtist);
+        ((TextView) findViewById(R.id.tag_title)).setText(mTrack.mTitle);
+        checkLoved();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_tag_input, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return super.onOptionsItemSelected(item);
-    }
     private class GetTagsCall extends AsyncTask<Track, String, String> {
         TagList mFreqTags = new TagList();
         TagList mTrackTags = new TagList();

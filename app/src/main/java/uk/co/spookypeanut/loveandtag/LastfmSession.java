@@ -47,139 +47,76 @@ public class LastfmSession {
         passiveLogin();
     }
 
-    private void passiveLogin() {
-        final String tag = "LastfmSession.passiveLogin";
-        if (mSettings.contains(SESSION_KEY)) {
-            mSessionKey = mSettings.getString(SESSION_KEY, "");
-            mUsername = mSettings.getString(USERNAME, "");
-        } else {
-            Log.i(tag, "Couldn't log in");
+    private Track autocorrectTrack(Track orig_track) throws
+            InvalidObjectException {
+        // We do this so that we're always loving the auto-corrected version.
+        // It does slow things down a little though.
+        if (orig_track.mCorrected) {
+            // If this track has already been corrected, just return it as-is
+            return orig_track;
         }
+        return getTrackInfo(orig_track);
     }
 
-    public boolean isLoggedIn() {
-        if (!mSessionKey.equals("")) {
-            return true;
+    private boolean getBoolean(String url) throws
+            XmlPullParserException, IOException {
+        final String tag = "LastfmSession.getBoolean";
+        XmlPullParser parser;
+        parser = getUrlResponse(url);
+        Log.d(tag, "Got parser");
+        int eventType = parser.getEventType();
+
+        while(eventType != XmlPullParser.END_DOCUMENT) {
+            String debug;
+            debug = parser.getText();
+            if (debug != null) {
+                Log.i(tag, parser.getText());
+            }
+            switch(eventType) {
+                case XmlPullParser.START_TAG:
+                    if (1 != parser.getAttributeCount()) {
+                        break;
+                    }
+                    if (!"status".equals(parser.getAttributeName(0))) {
+                        break;
+                    }
+                    if ("ok".equals(parser.getAttributeValue(0))) {
+                        return true;
+                    }
+                case XmlPullParser.END_TAG:
+                    break;
+            }
+            eventType = parser.next();
         }
-        passiveLogin();
-        return !mSessionKey.equals("");
+        return false;
     }
 
-    public boolean unlove(Track orig_track) {
-        final String tag = "LastfmSession.unlove";
-        Track track;
-        try {
-            track = autocorrectTrack(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "autocorrectTrack failed, aborting");
-            e.printStackTrace();
-            return false;
-        }
-        Map<String, String> restparams = new HashMap<>();
-        restparams.put("method", "track.unlove");
-        restparams.put("sk", mSessionKey);
-        restparams.put("track", track.mTitle);
-        restparams.put("artist", track.mArtist);
-        String urlString;
-        urlString = mUrlMaker.fromHashmap(restparams);
-        boolean response;
-        try {
-            response = getBoolean(urlString);
-            return response;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    public boolean love(Track orig_track) {
-        final String tag = "LastfmSession.love";
-        Track track;
-        try {
-            track = autocorrectTrack(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "autocorrectTrack failed, aborting");
-            e.printStackTrace();
-            return false;
-        }
-        Map<String, String> restparams = new HashMap<>();
-        restparams.put("method", "track.love");
-        restparams.put("sk", mSessionKey);
-        restparams.put("track", track.mTitle);
-        restparams.put("artist", track.mArtist);
-        String urlString;
-        urlString = mUrlMaker.fromHashmap(restparams);
-        boolean response;
-        try {
-            response = getBoolean(urlString);
-            return response;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean tag(Track orig_track, String tag_cat) {
-        final String tag = "LastfmSession.tag";
-        Track track;
-        try {
-            track = autocorrectTrack(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "autocorrectTrack failed, aborting");
-            e.printStackTrace();
-            return false;
+    public TagList getGlobalTags() {
+        final String tag = "LastfmSession.getGlobalTags";
+        if (!isLoggedIn()) {
+            throw(new IllegalStateException("Session is not logged in"));
         }
         Map<String, String> rest_params = new HashMap<>();
-        rest_params.put("method", "track.addTags");
-        rest_params.put("sk", mSessionKey);
-        rest_params.put("track", track.mTitle);
-        rest_params.put("artist", track.mArtist);
-        rest_params.put("tags", tag_cat);
-        String urlString;
-        urlString = mUrlMaker.fromHashmap(rest_params);
-        boolean response;
+        rest_params.put("method", "user.getTopTags");
+        rest_params.put("user", mUsername);
+        rest_params.put("limit", "30");
+        String urlString = mUrlMaker.fromHashmap(rest_params);
+        Map<String, List<String>> list_map = new HashMap<>();
+        list_map.put("tag", Arrays.asList("lfm", "toptags", "tag", "name"));
+        XmlPullParser parser;
+        TagList topTags = new TagList();
         try {
-            response = getBoolean(urlString);
-            return response;
+            parser = getUrlResponse(urlString);
+            for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
+                Log.d(tag, map.toString());
+                topTags.add(new Tag(map.get("tag")));
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
-            return false;
+            topTags.mValid = false;
         }
-    }
-
-    public boolean untag(Track orig_track, String tag_name) {
-        final String tag = "LastfmSession.untag";
-        Track track;
-        try {
-            track = autocorrectTrack(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "autocorrectTrack failed, aborting");
-            e.printStackTrace();
-            return false;
-        }
-        Map<String, String> rest_params = new HashMap<>();
-        rest_params.put("method", "track.removeTag");
-        rest_params.put("sk", mSessionKey);
-        rest_params.put("track", track.mTitle);
-        rest_params.put("artist", track.mArtist);
-        rest_params.put("tag", tag_name);
-        String urlString;
-        urlString = mUrlMaker.fromHashmap(rest_params);
-        boolean response;
-        try {
-            response = getBoolean(urlString);
-            return response;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        return topTags;
     }
 
     public List<Track> getRecent () {
@@ -223,79 +160,73 @@ public class LastfmSession {
         return recentTracks;
     }
 
-    public TagList getTrackTags(Track orig_track) {
-        final String tag = "LastfmSession.getTrackTags";
-        Track track;
-        try {
-            track = autocorrectTrack(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "autocorrectTrack failed, aborting");
-            e.printStackTrace();
-            return new TagList();
-        }
-        Map<String, String> rest_params = new HashMap<>();
-        rest_params.put("method", "track.getTags");
-        rest_params.put("artist", track.mArtist);
-        rest_params.put("track", track.mTitle);
-        rest_params.put("user", mUsername);
-        String urlString = mUrlMaker.fromHashmap(rest_params);
-        Map<String, List<String>> list_map = new HashMap<>();
-        list_map.put("tag", Arrays.asList("lfm", "tags", "tag", "name"));
+    private String getSessionKey(String url) throws
+            XmlPullParserException, IOException {
+        final String tag = "LastfmSession.getSessionKey";
         XmlPullParser parser;
-        TagList tags = new TagList();
-        try {
-            parser = getUrlResponse(urlString);
-            List<Map<String,String>> results = getTagsFromLists(parser,
-                    list_map);
-            for (Map<String, String> map : results) {
-                Log.d(tag, map.toString());
-                Tag t = new Tag(map.get("tag"));
-                t.mPresent = true;
-                t.mActive = true;
-                tags.add(t);
+        parser = getUrlResponse(url);
+        Log.d(tag, "Got parser");
+        int eventType = parser.getEventType();
+
+        while(eventType != XmlPullParser.END_DOCUMENT) {
+            String name;
+
+            switch(eventType) {
+                case XmlPullParser.START_TAG:
+                    name = parser.getName();
+                    Log.d(tag, "|" + name + "|");
+                    if (name.equals("key")) {
+                        String result = parser.nextText();
+                        Log.d(tag, "Key is " + result);
+                        return result;
+                    }
+                case XmlPullParser.END_TAG:
+                    break;
             }
-            return tags;
+            eventType = parser.next();
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new TagList();
-
+        throw(new IOException("Session key not found"));
     }
 
-    public boolean isLoved(Track orig_track) {
-        final String tag = "LastfmSession.isLoved";
-        Track info;
-        try {
-            info = getTrackInfo(orig_track);
-        }
-        catch (InvalidObjectException e) {
-            Log.e(tag, "getTrackInfo failed, aborting");
-            e.printStackTrace();
-            return false;
-        }
-        catch (IllegalStateException e) {
-            Log.e(tag, "Not logged in, aborting");
-            e.printStackTrace();
-            return false;
-        }
-        if (info == null) {
-            Log.e(tag, "Call to getTrackInfo failed");
-            return false;
-        }
-        return info.mLoved;
-    }
+    private List<Map<String, String>> getTagsFromLists(XmlPullParser parser,
+                                  Map<String, List<String>> tag_list_map)
+                                  throws XmlPullParserException, IOException {
+        final String tag = "LastfmSession.getTagsFromLists";
+        int eventType = parser.getEventType();
+        List<String> CurrentPos = new ArrayList<>();
+        List<Map<String, String>> returnList = new ArrayList<>();
+        Map<String, String> oneMap = new HashMap<>();
 
-    private Track autocorrectTrack(Track orig_track) throws
-            InvalidObjectException {
-        // We do this so that we're always loving the auto-corrected version.
-        // It does slow things down a little though.
-        if (orig_track.mCorrected) {
-            // If this track has already been corrected, just return it as-is
-            return orig_track;
+        String name;
+        while(eventType != XmlPullParser.END_DOCUMENT) {
+            switch(eventType) {
+                case XmlPullParser.START_TAG:
+                    name = parser.getName();
+                    CurrentPos.add(name);
+                    break;
+                case XmlPullParser.END_TAG:
+                    CurrentPos.remove(CurrentPos.size() - 1);
+                    break;
+                case XmlPullParser.TEXT:
+                    for (Map.Entry<String, List<String>> entry :
+                                                    tag_list_map.entrySet()) {
+                        if(CurrentPos.equals(entry.getValue())) {
+                            String text = parser.getText();
+                            Log.v(tag, "Matched: " + CurrentPos.toString());
+                            Log.v(tag, "Matched: " + text);
+                            oneMap.put(entry.getKey(), text);
+                            if(oneMap.size() == tag_list_map.size()) {
+                                returnList.add(oneMap);
+                                oneMap = new HashMap<>();
+                            }
+                        }
+                    }
+                    break;
+            }
+            eventType = parser.next();
         }
-        return getTrackInfo(orig_track);
+        Log.d(tag, "Returning: " + returnList.toString());
+        return returnList;
     }
 
     public Track getTrackInfo(Track orig_track) throws InvalidObjectException {
@@ -345,107 +276,45 @@ public class LastfmSession {
         }
     }
 
-    public TagList getGlobalTags() {
-        final String tag = "LastfmSession.getGlobalTags";
-        if (!isLoggedIn()) {
-            throw(new IllegalStateException("Session is not logged in"));
+    public TagList getTrackTags(Track orig_track) {
+        final String tag = "LastfmSession.getTrackTags";
+        Track track;
+        try {
+            track = autocorrectTrack(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "autocorrectTrack failed, aborting");
+            e.printStackTrace();
+            return new TagList();
         }
         Map<String, String> rest_params = new HashMap<>();
-        rest_params.put("method", "user.getTopTags");
+        rest_params.put("method", "track.getTags");
+        rest_params.put("artist", track.mArtist);
+        rest_params.put("track", track.mTitle);
         rest_params.put("user", mUsername);
-        rest_params.put("limit", "30");
         String urlString = mUrlMaker.fromHashmap(rest_params);
         Map<String, List<String>> list_map = new HashMap<>();
-        list_map.put("tag", Arrays.asList("lfm", "toptags", "tag", "name"));
+        list_map.put("tag", Arrays.asList("lfm", "tags", "tag", "name"));
         XmlPullParser parser;
-        TagList topTags = new TagList();
+        TagList tags = new TagList();
         try {
             parser = getUrlResponse(urlString);
-            for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
+            List<Map<String,String>> results = getTagsFromLists(parser,
+                    list_map);
+            for (Map<String, String> map : results) {
                 Log.d(tag, map.toString());
-                topTags.add(new Tag(map.get("tag")));
+                Tag t = new Tag(map.get("tag"));
+                t.mPresent = true;
+                t.mActive = true;
+                tags.add(t);
             }
+            return tags;
         }
         catch (Exception e) {
             e.printStackTrace();
-            topTags.mValid = false;
         }
-        return topTags;
-    }
+        return new TagList();
 
-    private List<Map<String, String>> getTagsFromLists(XmlPullParser parser,
-                                  Map<String, List<String>> tag_list_map)
-                                  throws XmlPullParserException, IOException {
-        final String tag = "LastfmSession.getTagsFromLists";
-        int eventType = parser.getEventType();
-        List<String> CurrentPos = new ArrayList<>();
-        List<Map<String, String>> returnList = new ArrayList<>();
-        Map<String, String> oneMap = new HashMap<>();
-
-        String name;
-        while(eventType != XmlPullParser.END_DOCUMENT) {
-            switch(eventType) {
-                case XmlPullParser.START_TAG:
-                    name = parser.getName();
-                    CurrentPos.add(name);
-                    break;
-                case XmlPullParser.END_TAG:
-                    CurrentPos.remove(CurrentPos.size() - 1);
-                    break;
-                case XmlPullParser.TEXT:
-                    for (Map.Entry<String, List<String>> entry :
-                                                    tag_list_map.entrySet()) {
-                        if(CurrentPos.equals(entry.getValue())) {
-                            String text = parser.getText();
-                            Log.v(tag, "Matched: " + CurrentPos.toString());
-                            Log.v(tag, "Matched: " + text);
-                            oneMap.put(entry.getKey(), text);
-                            if(oneMap.size() == tag_list_map.size()) {
-                                returnList.add(oneMap);
-                                oneMap = new HashMap<>();
-                            }
-                        }
-                    }
-                    break;
-            }
-            eventType = parser.next();
-        }
-        Log.d(tag, "Returning: " + returnList.toString());
-        return returnList;
-    }
-
-    private void setSessionKey(String sk) {
-        final String tag = "LastfmSession.setSessionKey";
-        Log.d(tag, "Setting session key");
-        mSettings.edit().putString(SESSION_KEY, sk).apply();
-        mSessionKey = sk;
-    }
-
-    private void saveUsername(String username) {
-        mSettings.edit().putString(USERNAME, username).apply();
-        mUsername = username;
-    }
-
-    public boolean logIn(String username, String authToken) {
-        Map<String, String> rest_params = new HashMap<>();
-        rest_params.put("authToken", authToken);
-        rest_params.put("method", "auth.getMobileSession");
-        rest_params.put("username", username);
-        String urlString;
-        urlString = mUrlMaker.fromHashmap(rest_params);
-        try {
-            setSessionKey(getSessionKey(urlString));
-            saveUsername(username);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public void logOut() {
-        mSettings.edit().remove(SESSION_KEY).remove(USERNAME).apply();
     }
 
     private XmlPullParser getUrlResponse(String urlString) {
@@ -499,65 +368,197 @@ public class LastfmSession {
         return parser;
     }
 
-    private boolean getBoolean(String url) throws
-            XmlPullParserException, IOException {
-        final String tag = "LastfmSession.getBoolean";
-        XmlPullParser parser;
-        parser = getUrlResponse(url);
-        Log.d(tag, "Got parser");
-        int eventType = parser.getEventType();
-
-        while(eventType != XmlPullParser.END_DOCUMENT) {
-            String debug;
-            debug = parser.getText();
-            if (debug != null) {
-                Log.i(tag, parser.getText());
-            }
-            switch(eventType) {
-                case XmlPullParser.START_TAG:
-                    if (1 != parser.getAttributeCount()) {
-                        break;
-                    }
-                    if (!"status".equals(parser.getAttributeName(0))) {
-                        break;
-                    }
-                    if ("ok".equals(parser.getAttributeValue(0))) {
-                        return true;
-                    }
-                case XmlPullParser.END_TAG:
-                    break;
-            }
-            eventType = parser.next();
+    public boolean isLoggedIn() {
+        if (!mSessionKey.equals("")) {
+            return true;
         }
-        return false;
+        passiveLogin();
+        return !mSessionKey.equals("");
     }
 
-    private String getSessionKey(String url) throws
-            XmlPullParserException, IOException {
-        final String tag = "LastfmSession.getSessionKey";
-        XmlPullParser parser;
-        parser = getUrlResponse(url);
-        Log.d(tag, "Got parser");
-        int eventType = parser.getEventType();
-
-        while(eventType != XmlPullParser.END_DOCUMENT) {
-            String name;
-
-            switch(eventType) {
-                case XmlPullParser.START_TAG:
-                    name = parser.getName();
-                    Log.d(tag, "|" + name + "|");
-                    if (name.equals("key")) {
-                        String result = parser.nextText();
-                        Log.d(tag, "Key is " + result);
-                        return result;
-                    }
-                case XmlPullParser.END_TAG:
-                    break;
-            }
-            eventType = parser.next();
+    public boolean isLoved(Track orig_track) {
+        final String tag = "LastfmSession.isLoved";
+        Track info;
+        try {
+            info = getTrackInfo(orig_track);
         }
-        throw(new IOException("Session key not found"));
+        catch (InvalidObjectException e) {
+            Log.e(tag, "getTrackInfo failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
+        catch (IllegalStateException e) {
+            Log.e(tag, "Not logged in, aborting");
+            e.printStackTrace();
+            return false;
+        }
+        if (info == null) {
+            Log.e(tag, "Call to getTrackInfo failed");
+            return false;
+        }
+        return info.mLoved;
+    }
+
+    public boolean logIn(String username, String authToken) {
+        Map<String, String> rest_params = new HashMap<>();
+        rest_params.put("authToken", authToken);
+        rest_params.put("method", "auth.getMobileSession");
+        rest_params.put("username", username);
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(rest_params);
+        try {
+            setSessionKey(getSessionKey(urlString));
+            saveUsername(username);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public void logOut() {
+        mSettings.edit().remove(SESSION_KEY).remove(USERNAME).apply();
+    }
+
+    public boolean love(Track orig_track) {
+        final String tag = "LastfmSession.love";
+        Track track;
+        try {
+            track = autocorrectTrack(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "autocorrectTrack failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
+        Map<String, String> restparams = new HashMap<>();
+        restparams.put("method", "track.love");
+        restparams.put("sk", mSessionKey);
+        restparams.put("track", track.mTitle);
+        restparams.put("artist", track.mArtist);
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(restparams);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void passiveLogin() {
+        final String tag = "LastfmSession.passiveLogin";
+        if (mSettings.contains(SESSION_KEY)) {
+            mSessionKey = mSettings.getString(SESSION_KEY, "");
+            mUsername = mSettings.getString(USERNAME, "");
+        } else {
+            Log.i(tag, "Couldn't log in");
+        }
+    }
+
+    private void saveUsername(String username) {
+        mSettings.edit().putString(USERNAME, username).apply();
+        mUsername = username;
+    }
+
+    private void setSessionKey(String sk) {
+        final String tag = "LastfmSession.setSessionKey";
+        Log.d(tag, "Setting session key");
+        mSettings.edit().putString(SESSION_KEY, sk).apply();
+        mSessionKey = sk;
+    }
+
+    public boolean tag(Track orig_track, String tag_cat) {
+        final String tag = "LastfmSession.tag";
+        Track track;
+        try {
+            track = autocorrectTrack(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "autocorrectTrack failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
+        Map<String, String> rest_params = new HashMap<>();
+        rest_params.put("method", "track.addTags");
+        rest_params.put("sk", mSessionKey);
+        rest_params.put("track", track.mTitle);
+        rest_params.put("artist", track.mArtist);
+        rest_params.put("tags", tag_cat);
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(rest_params);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean unlove(Track orig_track) {
+        final String tag = "LastfmSession.unlove";
+        Track track;
+        try {
+            track = autocorrectTrack(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "autocorrectTrack failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
+        Map<String, String> restparams = new HashMap<>();
+        restparams.put("method", "track.unlove");
+        restparams.put("sk", mSessionKey);
+        restparams.put("track", track.mTitle);
+        restparams.put("artist", track.mArtist);
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(restparams);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean untag(Track orig_track, String tag_name) {
+        final String tag = "LastfmSession.untag";
+        Track track;
+        try {
+            track = autocorrectTrack(orig_track);
+        }
+        catch (InvalidObjectException e) {
+            Log.e(tag, "autocorrectTrack failed, aborting");
+            e.printStackTrace();
+            return false;
+        }
+        Map<String, String> rest_params = new HashMap<>();
+        rest_params.put("method", "track.removeTag");
+        rest_params.put("sk", mSessionKey);
+        rest_params.put("track", track.mTitle);
+        rest_params.put("artist", track.mArtist);
+        rest_params.put("tag", tag_name);
+        String urlString;
+        urlString = mUrlMaker.fromHashmap(rest_params);
+        boolean response;
+        try {
+            response = getBoolean(urlString);
+            return response;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 

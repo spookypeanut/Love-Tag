@@ -36,14 +36,46 @@ import uk.co.spookypeanut.loveandtag.util.Purchase;
 
 public class TrackListActivity extends ActionBarActivity implements
         SwipeRefreshLayout.OnRefreshListener {
+    public final static String METACHANGED = "com.android.music.metachanged";
+    public final static String PLAYSTATECHANGED = "com.android.music" +
+                                                  ".playstatechanged";
+    static final String ITEM_SKU = "uk.co.spookypeanut.loveandtag.donate";
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
+            = new IabHelper.OnIabPurchaseFinishedListener() {
+        final String tag = "mPurchaseFinishedList";
+        public void onIabPurchaseFinished(IabResult result,
+                                          Purchase purchase)
+        {
+            if (result.isFailure()) {
+                // Handle error
+                Log.e(tag, "Failure in purchase");
+                return;
+            }
+            if (purchase.getSku().equals(ITEM_SKU)) {
+                Log.e(tag, "Purchase succeeded");
+            }
+
+        }
+    };
+    static final int RC_DONATE = 137;
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
     Track mNowPlaying;
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String tag = "TrackListActivity.mReceiver.onReceive";
+            String action = intent.getAction();
+            String artist = intent.getStringExtra("artist");
+            if (artist == null) return;
+            String title = intent.getStringExtra("track");
+            Log.d(tag, "Got new track: " + title + " (" + action + ")");
+            mNowPlaying = new Track(artist, title, false);
+            updatePod();
+        }
+    };
     IabHelper mHelper;
-    static final String ITEM_SKU = "uk.co.spookypeanut.loveandtag.donate";
-    static final int RC_DONATE = 137;
-
     // This is never visible. It's the autocorrected version of the currently
     // playing track, so we don't end up having both "burnout" and "Burnout"
     // in the list
@@ -53,9 +85,35 @@ public class TrackListActivity extends ActionBarActivity implements
     ListEntry mPodView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public final static String METACHANGED = "com.android.music.metachanged";
-    public final static String PLAYSTATECHANGED = "com.android.music" +
-                                                  ".playstatechanged";
+    private void donateClicked() {
+        mHelper.launchPurchaseFlow(this, ITEM_SKU, RC_DONATE,
+                mPurchaseFinishedListener, "mypurchasetoken");
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final String tag = "TrackListActivity.onActivityResult";
+        Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
+        if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
+        // Check which request we're responding to
+        if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
+            if (resultCode == RESULT_OK) {
+                mLfs = new LastfmSession();
+            } else {
+                Log.e(tag, "Log in failed");
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final String tag = "TrackListActivity.onResume";
+        Log.d(tag, "Updating");
+        updateAll();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,135 +146,10 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onRefresh() {
-        final String tag = "TrackListActivity.onRefresh";
-        Log.d(tag, "Updating");
-        updateAll();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        final String tag = "TrackListActivity.onResume";
-        Log.d(tag, "Updating");
-        updateAll();
-    }
-
-    private void setNoTracks() {
-        LinearLayout rtLayout;
-        rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
-        ProgressBar progress;
-        progress = (ProgressBar)findViewById(R.id.tl_initialProgressBar);
-        if (progress != null) progress.setVisibility(View.GONE);
-        if (mErrorMessage != null) {
-            return;
-        }
-        mErrorMessage = new TextView(mCurrentContext);
-        mErrorMessage.setTextSize(18);
-        mErrorMessage.setGravity(Gravity.CENTER_HORIZONTAL);
-        rtLayout.addView(mErrorMessage);
-        String msg = getString(R.string.tl_problems_communicating);
-        mErrorMessage.setText(msg);
-    }
-
-    private void setRecentTracks(List<Track> tracks) {
-        mRecentTracks = tracks;
-        if (tracks.size() == 0) {
-            setNoTracks();
-            mSwipeRefreshLayout.setRefreshing(false);
-            return;
-        }
-        LinearLayout rtLayout;
-        rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
-        rtLayout.removeAllViews();
-        List<Track> present_list = new ArrayList<>();
-        if (mNowPlaying != null) {
-            present_list.add(mNowPlaying);
-        }
-        if (mAlternatePodTrack != null) {
-            present_list.add(mAlternatePodTrack);
-        }
-        for (Track track : tracks) {
-            if (!track.isIn(present_list)) {
-                ListEntry list_entry = new ListEntry(mCurrentContext);
-                rtLayout.addView(list_entry);
-                list_entry.findViewById(R.id.title).setSelected(true);
-                list_entry.setMusic(track);
-                present_list.add(track);
-            }
-        }
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    private void setPodTrack(Track track) {
-        if (track == null) {
-            return;
-        }
-        mPodView.setMusic(track);
-
-        LinearLayout podLayout;
-        podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
-        podLayout.removeAllViews();
-        podLayout.addView(mPodView);
-        TextView label = (TextView)findViewById(R.id.podLabel);
-        label.setVisibility(View.VISIBLE);
-        podLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     protected void onDestroy() {
         unregisterReceiver(mReceiver);
         super.onDestroy();
     }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final String tag = "TrackListActivity.onActivityResult";
-        Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
-        if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            return;
-        }
-        // Check which request we're responding to
-        if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
-            if (resultCode == RESULT_OK) {
-                mLfs = new LastfmSession();
-            } else {
-                Log.e(tag, "Log in failed");
-                finish();
-            }
-        }
-    }
-
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String tag = "TrackListActivity.mReceiver.onReceive";
-            String action = intent.getAction();
-            String artist = intent.getStringExtra("artist");
-            if (artist == null) return;
-            String title = intent.getStringExtra("track");
-            Log.d(tag, "Got new track: " + title + " (" + action + ")");
-            mNowPlaying = new Track(artist, title, false);
-            updatePod();
-        }
-    };
-
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
-            = new IabHelper.OnIabPurchaseFinishedListener() {
-        final String tag = "mPurchaseFinishedList";
-        public void onIabPurchaseFinished(IabResult result,
-                                          Purchase purchase)
-        {
-            if (result.isFailure()) {
-                // Handle error
-                Log.e(tag, "Failure in purchase");
-                return;
-            }
-            if (purchase.getSku().equals(ITEM_SKU)) {
-                Log.e(tag, "Purchase succeeded");
-            }
-
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -260,9 +193,72 @@ public class TrackListActivity extends ActionBarActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private void donateClicked() {
-        mHelper.launchPurchaseFlow(this, ITEM_SKU, RC_DONATE,
-                mPurchaseFinishedListener, "mypurchasetoken");
+    @Override
+    public void onRefresh() {
+        final String tag = "TrackListActivity.onRefresh";
+        Log.d(tag, "Updating");
+        updateAll();
+    }
+
+    private void setNoTracks() {
+        LinearLayout rtLayout;
+        rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
+        ProgressBar progress;
+        progress = (ProgressBar)findViewById(R.id.tl_initialProgressBar);
+        if (progress != null) progress.setVisibility(View.GONE);
+        if (mErrorMessage != null) {
+            return;
+        }
+        mErrorMessage = new TextView(mCurrentContext);
+        mErrorMessage.setTextSize(18);
+        mErrorMessage.setGravity(Gravity.CENTER_HORIZONTAL);
+        rtLayout.addView(mErrorMessage);
+        String msg = getString(R.string.tl_problems_communicating);
+        mErrorMessage.setText(msg);
+    }
+
+    private void setPodTrack(Track track) {
+        if (track == null) {
+            return;
+        }
+        mPodView.setMusic(track);
+
+        LinearLayout podLayout;
+        podLayout = (LinearLayout)findViewById(R.id.playingOnDeviceLayout);
+        podLayout.removeAllViews();
+        podLayout.addView(mPodView);
+        TextView label = (TextView)findViewById(R.id.podLabel);
+        label.setVisibility(View.VISIBLE);
+        podLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void setRecentTracks(List<Track> tracks) {
+        mRecentTracks = tracks;
+        if (tracks.size() == 0) {
+            setNoTracks();
+            mSwipeRefreshLayout.setRefreshing(false);
+            return;
+        }
+        LinearLayout rtLayout;
+        rtLayout = (LinearLayout)findViewById(R.id.recentTracksLayout);
+        rtLayout.removeAllViews();
+        List<Track> present_list = new ArrayList<>();
+        if (mNowPlaying != null) {
+            present_list.add(mNowPlaying);
+        }
+        if (mAlternatePodTrack != null) {
+            present_list.add(mAlternatePodTrack);
+        }
+        for (Track track : tracks) {
+            if (!track.isIn(present_list)) {
+                ListEntry list_entry = new ListEntry(mCurrentContext);
+                rtLayout.addView(list_entry);
+                list_entry.findViewById(R.id.title).setSelected(true);
+                list_entry.setMusic(track);
+                present_list.add(track);
+            }
+        }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void updateAll() {

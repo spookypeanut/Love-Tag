@@ -74,69 +74,6 @@ public class LoveWidget extends AppWidgetProvider {
             Log.d(tag, "Constructor");
         }
 
-        @Override
-        public void onCreate() {
-            super.onCreate();
-            tryLogin();
-            mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        }
-
-        private boolean tryLogin() {
-            return mLfs.isLoggedIn();
-        }
-
-        public void setTrack(Track track) {
-            SharedPreferences.Editor editor = mSettings.edit();
-            // TODO: Can we use the same one for both widgets?
-            editor.putString("lw_artist", track.mArtist);
-            editor.putString("lw_title", track.mTitle);
-            editor.putBoolean("lw_loved", track.mLoved).apply();
-        }
-
-        public Track getTrack() {
-            Track nowPlaying = null;
-            // TODO: Can we use the same one for both widgets?
-            String artist = mSettings.getString("lw_artist", "");
-            String title = mSettings.getString("lw_title", "");
-            boolean loved = mSettings.getBoolean("lw_loved", false);
-            if (!artist.equals("")) {
-                nowPlaying = new Track(artist, title, loved);
-            }
-            return nowPlaying;
-        }
-
-        @Override
-        public void onHandleIntent(Intent intent) {
-            final String tag = "LoveWidget.UpdateService.onHandleIntent";
-            String action = intent.getAction();
-            Log.d(tag, "Handling intent: " + action);
-            ComponentName me = new ComponentName(this, LoveWidget.class);
-            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
-            if (action != null && action.equals(love_widget_click_action)) {
-                Track track = getTrack();
-                if (track == null) return;
-                if (track.mLoved) {
-                    Toast.makeText(this, "Unloving " + track.mTitle,
-                            Toast.LENGTH_SHORT).show();
-                    mLfs.unlove(track);
-                } else {
-                    Toast.makeText(this, "Loving " + track.mTitle,
-                            Toast.LENGTH_SHORT).show();
-                    mLfs.love(track);
-                }
-                mgr.updateAppWidget(me, buildUpdate(this, track.mArtist,
-                        track.mTitle));
-                return;
-            }
-            if (action != null && action.equals(love_widget_new_track_action)) {
-                String artist = intent.getStringExtra("artist");
-                String title = intent.getStringExtra("title");
-                mgr.updateAppWidget(me, buildUpdate(this, artist, title));
-                return;
-            }
-            mgr.updateAppWidget(me, buildUpdate(this));
-        }
-
         private RemoteViews buildUpdate(Context context, String artist,
                                         String title) {
             final String tag = "LoveWidget.UpdateService.buildUpdate (CSS)";
@@ -177,6 +114,69 @@ public class LoveWidget extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.loveWidgetButton, pi);
 
             return views;
+        }
+
+        public Track getTrack() {
+            Track nowPlaying = null;
+            // TODO: Can we use the same one for both widgets?
+            String artist = mSettings.getString("lw_artist", "");
+            String title = mSettings.getString("lw_title", "");
+            boolean loved = mSettings.getBoolean("lw_loved", false);
+            if (!artist.equals("")) {
+                nowPlaying = new Track(artist, title, loved);
+            }
+            return nowPlaying;
+        }
+
+        public void setTrack(Track track) {
+            SharedPreferences.Editor editor = mSettings.edit();
+            // TODO: Can we use the same one for both widgets?
+            editor.putString("lw_artist", track.mArtist);
+            editor.putString("lw_title", track.mTitle);
+            editor.putBoolean("lw_loved", track.mLoved).apply();
+        }
+
+        @Override
+        public void onCreate() {
+            super.onCreate();
+            tryLogin();
+            mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        }
+
+        @Override
+        public void onHandleIntent(Intent intent) {
+            final String tag = "LoveWidget.UpdateService.onHandleIntent";
+            String action = intent.getAction();
+            Log.d(tag, "Handling intent: " + action);
+            ComponentName me = new ComponentName(this, LoveWidget.class);
+            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
+            if (action != null && action.equals(love_widget_click_action)) {
+                Track track = getTrack();
+                if (track == null) return;
+                if (track.mLoved) {
+                    Toast.makeText(this, "Unloving " + track.mTitle,
+                            Toast.LENGTH_SHORT).show();
+                    mLfs.unlove(track);
+                } else {
+                    Toast.makeText(this, "Loving " + track.mTitle,
+                            Toast.LENGTH_SHORT).show();
+                    mLfs.love(track);
+                }
+                mgr.updateAppWidget(me, buildUpdate(this, track.mArtist,
+                        track.mTitle));
+                return;
+            }
+            if (action != null && action.equals(love_widget_new_track_action)) {
+                String artist = intent.getStringExtra("artist");
+                String title = intent.getStringExtra("title");
+                mgr.updateAppWidget(me, buildUpdate(this, artist, title));
+                return;
+            }
+            mgr.updateAppWidget(me, buildUpdate(this));
+        }
+
+        private boolean tryLogin() {
+            return mLfs.isLoggedIn();
         }
     }
 }

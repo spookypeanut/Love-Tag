@@ -64,59 +64,6 @@ public class TagWidget extends AppWidgetProvider {
             Log.d(tag, "Constructor");
         }
 
-        @Override
-        public void onCreate() {
-            super.onCreate();
-            tryLogin();
-            mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        }
-
-        private boolean tryLogin() {
-            return mLfs.isLoggedIn();
-        }
-
-        public void setTrack(Track track) {
-            final String tag = "TagWidget.UpdateService.setTrack";
-            Log.d(tag, track.mTitle + ", " + track.mArtist);
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putString("tw_artist", track.mArtist);
-            editor.putString("tw_title", track.mTitle);
-            editor.putBoolean("tw_loved", track.mLoved).apply();
-        }
-
-        public Track getTrack() {
-            final String tag = "TagWidget.UpdateService.getTrack";
-            Track nowPlaying = null;
-            String artist = mSettings.getString("tw_artist", "");
-            String title = mSettings.getString("tw_title", "");
-            boolean loved = mSettings.getBoolean("tw_loved", false);
-            if (!artist.equals("")) {
-                nowPlaying = new Track(artist, title, loved);
-                Log.d(tag, nowPlaying.mTitle + ", " + nowPlaying.mArtist);
-            }
-            if (nowPlaying == null) {
-                Log.d(tag, "No track stored");
-            }
-            return nowPlaying;
-        }
-
-        @Override
-        public void onHandleIntent(Intent intent) {
-            final String tag = "TagWidget.UpdateService.onHandleIntent";
-            String action = intent.getAction();
-            Log.d(tag, "Handling intent: " + action);
-            ComponentName me = new ComponentName(this, TagWidget.class);
-            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
-            if (action != null && action.equals(tag_widget_new_track_action)) {
-                String artist = intent.getStringExtra("artist");
-                if (artist == null) return;
-                String title = intent.getStringExtra("title");
-                mgr.updateAppWidget(me, buildUpdate(this, artist, title));
-                return;
-            }
-            mgr.updateAppWidget(me, buildUpdate(this));
-        }
-
         private RemoteViews buildUpdate(Context context, String artist,
                                         String title) {
             final String tag = "TagWidget.UpdateService.buildUpdate (CSS)";
@@ -154,6 +101,59 @@ public class TagWidget extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.tw_button, pendingIntent);
 
             return views;
+        }
+
+        public Track getTrack() {
+            final String tag = "TagWidget.UpdateService.getTrack";
+            Track nowPlaying = null;
+            String artist = mSettings.getString("tw_artist", "");
+            String title = mSettings.getString("tw_title", "");
+            boolean loved = mSettings.getBoolean("tw_loved", false);
+            if (!artist.equals("")) {
+                nowPlaying = new Track(artist, title, loved);
+                Log.d(tag, nowPlaying.mTitle + ", " + nowPlaying.mArtist);
+            }
+            if (nowPlaying == null) {
+                Log.d(tag, "No track stored");
+            }
+            return nowPlaying;
+        }
+
+        public void setTrack(Track track) {
+            final String tag = "TagWidget.UpdateService.setTrack";
+            Log.d(tag, track.mTitle + ", " + track.mArtist);
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString("tw_artist", track.mArtist);
+            editor.putString("tw_title", track.mTitle);
+            editor.putBoolean("tw_loved", track.mLoved).apply();
+        }
+
+        @Override
+        public void onCreate() {
+            super.onCreate();
+            tryLogin();
+            mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        }
+
+        @Override
+        public void onHandleIntent(Intent intent) {
+            final String tag = "TagWidget.UpdateService.onHandleIntent";
+            String action = intent.getAction();
+            Log.d(tag, "Handling intent: " + action);
+            ComponentName me = new ComponentName(this, TagWidget.class);
+            AppWidgetManager mgr = AppWidgetManager.getInstance(this);
+            if (action != null && action.equals(tag_widget_new_track_action)) {
+                String artist = intent.getStringExtra("artist");
+                if (artist == null) return;
+                String title = intent.getStringExtra("title");
+                mgr.updateAppWidget(me, buildUpdate(this, artist, title));
+                return;
+            }
+            mgr.updateAppWidget(me, buildUpdate(this));
+        }
+
+        private boolean tryLogin() {
+            return mLfs.isLoggedIn();
         }
     }
 }

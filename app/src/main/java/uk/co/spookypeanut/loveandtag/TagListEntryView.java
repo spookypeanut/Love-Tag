@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TagListEntryView extends TextView {
+    final int mDropShadowRadius = 2;
+    final int mDropShadowDistance = 4;
     boolean mActive = false;
     List<Point> mBorderPointList = new ArrayList<>();
     Point mHoleCentre = new Point();
@@ -31,12 +33,31 @@ public class TagListEntryView extends TextView {
     Paint mActiveDrawPaint = new Paint();
     int mInactiveDrawColour;
     Paint mInactiveDrawPaint = new Paint();
-    final int mDropShadowRadius = 2;
-    final int mDropShadowDistance = 4;
 
     public TagListEntryView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+    }
+
+    private void drawBackground(Canvas canvas) {
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        Point p = mBorderPointList.get(0);
+        path.moveTo(p.x, p.y);
+        for (int index=1; index< mBorderPointList.size(); index++) {
+            p = mBorderPointList.get(index);
+            path.lineTo(p.x, p.y);
+        }
+        path.moveTo(mHoleCentre.x, mHoleCentre.y);
+        path.addCircle(mHoleCentre.x, mHoleCentre.y,
+                       mHoleRadius, Path.Direction.CW);
+        if (mActive) {
+            canvas.drawPath(path, mActiveFillPaint);
+            this.setTextColor(mActiveDrawColour);
+        } else {
+            canvas.drawPath(path, mInactiveFillPaint);
+            this.setTextColor(mInactiveDrawColour);
+        }
     }
 
     private void init() {
@@ -53,6 +74,12 @@ public class TagListEntryView extends TextView {
         mActiveDrawPaint.setColor(mActiveDrawColour);
         mInactiveDrawColour = Color.WHITE;
         mInactiveDrawPaint.setColor(mInactiveDrawColour);
+    }
+
+    @Override
+    protected void onDraw(@NonNull Canvas canvas) {
+        drawBackground(canvas);
+        super.onDraw(canvas);
     }
 
     @Override
@@ -79,32 +106,5 @@ public class TagListEntryView extends TextView {
         mBorderPointList.add(new Point(right, hole_centre_y));
         mBorderPointList.add(new Point(hole_centre_x, bottom));
         mBorderPointList.add(new Point(left, bottom));
-    }
-
-    @Override
-    protected void onDraw(@NonNull Canvas canvas) {
-        drawBackground(canvas);
-        super.onDraw(canvas);
-    }
-
-    private void drawBackground(Canvas canvas) {
-        Path path = new Path();
-        path.setFillType(Path.FillType.EVEN_ODD);
-        Point p = mBorderPointList.get(0);
-        path.moveTo(p.x, p.y);
-        for (int index=1; index< mBorderPointList.size(); index++) {
-            p = mBorderPointList.get(index);
-            path.lineTo(p.x, p.y);
-        }
-        path.moveTo(mHoleCentre.x, mHoleCentre.y);
-        path.addCircle(mHoleCentre.x, mHoleCentre.y,
-                       mHoleRadius, Path.Direction.CW);
-        if (mActive) {
-            canvas.drawPath(path, mActiveFillPaint);
-            this.setTextColor(mActiveDrawColour);
-        } else {
-            canvas.drawPath(path, mInactiveFillPaint);
-            this.setTextColor(mInactiveDrawColour);
-        }
     }
 }
