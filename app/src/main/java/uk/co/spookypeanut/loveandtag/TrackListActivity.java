@@ -181,6 +181,7 @@ public class TrackListActivity extends ActionBarActivity implements
                 mLfs = new LastfmSession();
             } else {
                 Log.e(tag, "Log in failed");
+                finish();
             }
         }
     }
