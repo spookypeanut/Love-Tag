@@ -17,7 +17,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class TagWidget extends AppWidgetProvider {
     static final String tag_widget_new_track_action = "tag_widget_new_track";
