@@ -72,9 +72,9 @@ public class TagListEntryView extends TextView {
         mHoleRadius = width / 50;
 
         mBorderPointList.add(new Point(left, top));
-        mBorderPointList.add(new Point(right - pointHeight, top));
-        mBorderPointList.add(new Point(right, top + height / 2));
-        mBorderPointList.add(new Point(right - pointHeight, bottom));
+        mBorderPointList.add(new Point(hole_centre_x, top));
+        mBorderPointList.add(new Point(right, hole_centre_y));
+        mBorderPointList.add(new Point(hole_centre_x, bottom));
         mBorderPointList.add(new Point(left, bottom));
     }
 
