@@ -24,31 +24,23 @@ public class LoginActivity extends ActionBarActivity {
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
 
-    /**
-     * Attempts to sign in to the account specified by the login form.
-     * If there are form errors (invalid username, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     public void attemptLogin() {
         mUsernameView.setError(null);
         mPasswordView.setError(null);
 
         String username = mUsernameView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            mPasswordView.requestFocus();
-            return;
-        }
         if (TextUtils.isEmpty(username)) {
             mUsernameView.setError(getString(R.string.error_field_required));
             mUsernameView.requestFocus();
             return;
         }
-
-        Md5Maker md5m;
-        md5m = new Md5Maker();
+        String password = mPasswordView.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            mPasswordView.requestFocus();
+            return;
+        }
+        Md5Maker md5m = new Md5Maker();
         String authToken = md5m.encode(username + md5m.encode(password));
         new LoginCall().execute(username, authToken);
         showWaitingDialog();
@@ -60,7 +52,6 @@ public class LoginActivity extends ActionBarActivity {
         setContentView(R.layout.activity_login);
 
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
-
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -93,8 +84,7 @@ public class LoginActivity extends ActionBarActivity {
             final String tag = "LoginCall.doInBackground";
             String username = params[0];
             String authToken = params[1];
-            LastfmSession lfs;
-            lfs = new LastfmSession();
+            LastfmSession lfs = new LastfmSession();
             boolean result = lfs.logIn(username, authToken);
             Log.i(tag, "Result: " + result);
             if (lfs.isLoggedIn()) {
@@ -107,11 +97,6 @@ public class LoginActivity extends ActionBarActivity {
                 finish();
             }
             return "";
-
-        }
-
-        protected void onPostExecute(String result) {
-
         }
     }
 }
