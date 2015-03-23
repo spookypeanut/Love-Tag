@@ -13,14 +13,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="uk.co.spookypeanut.loveandtag.LoginActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/lastfm_red_logo"
-        android:contentDescription="@string/lastfm_logo_description"
-        android:paddingBottom="16dp"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView2"
+            android:src="@drawable/icon"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/loveandtag_logo_description"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/lastfm_red_logo"
+            android:contentDescription="@string/lastfm_logo_description"
+            android:paddingBottom="16dp"/>
+    </LinearLayout>
 
     <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
         android:layout_height="match_parent">
