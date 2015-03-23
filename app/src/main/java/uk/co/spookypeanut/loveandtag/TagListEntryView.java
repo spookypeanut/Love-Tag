@@ -14,6 +14,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -56,7 +57,9 @@ public class TagListEntryView extends TextView {
 
     @Override
     protected void onSizeChanged(int width, int height, int old_w, int old_h) {
-        final int offset = 8;
+        // This formula gives us an offset of 4 on a tiny screen,
+        // and 10 on a Nexus 5
+        final int offset = 2 + (int) (1.0 * height / 18);
         int left = offset;
         int top = offset;
         int bottom = height - top;
