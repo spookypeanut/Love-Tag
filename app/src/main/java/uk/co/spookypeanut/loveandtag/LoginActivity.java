@@ -78,7 +78,7 @@ public class LoginActivity extends ActionBarActivity {
         Md5Maker md5m;
         md5m = new Md5Maker();
         String authToken = md5m.encode(username + md5m.encode(password));
-        new CallAPI().execute(username, authToken);
+        new LoginCall().execute(username, authToken);
         showWaitingDialog();
     }
 
@@ -87,10 +87,10 @@ public class LoginActivity extends ActionBarActivity {
         pd.setVisibility(FrameLayout.VISIBLE);
     }
 
-    private class CallAPI extends AsyncTask<String, String, String> {
+    private class LoginCall extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            final String tag = "CallAPI.doInBackground";
+            final String tag = "LoginCall.doInBackground";
             String username = params[0];
             String authToken = params[1];
             LastfmSession lfs;
@@ -106,7 +106,6 @@ public class LoginActivity extends ActionBarActivity {
                 setResult(RESULT_CANCELED);
                 finish();
             }
-//            setResult(getResources().getInteger(R.integer.rc_log_in), intent);
             return "";
 
         }
