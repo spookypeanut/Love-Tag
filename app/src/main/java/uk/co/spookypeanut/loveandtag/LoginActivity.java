@@ -5,6 +5,7 @@ package uk.co.spookypeanut.loveandtag;
  * Distributed under the GNU GPL v3. For full terms see the file COPYING.
  */
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -19,28 +20,39 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends ActionBarActivity {
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
+    private FrameLayout mProgress;
 
     public void attemptLogin() {
+        // If the views have errors on them due to previous calls to this
+        // method, clear them out
         mUsernameView.setError(null);
         mPasswordView.setError(null);
 
         String username = mUsernameView.getText().toString();
         if (TextUtils.isEmpty(username)) {
+            // Flag to the user that this field can't be empty
             mUsernameView.setError(getString(R.string.error_field_required));
             mUsernameView.requestFocus();
             return;
         }
         String password = mPasswordView.getText().toString();
         if (TextUtils.isEmpty(password)) {
+            // Flag to the user that this field can't be empty
             mPasswordView.setError(getString(R.string.error_field_required));
             mPasswordView.requestFocus();
             return;
         }
         Md5Maker md5m = new Md5Maker();
+        // The last.fm docs for getMobileSession here:
+        // http://www.last.fm/api/show/auth.getMobileSession
+        // are out of date. Instead of sending username and password,
+        // it is now required to sending username and auth token,
+        // generated as depicted below.
         String authToken = md5m.encode(username + md5m.encode(password));
         new LoginCall().execute(username, authToken);
         showWaitingDialog();
@@ -53,6 +65,7 @@ public class LoginActivity extends ActionBarActivity {
 
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
+        mProgress = (FrameLayout) findViewById(R.id.login_progress);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -74,29 +87,38 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     private void showWaitingDialog() {
-        FrameLayout pd = (FrameLayout) findViewById(R.id.login_progress);
-        pd.setVisibility(FrameLayout.VISIBLE);
+        // Display the circle thing to show us that login is in progress
+        mProgress.setVisibility(FrameLayout.VISIBLE);
+    }
+
+    private void hideWaitingDialog() {
+        mProgress.setVisibility(FrameLayout.GONE);
     }
 
     private class LoginCall extends AsyncTask<String, String, String> {
+        LastfmSession mLfs = new LastfmSession();
         @Override
         protected String doInBackground(String... params) {
             final String tag = "LoginCall.doInBackground";
             String username = params[0];
             String authToken = params[1];
-            LastfmSession lfs = new LastfmSession();
-            boolean result = lfs.logIn(username, authToken);
+            boolean result = mLfs.logIn(username, authToken);
             Log.i(tag, "Result: " + result);
-            if (lfs.isLoggedIn()) {
+            return "";
+        }
+
+        protected void onPostExecute(String result) {
+            final String tag = "LoginCall.onPostExecute";
+            if (mLfs.isLoggedIn()) {
                 Log.i(tag, "Logged in");
                 setResult(RESULT_OK);
                 finish();
             } else {
                 Log.i(tag, "Not logged in");
-                setResult(RESULT_CANCELED);
-                finish();
+                hideWaitingDialog();
+                Context c = App.getContext();
+                Toast.makeText(c, "Failed to connect",  Toast.LENGTH_SHORT).show();
             }
-            return "";
         }
     }
 }
