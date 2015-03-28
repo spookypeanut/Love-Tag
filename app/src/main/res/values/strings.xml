@@ -37,4 +37,15 @@
 
     <string name="lastfm_logo_description">Last.fm logo</string>
     <string name="loveandtag_logo_description">Love&amp;Tag logo</string>
+
+    <string name="title_activity_donate">Donate</string>
+    <string name="donate_button_label">Donate</string>
+    <string name="donate_again_button_label">Donate more! </string>
+    <string name="please_donate_message">I'd be delighted if you'd
+        spend just a small amount to keep me motivated to improve the
+        app.</string>
+    <string name="thank_you_message">Thank you so much for donating!
+        I hope it gives you a warm fuzzy feeling.</string>
+    <string name="thanks_again_message"></string>
+
 </resources>

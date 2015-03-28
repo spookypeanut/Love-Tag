@@ -58,6 +58,14 @@
                 android:resource="@xml/tag_widget_info" />
         </receiver>
         <service android:name="uk.co.spookypeanut.loveandtag.TagWidget$UpdateService" />
+        <activity
+            android:name=".DonateActivity"
+            android:label="@string/title_activity_donate"
+            android:parentActivityName=".TrackListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="uk.co.spookypeanut.loveandtag.TrackListActivity" />
+        </activity>
     </application>
 
 </manifest>
