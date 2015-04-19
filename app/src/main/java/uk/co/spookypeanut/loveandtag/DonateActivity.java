@@ -25,7 +25,7 @@ public class DonateActivity extends ActionBarActivity {
 
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
             = new IabHelper.OnIabPurchaseFinishedListener() {
-        final String tag = "mPurchaseFinishedListener";
+        final String tag = "mPurch.Fin.Listener";
         public void onIabPurchaseFinished(IabResult result,
                                           Purchase purchase)
         {
