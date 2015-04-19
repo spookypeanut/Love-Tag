@@ -39,25 +39,6 @@ public class TrackListActivity extends ActionBarActivity implements
     public final static String METACHANGED = "com.android.music.metachanged";
     public final static String PLAYSTATECHANGED = "com.android.music" +
                                                   ".playstatechanged";
-    static final String ITEM_SKU = "uk.co.spookypeanut.loveandtag.donate";
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
-            = new IabHelper.OnIabPurchaseFinishedListener() {
-        final String tag = "mPurchaseFinishedList";
-        public void onIabPurchaseFinished(IabResult result,
-                                          Purchase purchase)
-        {
-            if (result.isFailure()) {
-                // Handle error
-                Log.e(tag, "Failure in purchase");
-                return;
-            }
-            if (purchase.getSku().equals(ITEM_SKU)) {
-                Log.e(tag, "Purchase succeeded");
-            }
-
-        }
-    };
-    static final int RC_DONATE = 137;
     LastfmSession mLfs;
     UrlMaker mUrlMaker;
     Context mCurrentContext = this;
@@ -75,7 +56,7 @@ public class TrackListActivity extends ActionBarActivity implements
             updatePod();
         }
     };
-    IabHelper mHelper;
+    boolean mIabWorks = false;
     // This is never visible. It's the autocorrected version of the currently
     // playing track, so we don't end up having both "burnout" and "Burnout"
     // in the list
@@ -86,16 +67,17 @@ public class TrackListActivity extends ActionBarActivity implements
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private void donateClicked() {
-        mHelper.launchPurchaseFlow(this, ITEM_SKU, RC_DONATE,
-                mPurchaseFinishedListener, "mypurchasetoken");
+        final String tag = "TrackListActivity.donateClicked";
+        Intent i = new Intent();
+        i.setClass(App.getContext(), DonateActivity.class);
+        Log.d(tag, "Starting donate activity");
+        startActivityForResult(i, getResources().getInteger(
+                R.integer.rc_donate));
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         final String tag = "TrackListActivity.onActivityResult";
         Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
-        if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            return;
-        }
         // Check which request we're responding to
         if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
             if (resultCode == RESULT_OK) {
@@ -131,7 +113,6 @@ public class TrackListActivity extends ActionBarActivity implements
         Log.d(tag, "setOnRefreshListener");
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mUrlMaker = new UrlMaker();
-        mHelper = new IabHelper(this, getString(R.string.billing_licence_key));
 
         // This snippet should be used whenever getting a session. It's
         // the most elegant way I can figure out to do this (the only
@@ -143,6 +124,7 @@ public class TrackListActivity extends ActionBarActivity implements
             startActivityForResult(i, getResources().getInteger(
                     R.integer.rc_log_in));
         }
+
     }
 
     @Override
@@ -172,22 +154,8 @@ public class TrackListActivity extends ActionBarActivity implements
             return true;
         }
         if (id == R.id.action_donate) {
-            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-                 public void onIabSetupFinished(IabResult result) {
-                     if (!result.isSuccess()) {
-                         Log.d(tag, "In-app Billing setup failed: " + result);
-                     } else {
-                         Log.d(tag, "In-app Billing is set up OK");
-                         donateClicked();
-                     }
-                 }
-            });
+             donateClicked();
 
-//            Intent i = new Intent();
-//            i.setClass(App.getContext(), DonateActivity.class);
-//            Log.d(tag, "Starting donate activity");
-//            startActivityForResult(i, getResources().getInteger(
-//                    R.integer.rc_donate));
             return true;
         }
         return super.onOptionsItemSelected(item);
