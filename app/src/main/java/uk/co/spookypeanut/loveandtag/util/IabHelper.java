@@ -202,6 +202,7 @@ public class IabHelper {
      */
     public void startSetup(final OnIabSetupFinishedListener listener) {
         // If already set up, can't do it again.
+        logDebug("Start of startSetup");
         checkNotDisposed();
         if (mSetupDone) throw new IllegalStateException("IAB helper is already set up.");
 
@@ -216,9 +217,14 @@ public class IabHelper {
 
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
+                logDebug("Start of onServiceConnected");
                 if (mDisposed) return;
                 logDebug("Billing service connected.");
                 mService = IInAppBillingService.Stub.asInterface(service);
+                logError("Got mService");
+                if (mService == null) {
+                    logError("After setting, the service is null");
+                }
                 String packageName = mContext.getPackageName();
                 try {
                     logDebug("Checking for in-app billing 3 support.");
@@ -829,6 +835,18 @@ public class IabHelper {
         mAsyncInProgress = false;
     }
 
+    public List<String> listPurchases() throws RemoteException {
+        if (mService == null) {
+            logError("mService is null when trying to use");
+        }
+        Bundle ownedItems = mService.getPurchases(3, mContext.getPackageName(),
+                "inapp", null);
+        int response = ownedItems.getInt("RESPONSE_CODE");
+        if (response == 0) {
+            return ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+        }
+        throw new RemoteException("Invalid response to getPurchases");
+    }
 
     int queryPurchases(Inventory inv, String itemType) throws JSONException, RemoteException {
         // Query purchases

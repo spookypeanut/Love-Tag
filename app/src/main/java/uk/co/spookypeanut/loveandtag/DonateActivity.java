@@ -2,6 +2,8 @@ package uk.co.spookypeanut.loveandtag;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.RemoteException;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,23 +11,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import uk.co.spookypeanut.loveandtag.util.IabHelper;
 import uk.co.spookypeanut.loveandtag.util.IabResult;
 import uk.co.spookypeanut.loveandtag.util.Purchase;
 
 
+
 public class DonateActivity extends ActionBarActivity {
-    static final String ITEM_SKU = "uk.co.spookypeanut.loveandtag.donate";
+//    static final String ITEM_SKU = "donate01";
+//    static final String ITEM_SKU = "";
+    static final String ITEM_SKU = "android.test.purchased";
     static final int RC_DONATE = 137;
+    ArrayList<String> ITEMS = new ArrayList<>();
+
 
     IabHelper mHelper;
     boolean mIabWorks = false;
     Button mDonateButton;
+    TextView mDonateMessage;
+
+    private void fillItemsList() {
+        ITEMS.add("android.test.purchased");
+    }
 
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
             = new IabHelper.OnIabPurchaseFinishedListener() {
-        final String tag = "mPurch.Fin.Listener";
+        final String tag = "mPurchaseFin..Listener";
         public void onIabPurchaseFinished(IabResult result,
                                           Purchase purchase)
         {
@@ -41,23 +57,65 @@ public class DonateActivity extends ActionBarActivity {
         }
     };
 
+    public class NoPurchasesException extends Exception {
+        public NoPurchasesException(String message) {
+            super(message);
+        }
+        public NoPurchasesException(String message, Throwable throwable) {
+            super(message, throwable);
+        }
+    }
+
+    public int getHighestPurchaseIndex() throws NoPurchasesException,
+            RemoteException {
+        String tag = "DonateActivity.getHighestPurchaseIndex";
+        if (mHelper == null) {
+            Log.wtf(tag, "mHelper is null");
+        }
+        List<String> purchases = mHelper.listPurchases();
+        for (int p=0; p<purchases.size(); p++) {
+            String purchase = purchases.get(p);
+            Log.i(tag, "Purchase found: " + purchase);
+        }
+        String item;
+        int final_value = -1;
+        for (int i=0; i<ITEMS.size(); i++) {
+            item = ITEMS.get(i);
+            if (!purchases.contains(item)) {
+                Log.d(tag, "Doesn't contain " + item);
+                break;
+            }
+            final_value = i;
+        }
+        if (final_value < 0) {
+            throw new NoPurchasesException("No purchases present");
+        }
+        return final_value;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final String tag = "DonateActivity.onCreate";
         super.onCreate(savedInstanceState);
+        fillItemsList();
         setContentView(R.layout.activity_donate);
         mHelper = new IabHelper(this, getString(R.string.billing_licence_key));
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+        Log.d(tag, "About to run startSetup");
+        IabHelper.OnIabSetupFinishedListener list = new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
+                final String tag = "BLAH";
                 if (!result.isSuccess()) {
                     Log.d(tag, "In-app Billing setup failed: " + result);
                     mIabWorks = false;
                 } else {
                     Log.d(tag, "In-app Billing is set up OK");
                     mIabWorks = true;
+                    updateMessage();
                 }
             }
-        });
+        };
+        Log.d(tag, "Declared listener");
+        mHelper.startSetup(list);
         mDonateButton = (Button) findViewById(R.id.donate_button);
         mDonateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +123,25 @@ public class DonateActivity extends ActionBarActivity {
                 donateClicked();
             }
         });
+        mDonateMessage = (TextView) findViewById(R.id.donate_message);
+    }
+
+    private void updateMessage() {
+        final String tag = "DonateActivity.updateMessage";
+        int highest_index;
+        try {
+            highest_index = getHighestPurchaseIndex();
+        }
+        catch (NoPurchasesException e) {
+            return;
+        }
+        catch (RemoteException e) {
+            Log.e(tag, "RemoteException when trying to get purchases");
+            return;
+        }
+        Resources res = getResources();
+        String[] ty_msgs = res.getStringArray(R.array.thank_you_messages);
+        mDonateMessage.setText(ty_msgs[highest_index]);
     }
 
     private void donateClicked() {

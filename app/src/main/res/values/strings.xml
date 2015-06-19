@@ -40,20 +40,23 @@
 
     <string name="title_activity_donate">Donate</string>
     <string name="donate_button_label">Donate</string>
-    <string name="donate_again_button_label">Donate more! </string>
     <string name="please_donate_message">I\'d be delighted if you\'d
         spend just a small amount to keep me motivated to improve the
         app.</string>
-    <string-array name="thank_you">
+    <string-array name="thank_you_messages">
         <item>Thank you so much for donating! I hope it gives you a warm
         fuzzy feeling for giving something back.</item>
         <item>Oh my goodness! You\'ve donated again! I love you twice as
             much!</item>
         <item>You\'ve donated a third time! Thank you, you\'re SO
-            generouse!</item>
+            generous!</item>
         <item>Wow, you\'ve donated so many times I\'ve run out of messages
             to use to thank you with! Thank you, thank you, thank you!</item>
     </string-array>
-
-
+    <string-array name="donate_again_button_labels">
+        <item>Donate again</item>
+        <item>Donate more!</item>
+        <item>Donate even MORE!</item>
+        <item>And I\'m spent</item>
+    </string-array>
 </resources>
