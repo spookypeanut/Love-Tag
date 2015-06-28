@@ -15,16 +15,16 @@ public class Track {
     boolean mCorrected = false;
 
     public Track(String artist, String title) {
-        mArtist = artist;
-        mTitle = title;
+        mArtist = artist.trim();
+        mTitle = title.trim();
     }
     public Track(String artist, String title, boolean loved) {
         this(artist, title);
         mLoved = loved;
     }
     public Track(Map<String, String> params) {
-        mArtist = params.get("artist");
-        mTitle = params.get("title");
+        mArtist = params.get("artist").trim();
+        mTitle = params.get("title").trim();
         mLoved = "1".equals(params.get("loved"));
     }
     boolean equals(Track other) {
