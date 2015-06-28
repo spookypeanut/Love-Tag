@@ -9,7 +9,7 @@
                 tools:context="uk.co.spookypeanut.loveandtag.DonateActivity">
 
     <TextView
-        android:text="@string/please_donate_message"
+        android:text="@string/donate_message_before_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/donate_message"
@@ -19,7 +19,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/donate_button_label"
+        android:text="@string/donate_button_before_update"
         android:id="@+id/donate_button"
         android:layout_below="@+id/donate_message"
         android:layout_centerHorizontal="true"/>

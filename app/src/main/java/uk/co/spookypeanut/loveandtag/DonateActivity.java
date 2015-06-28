@@ -1,6 +1,5 @@
 package uk.co.spookypeanut.loveandtag;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.RemoteException;
@@ -12,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,20 +23,24 @@ import uk.co.spookypeanut.loveandtag.util.Purchase;
 
 
 public class DonateActivity extends ActionBarActivity {
-//    static final String ITEM_SKU = "donate01";
+//    static final String ITEM_SKU = "donate001";
 //    static final String ITEM_SKU = "";
-    static final String ITEM_SKU = "android.test.purchased";
+//    static final String ITEM_SKU = "android.test.purchased";
     static final int RC_DONATE = 137;
     ArrayList<String> ITEMS = new ArrayList<>();
-
 
     IabHelper mHelper;
     boolean mIabWorks = false;
     Button mDonateButton;
     TextView mDonateMessage;
+    String mCurrentItem;
+    int mCurrentIndex;
 
     private void fillItemsList() {
-        ITEMS.add("android.test.purchased");
+        ITEMS.add("donate001");
+        ITEMS.add("donate002");
+        ITEMS.add("donate003");
+        ITEMS.add("donate004");
     }
 
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
@@ -50,8 +54,9 @@ public class DonateActivity extends ActionBarActivity {
                 Log.e(tag, "Failure in purchase");
                 return;
             }
-            if (purchase.getSku().equals(ITEM_SKU)) {
+            if (ITEMS.contains(purchase.getSku())) {
                 Log.e(tag, "Purchase succeeded");
+                updateItem();
             }
 
         }
@@ -93,6 +98,27 @@ public class DonateActivity extends ActionBarActivity {
         return final_value;
     }
 
+    private void updateItem() {
+        final String tag = "DonateActivity.updateIndex";
+        try {
+            mCurrentIndex = getHighestPurchaseIndex() + 1;
+        }
+        catch (NoPurchasesException e) {
+            mCurrentIndex = 0;
+        }
+        catch (RemoteException e) {
+            Toast.makeText(this, R.string.remote_error_on_donate,
+                    Toast.LENGTH_SHORT);
+            Log.e(tag, "RemoteException when updating index");
+        }
+        mCurrentItem = ITEMS.get(mCurrentIndex);
+        Resources res = getResources();
+        String[] ty_msgs = res.getStringArray(R.array.donate_messages);
+        String[] ty_button = res.getStringArray(R.array.donate_button_labels);
+        mDonateMessage.setText(ty_msgs[mCurrentIndex]);
+        mDonateButton.setText(ty_button[mCurrentIndex]);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final String tag = "DonateActivity.onCreate";
@@ -103,14 +129,14 @@ public class DonateActivity extends ActionBarActivity {
         Log.d(tag, "About to run startSetup");
         IabHelper.OnIabSetupFinishedListener list = new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
-                final String tag = "BLAH";
+                final String tag = "IabSetupFinished";
                 if (!result.isSuccess()) {
-                    Log.d(tag, "In-app Billing setup failed: " + result);
+                    Log.i(tag, "In-app Billing setup failed: " + result);
                     mIabWorks = false;
                 } else {
-                    Log.d(tag, "In-app Billing is set up OK");
+                    Log.i(tag, "In-app Billing is set up OK");
                     mIabWorks = true;
-                    updateMessage();
+                    updateItem();
                 }
             }
         };
@@ -126,26 +152,8 @@ public class DonateActivity extends ActionBarActivity {
         mDonateMessage = (TextView) findViewById(R.id.donate_message);
     }
 
-    private void updateMessage() {
-        final String tag = "DonateActivity.updateMessage";
-        int highest_index;
-        try {
-            highest_index = getHighestPurchaseIndex();
-        }
-        catch (NoPurchasesException e) {
-            return;
-        }
-        catch (RemoteException e) {
-            Log.e(tag, "RemoteException when trying to get purchases");
-            return;
-        }
-        Resources res = getResources();
-        String[] ty_msgs = res.getStringArray(R.array.thank_you_messages);
-        mDonateMessage.setText(ty_msgs[highest_index]);
-    }
-
     private void donateClicked() {
-        mHelper.launchPurchaseFlow(this, ITEM_SKU, RC_DONATE,
+        mHelper.launchPurchaseFlow(this, mCurrentItem, RC_DONATE,
                 mPurchaseFinishedListener, "my_purchase_token");
     }
 
