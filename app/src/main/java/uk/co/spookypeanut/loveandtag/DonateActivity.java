@@ -111,7 +111,13 @@ public class DonateActivity extends ActionBarActivity {
                     Toast.LENGTH_SHORT);
             Log.e(tag, "RemoteException when updating index");
         }
-        mCurrentItem = ITEMS.get(mCurrentIndex);
+        try {
+            mCurrentItem = ITEMS.get(mCurrentIndex);
+            mDonateButton.setEnabled(true);
+        }
+        catch (IndexOutOfBoundsException e) {
+            mDonateButton.setEnabled(false);
+        }
         Resources res = getResources();
         String[] ty_msgs = res.getStringArray(R.array.donate_messages);
         String[] ty_button = res.getStringArray(R.array.donate_button_labels);

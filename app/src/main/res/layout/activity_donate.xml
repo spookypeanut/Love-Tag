@@ -28,6 +28,7 @@
         android:id="@+id/donate_button"
         android:layout_below="@+id/donate_message"
         style="?android:attr/buttonBarButtonStyle"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:enabled="false"/>
 
 </RelativeLayout>

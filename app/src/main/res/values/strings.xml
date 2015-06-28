@@ -42,7 +42,7 @@
     <string name="remote_error_on_donate">Error occurred communicating
         with In-App Billing host</string>
     <string name="donate_message_before_update">Talking to Google Play
-        to see if you've already donated</string>
+        to see if you\'ve already donated</string>
     <string-array name="donate_messages">
         <item>I\'d be delighted if you\'d spend just a small amount to keep
             me motivated to improve the app.</item>
