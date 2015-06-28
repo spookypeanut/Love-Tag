@@ -256,7 +256,11 @@ public class TagInputActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(Track... params) {
             Track t = params[0];
-            mTrackTags = mLfs.getTrackTags(t);
+            if (!t.isComplete()) {
+                mTrackTags.mValid = false;
+            } else {
+                mTrackTags = mLfs.getTrackTags(t);
+            }
             mFreqTags = mLfs.getGlobalTags();
             return "";
         }
