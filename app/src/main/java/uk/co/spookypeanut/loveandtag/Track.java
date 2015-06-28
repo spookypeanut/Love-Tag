@@ -43,4 +43,16 @@ public class Track {
     public String toString() {
         return ("\"" + mTitle + "\", by " + mArtist + " (" + mLoved + ")");
     }
+
+    public boolean isComplete() {
+        try {
+            if (mArtist.trim() != "" && mTitle.trim() != "") {
+                return true;
+            }
+        }
+        catch (NullPointerException e) {
+            return false;
+        }
+        return false;
+    }
 }
