@@ -55,7 +55,12 @@ public class LastfmSession {
             // If this track has already been corrected, just return it as-is
             return orig_track;
         }
-        return getTrackInfo(orig_track);
+        Track returnvalue = getTrackInfo(orig_track);
+        if (returnvalue == null) {
+            String msg = "Autocorrection returned a null track";
+            throw(new NullPointerException(msg));
+        }
+        return returnvalue;
     }
 
     private boolean getBoolean(String url) throws
