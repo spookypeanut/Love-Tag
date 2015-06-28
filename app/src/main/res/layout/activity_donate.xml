@@ -13,8 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/donate_message"
+        android:textSize="22sp"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:textIsSelectable="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginTop="100dp"
+        />
 
     <Button
         android:layout_width="wrap_content"
@@ -22,6 +27,7 @@
         android:text="@string/donate_button_before_update"
         android:id="@+id/donate_button"
         android:layout_below="@+id/donate_message"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
