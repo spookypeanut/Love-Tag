@@ -4,3 +4,5 @@
 .DS_Store
 /build
 /icons/generated
+*.apk
+manifest-merger-release-report.txt
