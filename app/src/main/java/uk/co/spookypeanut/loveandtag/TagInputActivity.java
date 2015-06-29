@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 public class TagInputActivity extends ActionBarActivity {
     final TagList mTagList = new TagList();
@@ -100,12 +101,10 @@ public class TagInputActivity extends ActionBarActivity {
                          keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
                         // When enter is pressed in the field,
                         // add the tag and reset the input
-                        Tag tag = new Tag(tagEntry.getText().toString());
-                        tag.mActive = true;
-                        mTagList.add(tag);
-                        updateList();
-                        tagEntry.setText("");
-                        tagEntry.requestFocus();
+                        if (addNewTag(tagEntry.getText().toString())) {
+                            tagEntry.setText("");
+                            tagEntry.requestFocus();
+                        }
                         return true;
                     }
                 }
@@ -116,15 +115,11 @@ public class TagInputActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 String current_text = tagEntry.getText().toString();
+                boolean valid_tag = true;
                 if (!current_text.equals("")) {
-                    Tag tag_obj = new Tag(current_text);
-                    // If something is entered in the input box,
-                    // assume it's a tag to be used
-                    tag_obj.mActive = true;
-                    mTagList.add(tag_obj);
-                    updateList();
+                    valid_tag = addNewTag(current_text);
                 }
-                if (mTagList.size() == 0) {
+                if (mTagList.size() == 0 || !valid_tag) {
                     return;
                 }
                 TagList for_tagging = mTagList.getActiveList();
@@ -181,6 +176,23 @@ public class TagInputActivity extends ActionBarActivity {
                 updateList();
             }
         });
+    }
+
+    public boolean addNewTag(String tag_name) {
+        // According to last.fm: "Tags must be shorter than 256 characters
+        // and may only contain letters, numbers, hyphens, spaces and colons"
+        boolean regex_valid = Pattern.matches("^[A-Za-z0-9-: ]*$", tag_name);
+        if (tag_name.length() >= 256 || !regex_valid) {
+            Toast.makeText(this, R.string.ti_invalid_tag, Toast.LENGTH_LONG)
+                                                                        .show();
+            Log.e("addNewTag", "Invalid tag: " + tag_name);
+            return false;
+        }
+        Tag tag = new Tag(tag_name);
+        tag.mActive = true;
+        mTagList.add(tag);
+        updateList();
+        return true;
     }
 
     @Override

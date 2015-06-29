@@ -30,6 +30,8 @@
     <string name="ti_cancel_button">Cancel</string>
     <string name="ti_love_button_desc">Love Track</string>
     <string name="ti_connection_warning">Problems communicating with Last.fm</string>
+    <string name="ti_invalid_tag">Tags must be shorter than 256 characters and
+        may only contain letters, numbers, hyphens, spaces and colons</string>
 
     <string name="widget_not_logged_in_message">"Not logged in: please open the app"</string>
     <string name="tw_button_description">Press to tag currently playing track</string>
