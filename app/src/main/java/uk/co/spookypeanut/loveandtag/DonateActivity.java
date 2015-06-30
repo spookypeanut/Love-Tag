@@ -132,12 +132,16 @@ public class DonateActivity extends ActionBarActivity {
         fillItemsList();
         setContentView(R.layout.activity_donate);
         mHelper = new IabHelper(this, getString(R.string.billing_licence_key));
+        mDonateMessage = (TextView) findViewById(R.id.donate_message);
+        mDonateButton = (Button) findViewById(R.id.donate_button);
         Log.d(tag, "About to run startSetup");
         IabHelper.OnIabSetupFinishedListener list = new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 final String tag = "IabSetupFinished";
                 if (!result.isSuccess()) {
                     Log.i(tag, "In-app Billing setup failed: " + result);
+                    mDonateMessage.setText(R.string.donate_setup_failed);
+                    mDonateButton.setText(R.string.donate_button_setup_failed);
                     mIabWorks = false;
                 } else {
                     Log.i(tag, "In-app Billing is set up OK");
@@ -148,14 +152,12 @@ public class DonateActivity extends ActionBarActivity {
         };
         Log.d(tag, "Declared listener");
         mHelper.startSetup(list);
-        mDonateButton = (Button) findViewById(R.id.donate_button);
         mDonateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 donateClicked();
             }
         });
-        mDonateMessage = (TextView) findViewById(R.id.donate_message);
     }
 
     private void donateClicked() {

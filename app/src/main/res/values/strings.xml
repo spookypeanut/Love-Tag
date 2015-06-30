@@ -43,6 +43,11 @@
     <string name="title_activity_donate">Donate</string>
     <string name="remote_error_on_donate">Error occurred communicating
         with In-App Billing host</string>
+    <string name="donate_setup_failed">In-app billing appears to be
+        unavailable. This could be due to lack of internet connectivity. If
+        you desperately want to donate, email me: takemymoney@spookypeanut.co.uk
+        </string>
+    <string name="donate_button_setup_failed">Drat</string>
     <string name="donate_message_before_update">Talking to Google Play
         to see if you\'ve already donated</string>
     <string-array name="donate_messages">
