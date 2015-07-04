@@ -14,6 +14,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
@@ -169,7 +170,12 @@ public class LastfmSession {
             XmlPullParserException, IOException {
         final String tag = "LastfmSession.getSessionKey";
         XmlPullParser parser;
-        parser = getUrlResponse(url);
+        try {
+            parser = getUrlResponse(url);
+        }
+        catch (FileNotFoundException e) {
+            throw (new InvalidCredentialsException("Invalid username or password"));
+        }
         Log.d(tag, "Got parser");
         int eventType = parser.getEventType();
 
@@ -322,8 +328,8 @@ public class LastfmSession {
 
     }
 
-    private XmlPullParser getUrlResponse(String urlString) {
-        final String tag = "LastfmSession.getUrlResponse";
+    private XmlPullParser getUrlResponse(String urlString) throws
+            FileNotFoundException {
         Log.v(tag, "url: " + urlString);
 
         InputStream in = null;
@@ -349,6 +355,8 @@ public class LastfmSession {
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 in = new BufferedInputStream(urlConnection.getInputStream());
+            } catch (FileNotFoundException e) {
+                throw e;
             } catch (IOException e) {
                 in = null;
                 Log.e(tag, "Try number " + try_number +
@@ -404,7 +412,8 @@ public class LastfmSession {
         return info.mLoved;
     }
 
-    public boolean logIn(String username, String authToken) {
+    public boolean logIn(String username, String authToken) throws
+            InvalidCredentialsException {
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("authToken", authToken);
         rest_params.put("method", "auth.getMobileSession");
@@ -414,6 +423,9 @@ public class LastfmSession {
         try {
             setSessionKey(getSessionKey(urlString));
             saveUsername(username);
+        }
+        catch (InvalidCredentialsException e) {
+            throw e;
         }
         catch (Exception e) {
             e.printStackTrace();

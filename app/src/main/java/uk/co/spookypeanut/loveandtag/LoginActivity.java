@@ -102,7 +102,13 @@ public class LoginActivity extends ActionBarActivity {
             final String tag = "LoginCall.doInBackground";
             String username = params[0];
             String authToken = params[1];
-            boolean result = mLfs.logIn(username, authToken);
+            boolean result;
+            try {
+                result = mLfs.logIn(username, authToken);
+            }
+            catch (InvalidCredentialsException e) {
+                return getString(R.string.login_bad_credentials);
+            }
             Log.i(tag, "Result: " + result);
             return "";
         }
@@ -117,11 +123,12 @@ public class LoginActivity extends ActionBarActivity {
                 Log.i(tag, "Not logged in");
                 hideWaitingDialog();
                 Context c = App.getContext();
-                Toast.makeText(c, "Failed to connect",  Toast.LENGTH_SHORT).show();
+                String msg = result;
+                if (msg.equals("")) {
+                    msg = getString(R.string.login_generic_failure);
+                }
+                Toast.makeText(c, msg, Toast.LENGTH_SHORT).show();
             }
         }
     }
 }
-
-
-
