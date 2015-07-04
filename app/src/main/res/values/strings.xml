@@ -6,8 +6,9 @@
 <resources>
     <string name="app_name">Love&amp;Tag</string>
 
-    <string name="login_prompt">Please enter your last.fm username and
-        password</string>
+    <string name="login_prompt">Welcome to Love&amp;Tag! Please enter your
+        Last.fm
+        credentials:</string>
     <string name="login_bad_credentials">Invalid username or password</string>
     <string name="login_generic_failure">There was a problem
         authenticating with Last.fm. Bad internet connection?</string>

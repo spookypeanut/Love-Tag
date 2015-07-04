@@ -42,18 +42,25 @@
         <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/login_prompt"
+                android:id="@+id/textView2"
+                android:gravity="center_horizontal"
+                android:enabled="true"/>
+
             <AutoCompleteTextView android:id="@+id/username" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/prompt_username"
-                android:inputType="text" android:maxLines="1"
-                android:singleLine="true" />
+                android:inputType="text" android:singleLine="true"/>
 
             <EditText android:id="@+id/password" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/prompt_password"
-                android:imeActionId="@+id/lovebutton"
+                android:imeActionId="0"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified" android:inputType="textPassword"
-                android:maxLines="1" android:singleLine="true" />
-
+                android:singleLine="true"/>
             <Button android:id="@+id/log_in_button" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" android:text="@string/action_sign_in"
@@ -63,7 +70,6 @@
     </ScrollView>
 
 </LinearLayout>
-
     <FrameLayout
         android:id="@+id/login_progress"
         android:animateLayoutChanges="true"
