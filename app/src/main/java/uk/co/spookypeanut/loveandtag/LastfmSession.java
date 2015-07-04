@@ -66,7 +66,7 @@ public class LastfmSession {
 
     private boolean getBoolean(String url) throws
             XmlPullParserException, IOException {
-        final String tag = "LastfmSession.getBoolean";
+        final String tag = "LfmS.getBoolean";
         XmlPullParser parser;
         parser = getUrlResponse(url);
         Log.d(tag, "Got parser");
@@ -168,7 +168,7 @@ public class LastfmSession {
 
     private String getSessionKey(String url) throws
             XmlPullParserException, IOException {
-        final String tag = "LastfmSession.getSessionKey";
+        final String tag = "LfmS.getSessionKey";
         XmlPullParser parser;
         try {
             parser = getUrlResponse(url);
@@ -202,7 +202,7 @@ public class LastfmSession {
     private List<Map<String, String>> getTagsFromLists(XmlPullParser parser,
                                   Map<String, List<String>> tag_list_map)
                                   throws XmlPullParserException, IOException {
-        final String tag = "LastfmSession.getTagsFromLists";
+        final String tag = "LfmS.getTagsFromLists";
         int eventType = parser.getEventType();
         List<String> CurrentPos = new ArrayList<>();
         List<Map<String, String>> returnList = new ArrayList<>();
@@ -241,7 +241,7 @@ public class LastfmSession {
     }
 
     public Track getTrackInfo(Track orig_track) throws InvalidObjectException {
-        final String tag = "LastfmSession.getTrackInfo";
+        final String tag = "LfmSess.getTrackInfo";
         Log.d(tag, "Getting info of " + orig_track.toString());
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
@@ -330,6 +330,7 @@ public class LastfmSession {
 
     private XmlPullParser getUrlResponse(String urlString) throws
             FileNotFoundException {
+        final String tag = "LfmSess.getUrlResponse";
         Log.v(tag, "url: " + urlString);
 
         InputStream in = null;
@@ -483,7 +484,7 @@ public class LastfmSession {
     }
 
     private void setSessionKey(String sk) {
-        final String tag = "LastfmSession.setSessionKey";
+        final String tag = "LfmS.setSessionKey";
         Log.d(tag, "Setting session key");
         mSettings.edit().putString(SESSION_KEY, sk).apply();
         mSessionKey = sk;
@@ -596,7 +597,7 @@ class UrlMaker {
     }
 
     public String fromHashmap(Map<String, String> params) {
-        final String tag = "LastfmSession.UrlMaker.fromHashmap";
+        final String tag = "UrlMaker.fromHashmap";
         String api_key = mContext.getString(R.string.lastfm_api_key);
         params.put("api_key", api_key);
         if (params.containsKey("sk")||params.containsKey("authToken")) {
@@ -627,7 +628,7 @@ class UrlMaker {
     }
 
     private String generateApiSig(Map<String, String> params) {
-        final String tag = "LastfmSession.UrlMaker.generateApiSig";
+        final String tag = "UrlMaker.generateApiSig";
         List<String> keys = asSortedList(params.keySet());
         String secret = mContext.getString(R.string.lastfm_api_secret);
         String pre_md5 = "";

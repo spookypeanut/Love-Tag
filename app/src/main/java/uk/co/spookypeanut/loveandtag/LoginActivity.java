@@ -99,7 +99,7 @@ public class LoginActivity extends ActionBarActivity {
         LastfmSession mLfs = new LastfmSession();
         @Override
         protected String doInBackground(String... params) {
-            final String tag = "LoginCall.doInBackground";
+            final String tag = "LoginCall.doInBkg";
             String username = params[0];
             String authToken = params[1];
             boolean result;
