@@ -98,7 +98,7 @@ public class LastfmSession {
     }
 
     public TagList getGlobalTags() {
-        final String tag = "LastfmSession.getGlobalTags";
+        final String tag = "LfmSess.getGlobalTags";
         if (!isLoggedIn()) {
             throw(new IllegalStateException("Session is not logged in"));
         }
@@ -106,6 +106,7 @@ public class LastfmSession {
         rest_params.put("method", "user.getTopTags");
         rest_params.put("user", mUsername);
         rest_params.put("limit", "30");
+        Log.d(tag, "Getting top 30 most-used tags");
         String urlString = mUrlMaker.fromHashmap(rest_params);
         Map<String, List<String>> list_map = new HashMap<>();
         list_map.put("tag", Arrays.asList("lfm", "toptags", "tag", "name"));
