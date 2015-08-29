@@ -70,6 +70,7 @@
             to use to thank you with! Thank you, thank you, thank you!</item>
     </string-array>
     <string name="donate_button_before_update">Hang on</string>
+    <string name="ti_no_global_tags">Last.fm api bug: most-used tags currently not being populated</string>
     <string-array name="donate_button_labels">
         <item>Donate</item>
         <item>Donate again</item>

@@ -283,6 +283,12 @@ public class TagInputActivity extends ActionBarActivity {
                 warn.setText(R.string.ti_connection_warning);
                 warn.setVisibility(View.VISIBLE);
             }
+            if (mFreqTags.size() == 0) {
+                TextView warn;
+                warn = (TextView) findViewById(R.id.ti_connectionwarning);
+                warn.setText(R.string.ti_no_global_tags);
+                warn.setVisibility(View.VISIBLE);
+            }
             mTagList.addAll(mTrackTags);
             mOrigTags = mTrackTags;
             mTagList.addAll(mFreqTags);
