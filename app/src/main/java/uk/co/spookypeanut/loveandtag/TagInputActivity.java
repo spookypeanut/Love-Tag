@@ -277,16 +277,19 @@ public class TagInputActivity extends ActionBarActivity {
             return "";
         }
         protected void onPostExecute(String result) {
-            if (!mTrackTags.mValid || !mFreqTags.mValid) {
-                TextView warn;
-                warn = (TextView) findViewById(R.id.ti_connectionwarning);
-                warn.setText(R.string.ti_connection_warning);
-                warn.setVisibility(View.VISIBLE);
+            if (mTrackTags.mValid == false) {
+                Log.wtf("BLAH", "Is not valid");
             }
             if (mFreqTags.size() == 0) {
                 TextView warn;
                 warn = (TextView) findViewById(R.id.ti_connectionwarning);
                 warn.setText(R.string.ti_no_global_tags);
+                warn.setVisibility(View.VISIBLE);
+            }
+            if (mTrackTags.mValid == false || mFreqTags.mValid == false) {
+                TextView warn;
+                warn = (TextView) findViewById(R.id.ti_connectionwarning);
+                warn.setText(R.string.ti_connection_warning);
                 warn.setVisibility(View.VISIBLE);
             }
             mTagList.addAll(mTrackTags);

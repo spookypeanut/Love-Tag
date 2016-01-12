@@ -36,7 +36,7 @@
     <string name="ti_ok_button">Tag Track</string>
     <string name="ti_cancel_button">Cancel</string>
     <string name="ti_love_button_desc">Love Track</string>
-    <string name="ti_connection_warning">Problems communicating with Last.fm</string>
+    <string name="ti_connection_warning">Problems communicating with Last.fm, or badly tagged track</string>
     <string name="ti_invalid_tag">Tags must be shorter than 256 characters and
         may only contain letters, numbers, hyphens, spaces and colons</string>
 

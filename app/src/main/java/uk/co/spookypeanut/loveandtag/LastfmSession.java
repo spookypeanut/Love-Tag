@@ -59,7 +59,7 @@ public class LastfmSession {
         Track returnvalue = getTrackInfo(orig_track);
         if (returnvalue == null) {
             String msg = "Autocorrection returned a null track";
-            throw(new NullPointerException(msg));
+            throw(new InvalidObjectException(msg));
         }
         return returnvalue;
     }
@@ -297,7 +297,9 @@ public class LastfmSession {
         catch (InvalidObjectException e) {
             Log.e(tag, "autocorrectTrack failed, aborting");
             e.printStackTrace();
-            return new TagList();
+            TagList t = new TagList();
+            t.mValid = false;
+            return t;
         }
         Map<String, String> rest_params = new HashMap<>();
         rest_params.put("method", "track.getTags");
