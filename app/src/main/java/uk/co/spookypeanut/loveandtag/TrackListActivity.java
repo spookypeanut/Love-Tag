@@ -299,7 +299,6 @@ public class TrackListActivity extends ActionBarActivity implements
                     i.setClass(App.getContext(), TagInputActivity.class);
                     i.putExtra("artist", mTrack.mArtist);
                     i.putExtra("title", mTrack.mTitle);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     Log.d(tag, "Starting activity");
                     startActivityForResult(i, getResources().getInteger(
                             R.integer.rc_tag_input));

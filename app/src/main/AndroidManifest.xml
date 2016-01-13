@@ -27,11 +27,8 @@
         <activity
             android:name=".TagInputActivity"
             android:label="@string/ti_activity_title"
-            android:parentActivityName=".TrackListActivity"
-            android:windowSoftInputMode="stateHidden" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="uk.co.spookypeanut.loveandtag.TrackListActivity" />
+            android:windowSoftInputMode="stateHidden"
+            android:taskAffinity="">
         </activity>
 
         <receiver

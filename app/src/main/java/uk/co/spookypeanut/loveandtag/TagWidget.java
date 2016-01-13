@@ -43,6 +43,7 @@ public class TagWidget extends AppWidgetProvider {
             i.setAction(tag_widget_new_track_action);
             i.putExtra("artist", artist);
             i.putExtra("title", title);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startService(i);
         }
     }
