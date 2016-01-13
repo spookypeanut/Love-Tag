@@ -47,7 +47,7 @@ public class TrackListActivity extends ActionBarActivity implements
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String tag = "TrackListActivity.mReceiver.onReceive";
+            final String tag = "TrackList.onReceive";
             String action = intent.getAction();
             String artist = intent.getStringExtra("artist");
             if (artist == null) return;
@@ -68,7 +68,7 @@ public class TrackListActivity extends ActionBarActivity implements
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private void donateClicked() {
-        final String tag = "TrackListActivity.donateClicked";
+        final String tag = "TrackList.donateClicked";
         Intent i = new Intent();
         i.setClass(App.getContext(), DonateActivity.class);
         Log.d(tag, "Starting donate activity");
@@ -77,7 +77,7 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final String tag = "TrackListActivity.onActivityResult";
+        final String tag = "TrackList.onActivityRes";
         Log.i(tag, "requestCode: " + requestCode + ", resultCode: " + resultCode);
         // Check which request we're responding to
         if (requestCode == getResources().getInteger(R.integer.rc_log_in)) {
@@ -93,7 +93,7 @@ public class TrackListActivity extends ActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        final String tag = "TrackListActivity.onResume";
+        final String tag = "TrackList.onResume";
         Log.d(tag, "Updating");
         updateAll();
     }
@@ -101,7 +101,7 @@ public class TrackListActivity extends ActionBarActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final String tag = "TrackListActivity.onCreate";
+        final String tag = "TrackList.onCreate";
         setContentView(R.layout.activity_track_list);
 
         IntentFilter iF = new IntentFilter();
@@ -165,7 +165,7 @@ public class TrackListActivity extends ActionBarActivity implements
 
     @Override
     public void onRefresh() {
-        final String tag = "TrackListActivity.onRefresh";
+        final String tag = "TrackList.onRefresh";
         Log.d(tag, "Updating");
         updateAll();
     }
@@ -233,7 +233,7 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     private void updateAll() {
-        final String tag = "TrackListActivity.updateAll";
+        final String tag = "TrackList.updateAll";
         Log.d(tag, "Updating");
         if (!mLfs.isLoggedIn()) return;
         updatePod();
@@ -243,7 +243,7 @@ public class TrackListActivity extends ActionBarActivity implements
     }
 
     private boolean updatePod() {
-        final String tag = "TrackListActivity.updatePod";
+        final String tag = "TrackList.updatePod";
         if (mNowPlaying == null || ! mLfs.isLoggedIn()) return false;
         Log.d(tag, mNowPlaying.toString());
         TrackInfoCall ilc = new TrackInfoCall();
@@ -283,8 +283,7 @@ public class TrackListActivity extends ActionBarActivity implements
                     .lovebutton);
             loveButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    final String tag = "TrackListActivity.ListEntry" +
-                                       ".loveButton.onClick";
+                    final String tag = "TrackList.lB.onClick";
                     mSwipeRefreshLayout.setRefreshing(true);
                     if (!mTrack.mLoved) {
                         LoveCall lc = new LoveCall();
@@ -301,8 +300,7 @@ public class TrackListActivity extends ActionBarActivity implements
                     .entry_tagbutton);
             tagButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    final String tag = "TrackListActivity.ListEntry" +
-                                       ".tagButton.onClick";
+                    final String tag = "TrackList.tB.onClick";
                     Intent i = new Intent();
                     i.setClass(App.getContext(), TagInputActivity.class);
                     i.putExtra("artist", mTrack.mArtist);
@@ -315,7 +313,7 @@ public class TrackListActivity extends ActionBarActivity implements
         }
 
         public void setMusic(Track track) {
-            final String tag = "TrackListActivity.ListEntry.setMusic";
+            final String tag = "TrackList.setMusic";
             mTrack = track;
             Log.d(tag, "Adding: " + mTrack.mArtist +
                     ", " + mTrack.mTitle +
@@ -358,7 +356,7 @@ public class TrackListActivity extends ActionBarActivity implements
             return msg;
         }
         protected void onPostExecute(String result) {
-            final String tag = "TrackListActivity.UnloveCall.onPostExecute";
+            final String tag = "TrackList.UC.onPostEx";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             updateAll();
@@ -380,7 +378,7 @@ public class TrackListActivity extends ActionBarActivity implements
             return msg;
         }
         protected void onPostExecute(String result) {
-            final String tag = "TrackListActivity.LoveCall.onPostExecute";
+            final String tag = "TrackList.LC.onPostEx";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
             updateAll();
@@ -401,7 +399,7 @@ public class TrackListActivity extends ActionBarActivity implements
         Track mNewTrack;
         Track mOrigTrack;
         TrackInfoCall() {
-            final String tag = "TrackListActivity.TrackInfoCall";
+            final String tag = "TrackList.TrackInfoCall";
             Log.d(tag, "Constructor");
         }
 
