@@ -31,10 +31,6 @@ import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.co.spookypeanut.loveandtag.util.IabHelper;
-import uk.co.spookypeanut.loveandtag.util.IabResult;
-import uk.co.spookypeanut.loveandtag.util.Purchase;
-
 public class TrackListActivity extends ActionBarActivity implements
         SwipeRefreshLayout.OnRefreshListener {
     public final static String METACHANGED = "com.android.music.metachanged";
@@ -57,7 +53,6 @@ public class TrackListActivity extends ActionBarActivity implements
             updatePod();
         }
     };
-    boolean mIabWorks = false;
     // This is never visible. It's the autocorrected version of the currently
     // playing track, so we don't end up having both "burnout" and "Burnout"
     // in the list
@@ -143,7 +138,6 @@ public class TrackListActivity extends ActionBarActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final String tag = "TrackListActivity.onOptionsItemSelected";
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
