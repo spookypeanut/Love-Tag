@@ -5,7 +5,9 @@ package uk.co.spookypeanut.loveandtag;
  * Distributed under the GNU GPL v3. For full terms see the file COPYING.
  */
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -95,6 +97,14 @@ public class LoginActivity extends ActionBarActivity {
         mProgress.setVisibility(FrameLayout.GONE);
     }
 
+    private void updateWidgets() {
+        Intent intent = new Intent(this, TagWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] ids = {R.xml.tag_widget_info};
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
+    }
+
     private class LoginCall extends AsyncTask<String, String, String> {
         LastfmSession mLfs = new LastfmSession();
         @Override
@@ -118,6 +128,7 @@ public class LoginActivity extends ActionBarActivity {
             if (mLfs.isLoggedIn()) {
                 Log.i(tag, "Logged in");
                 setResult(RESULT_OK);
+                updateWidgets();
                 finish();
             } else {
                 Log.i(tag, "Not logged in");

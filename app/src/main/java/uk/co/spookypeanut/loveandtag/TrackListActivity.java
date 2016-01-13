@@ -5,6 +5,7 @@ package uk.co.spookypeanut.loveandtag;
  * Distributed under the GNU GPL v3. For full terms see the file COPYING.
  */
 
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -150,6 +151,7 @@ public class TrackListActivity extends ActionBarActivity implements
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             mLfs.logOut();
+            updateWidgets();
             finish();
             return true;
         }
@@ -255,6 +257,14 @@ public class TrackListActivity extends ActionBarActivity implements
         GetRecent gr = new GetRecent();
         gr.execute();
         return true;
+    }
+
+    private void updateWidgets() {
+        Intent intent = new Intent(this, TagWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] ids = {R.xml.tag_widget_info};
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
     }
 
     public class ListEntry extends LinearLayout {

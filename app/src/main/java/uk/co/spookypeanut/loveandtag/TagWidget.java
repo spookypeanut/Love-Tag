@@ -101,7 +101,15 @@ public class TagWidget extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(context,
                     0, i, PendingIntent.FLAG_CANCEL_CURRENT);
             views.setOnClickPendingIntent(R.id.tw_button, pendingIntent);
-
+            if (tryLogin()) {
+                Log.d(tag, "Logged in");
+                String text = "";
+                views.setTextViewText(R.id.tw_label, text);
+            } else {
+                Log.d(tag, "Not logged in");
+                String text = getString(R.string.widget_not_logged_in_message);
+                views.setTextViewText(R.id.tw_label, text);
+            }
             return views;
         }
 
@@ -133,7 +141,6 @@ public class TagWidget extends AppWidgetProvider {
         @Override
         public void onCreate() {
             super.onCreate();
-            tryLogin();
             mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         }
 
