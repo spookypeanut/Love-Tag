@@ -70,13 +70,13 @@ public class LoveWidget extends AppWidgetProvider {
         private SharedPreferences mSettings;
         public UpdateService() {
             super("LoveWidget$UpdateService");
-            final String tag = "LoveWidget.UpdateService";
+            final String tag = "LWidget.UpdateService";
             Log.d(tag, "Constructor");
         }
 
         private RemoteViews buildUpdate(Context context, String artist,
                                         String title) {
-            final String tag = "LoveWidget.UpdateService.buildUpdate (CSS)";
+            final String tag = "LWidget.buildUpdate CSS";
             Log.d(tag, "Found track: " + artist + ", " + title);
             Track track = new Track(artist, title);
             // Construct the RemoteViews object
@@ -145,7 +145,7 @@ public class LoveWidget extends AppWidgetProvider {
 
         @Override
         public void onHandleIntent(Intent intent) {
-            final String tag = "LoveWidget.UpdateService.onHandleIntent";
+            final String tag = "LWidget.onHandleIntent";
             String action = intent.getAction();
             Log.d(tag, "Handling intent: " + action);
             ComponentName me = new ComponentName(this, LoveWidget.class);

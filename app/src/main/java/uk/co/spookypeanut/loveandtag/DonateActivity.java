@@ -108,7 +108,7 @@ public class DonateActivity extends ActionBarActivity {
         }
         catch (RemoteException e) {
             Toast.makeText(this, R.string.remote_error_on_donate,
-                    Toast.LENGTH_SHORT);
+                    Toast.LENGTH_SHORT).show();
             Log.e(tag, "RemoteException when updating index");
         }
         try {
@@ -166,9 +166,6 @@ public class DonateActivity extends ActionBarActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            return;
-        }
     }
 
     @Override

@@ -46,7 +46,7 @@ public class Track {
 
     public boolean isComplete() {
         try {
-            if (mArtist.trim() != "" && mTitle.trim() != "") {
+            if (!mArtist.trim().equals("") && !mTitle.trim().equals("")) {
                 return true;
             }
         }

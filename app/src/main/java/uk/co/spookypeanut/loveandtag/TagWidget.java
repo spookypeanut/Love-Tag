@@ -66,14 +66,16 @@ public class TagWidget extends AppWidgetProvider {
 
         private RemoteViews buildUpdate(Context context, String artist,
                                         String title) {
-            final String tag = "TagWidget.UpdateService.buildUpdate (CSS)";
+            final String tag = "Widget.buildUpdate CSS";
             Log.d(tag, "Found track: " + artist + ", " + title);
             Track track = new Track(artist, title);
             setTrack(track);
             String text;
             if (tryLogin()) {
+                Log.d(tag, "Logged in");
                 text = title;
             } else {
+                Log.d(tag, "Not logged in");
                 text = getString(R.string.widget_not_logged_in_message);
                 setTrack(new Track(null, null));
             }
@@ -85,7 +87,7 @@ public class TagWidget extends AppWidgetProvider {
         }
 
         private RemoteViews buildUpdate(Context context) {
-            final String tag = "TagWidget.UpdateService.buildUpdate";
+            final String tag = "Widget.buildUpdate";
             Log.d(tag, "Starting");
             RemoteViews views = new RemoteViews(context.getPackageName(),
                     R.layout.tag_widget);
@@ -120,7 +122,7 @@ public class TagWidget extends AppWidgetProvider {
         }
 
         public void setTrack(Track track) {
-            final String tag = "TagWidget.UpdateService.setTrack";
+            final String tag = "Widget.setTrack";
             Log.d(tag, track.mTitle + ", " + track.mArtist);
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putString("tw_artist", track.mArtist);
@@ -137,7 +139,7 @@ public class TagWidget extends AppWidgetProvider {
 
         @Override
         public void onHandleIntent(Intent intent) {
-            final String tag = "TagWidget.UpdateService.onHandleIntent";
+            final String tag = "Widget.onHandleIntent";
             String action = intent.getAction();
             Log.d(tag, "Handling intent: " + action);
             ComponentName me = new ComponentName(this, TagWidget.class);
