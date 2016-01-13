@@ -15,7 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -31,7 +31,7 @@ import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackListActivity extends ActionBarActivity implements
+public class TrackListActivity extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener {
     public final static String METACHANGED = "com.android.music.metachanged";
     public final static String PLAYSTATECHANGED = "com.android.music" +
