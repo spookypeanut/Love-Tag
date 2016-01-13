@@ -70,6 +70,7 @@ public class LastfmSession {
         XmlPullParser parser;
         parser = getUrlResponse(url);
         Log.d(tag, "Got parser");
+        assert parser != null;
         int eventType = parser.getEventType();
 
         while(eventType != XmlPullParser.END_DOCUMENT) {
@@ -114,6 +115,10 @@ public class LastfmSession {
         TagList topTags = new TagList();
         try {
             parser = getUrlResponse(urlString);
+            if (parser == null) {
+                Log.e(tag, "getUrlResponse invalid");
+                return null;
+            }
             for (Map<String, String> map : getTagsFromLists(parser, list_map)) {
                 Log.d(tag, map.toString());
                 topTags.add(new Tag(map.get("tag")));
@@ -173,12 +178,14 @@ public class LastfmSession {
         XmlPullParser parser;
         try {
             parser = getUrlResponse(url);
+            assert parser != null;
         }
         catch (FileNotFoundException e) {
             throw (new InvalidCredentialsException("Invalid username or password"));
         }
         Log.d(tag, "Got parser");
-        int eventType = parser.getEventType();
+        int eventType;
+        eventType = parser.getEventType();
 
         while(eventType != XmlPullParser.END_DOCUMENT) {
             String name;
@@ -189,7 +196,7 @@ public class LastfmSession {
                     Log.d(tag, "|" + name + "|");
                     if (name.equals("key")) {
                         String result = parser.nextText();
-                        Log.d(tag, "Key is " + result);
+                        Log.d(tag, "Key found");
                         return result;
                     }
                 case XmlPullParser.END_TAG:
@@ -204,6 +211,7 @@ public class LastfmSession {
                                   Map<String, List<String>> tag_list_map)
                                   throws XmlPullParserException, IOException {
         final String tag = "LfmS.getTagsFromLists";
+        assert parser != null;
         int eventType = parser.getEventType();
         List<String> CurrentPos = new ArrayList<>();
         List<Map<String, String>> returnList = new ArrayList<>();
@@ -313,6 +321,10 @@ public class LastfmSession {
         TagList tags = new TagList();
         try {
             parser = getUrlResponse(urlString);
+            if (parser == null) {
+                Log.e(tag, "getUrlResponse invalid");
+                return null;
+            }
             List<Map<String,String>> results = getTagsFromLists(parser,
                     list_map);
             for (Map<String, String> map : results) {

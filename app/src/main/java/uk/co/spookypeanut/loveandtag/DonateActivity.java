@@ -66,9 +66,6 @@ public class DonateActivity extends AppCompatActivity {
         public NoPurchasesException(String message) {
             super(message);
         }
-        public NoPurchasesException(String message, Throwable throwable) {
-            super(message, throwable);
-        }
     }
 
     public int getHighestPurchaseIndex() throws NoPurchasesException,
