@@ -6,13 +6,13 @@ package uk.co.spookypeanut.loveandtag;
  */
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -60,14 +60,18 @@ public class TagListEntryView extends TextView {
     }
 
     private void init() {
-        Resources r = getResources();
-        mActiveFillPaint.setColor(r.getColor(R.color.lastfm_red ));
+        Context c = getContext();
+        int red = ContextCompat.getColor(c, R.color.lastfm_red);
+        mActiveFillPaint.setColor(red);
+        int shad = ContextCompat.getColor(getContext(), R.color.shadow_grey);
         mActiveFillPaint.setShadowLayer(mDropShadowRadius, 0,
-                mDropShadowDistance, r.getColor(R.color.shadow_grey));
+                mDropShadowDistance, shad);
         setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
-        mInactiveFillPaint.setColor(r.getColor(R.color.pale_lastfm_red));
+        int pale = ContextCompat.getColor(c, R.color.pale_lastfm_red);
+        mInactiveFillPaint.setColor(pale);
+        // We use the same shadow colour
         mInactiveFillPaint.setShadowLayer(mDropShadowRadius, 0,
-                mDropShadowDistance, r.getColor(R.color.shadow_grey));
+                mDropShadowDistance, shad);
         setLayerType(LAYER_TYPE_SOFTWARE, mActiveFillPaint);
         mActiveDrawColour = Color.WHITE;
         mActiveDrawPaint.setColor(mActiveDrawColour);
@@ -86,8 +90,10 @@ public class TagListEntryView extends TextView {
         // This formula gives us an offset of 4 on a tiny screen,
         // and 10 on a Nexus 5
         final int offset = 2 + (int) (1.0 * height / 18);
-        int left = offset;
-        int top = offset;
+        int left;
+        left = offset;
+        int top;
+        top = offset;
         int bottom = height - top;
         int right = width - left;
 
