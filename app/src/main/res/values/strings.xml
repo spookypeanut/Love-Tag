@@ -24,7 +24,7 @@
 
     <string name="tl_playing_on_device_label">Playing on Device</string>
     <string name="tl_lastfm_history_label">Last.fm History</string>
-    <string name="tl_tag_button">Tag button</string>
+    <string name="tl_tag_button">Tag icon</string>
     <string name="tl_love_button">Love button</string>
     <string name="tl_action_logout">Logout</string>
     <string name="tl_action_donate">Donate</string>

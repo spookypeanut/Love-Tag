@@ -290,9 +290,7 @@ public class TrackListActivity extends AppCompatActivity implements
                     Log.d(tag, "Submitted unlove");
                 }
             });
-            final ImageButton tagButton = (ImageButton) findViewById(R.id
-                    .entry_tagbutton);
-            tagButton.setOnClickListener(new View.OnClickListener() {
+            this.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     final String tag = "TrackList.tB.onClick";
                     Intent i = new Intent();
