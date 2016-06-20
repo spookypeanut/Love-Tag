@@ -78,7 +78,7 @@ public class TagWidget extends AppWidgetProvider {
             } else {
                 Log.d(tag, "Not logged in");
                 text = getString(R.string.widget_not_logged_in_message);
-                setTrack(new Track(null, null));
+                setTrack(new Track(text, ""));
             }
             RemoteViews views = buildUpdate(context);
             // Construct the RemoteViews object

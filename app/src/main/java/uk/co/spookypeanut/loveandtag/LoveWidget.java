@@ -88,7 +88,7 @@ public class LoveWidget extends AppWidgetProvider {
                 }
             } else {
                 text = getString(R.string.widget_not_logged_in_message);
-                track = new Track(null, null);
+                track = new Track(text, "");
             }
             setTrack(track);
             RemoteViews views = buildUpdate(context);
