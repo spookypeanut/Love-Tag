@@ -6,3 +6,4 @@
 /icons/generated
 *.apk
 manifest-merger-release-report.txt
+/app/app.iml
