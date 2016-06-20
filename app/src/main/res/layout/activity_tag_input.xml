@@ -3,9 +3,18 @@
  * Distributed under the GNU GPL v3. For full terms see the file COPYING.
  -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<android.support.design.widget.FloatingActionButton
+    android:id="@+id/myFAB"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_add"
+    app:elevation="4dp" />
+
 <LinearLayout
 
                 android:layout_width="match_parent"
@@ -66,17 +75,6 @@
             android:contentDescription="@string/ti_love_button_desc"/>
     </LinearLayout>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tagInputBox"
-        android:layout_weight="0"
-        android:inputType="text"
-        android:imeActionLabel="Add"
-        android:lines="1"
-        android:singleLine="true"
-        android:hint="@string/ti_tag_hint"/>
-
     <ProgressBar
         android:id="@+id/ti_initialProgressBar"
         style="?android:attr/progressBarStyleLarge"
@@ -116,30 +114,6 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?android:attr/buttonBarStyle"
-        >
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ti_ok_button"
-            android:id="@+id/tag_ok"
-            android:layout_weight="1"
-            style="?android:attr/buttonBarButtonStyle"
-            android:enabled="false"/>
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ti_cancel_button"
-            android:id="@+id/tag_cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_weight="1"/>
-    </LinearLayout>
 </LinearLayout>
         <FrameLayout
         android:id="@+id/progressBarHolder"

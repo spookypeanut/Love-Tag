@@ -53,7 +53,7 @@ public class TrackListActivity extends AppCompatActivity implements
             updatePod();
         }
     };
-    // This is never visible. It's the autocorrected version of the currently
+    // This is never visible. It's the auto-corrected version of the currently
     // playing track, so we don't end up having both "burnout" and "Burnout"
     // in the list
     Track mAlternatePodTrack;

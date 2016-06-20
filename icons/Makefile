@@ -11,15 +11,19 @@ LOVEFALSE := lovefalse-gen-512x512.png lovefalse-gen-144x144.png \
 LOVEUNKNOWN := loveunknown-gen-512x512.png loveunknown-gen-144x144.png \
 				loveunknown-gen-96x96.png loveunknown-gen-72x72.png \
 				loveunknown-gen-48x48.png loveunknown-gen-36x36.png
+IC_ADD := ic_add-gen-512x512.png ic_add-gen-144x144.png \
+				ic_add-gen-96x96.png ic_add-gen-72x72.png \
+				ic_add-gen-48x48.png ic_add-gen-36x36.png
 TAG := tag-gen-512x512.png tag-gen-144x144.png \
 				tag-gen-96x96.png tag-gen-72x72.png \
 				tag-gen-48x48.png tag-gen-36x36.png
 
-all : plain lovetrue lovefalse loveunknown tag
+all : plain lovetrue lovefalse loveunknown tag ic_add
 plain : $(PLAIN)
 lovetrue : $(LOVETRUE)
 lovefalse : $(LOVEFALSE)
 loveunknown : $(LOVEUNKNOWN)
+ic_add : $(IC_ADD)
 tag : $(TAG)
 
 icon-gen-512x512.png : icon.svg
@@ -97,6 +101,25 @@ loveunknown-gen-48x48.png : loveunknown.svg
 loveunknown-gen-36x36.png : loveunknown.svg
 	$(CONV) loveunknown-gen-36x36.png
 	optipng -q generated/loveunknown-gen-36x36.png
+
+ic_add-gen-512x512.png : ic_add.svg
+	$(CONV) ic_add-gen-512x512.png
+	optipng -q generated/ic_add-gen-512x512.png
+ic_add-gen-144x144.png : ic_add.svg
+	$(CONV) ic_add-gen-144x144.png
+	optipng -q generated/ic_add-gen-144x144.png
+ic_add-gen-96x96.png : ic_add.svg
+	$(CONV) ic_add-gen-96x96.png
+	optipng -q generated/ic_add-gen-96x96.png
+ic_add-gen-72x72.png : ic_add.svg
+	$(CONV) ic_add-gen-72x72.png
+	optipng -q generated/ic_add-gen-72x72.png
+ic_add-gen-48x48.png : ic_add.svg
+	$(CONV) ic_add-gen-48x48.png
+	optipng -q generated/ic_add-gen-48x48.png
+ic_add-gen-36x36.png : ic_add.svg
+	$(CONV) ic_add-gen-36x36.png
+	optipng -q generated/ic_add-gen-36x36.png
 
 tag-gen-512x512.png : tag.svg
 	$(CONV) tag-gen-512x512.png
