@@ -8,114 +8,122 @@
              android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<android.support.design.widget.FloatingActionButton
-    android:id="@+id/myFAB"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/ic_add"
-    app:elevation="4dp" />
-
-<LinearLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context="uk.co.spookypeanut.loveandtag.TagInputActivity"
-                android:orientation="vertical">
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:id="@+id/just_tag_list"
+            tools:context="uk.co.spookypeanut.loveandtag.TagInputActivity"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text=""
+                        android:id="@+id/tag_title"
+                        android:singleLine="true"
+                        android:textAlignment="gravity"
+                        android:layout_gravity="right"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text=""
+                        android:id="@+id/tag_artist"
+                        android:paddingLeft="4dp"
+                        android:singleLine="true"
+                        android:textAlignment="gravity"
+                        android:paddingRight="4dp"
+                        android:layout_gravity="right"
+                        android:textStyle="italic"/>
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tag_love_button"
+                    android:src="@drawable/lovefalse"
+                    android:background="#00000000"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:contentDescription="@string/ti_love_button_desc"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/ti_initialProgressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/ti_connectionwarning"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text=""
-                android:id="@+id/tag_title"
-                android:singleLine="true"
-                android:textAlignment="gravity"
-                android:layout_gravity="right"
-                />
+                android:visibility="visible"
+                android:gravity="center_horizontal"
+                android:textSize="18sp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text=""
-                android:id="@+id/tag_artist"
-                android:paddingLeft="4dp"
-                android:singleLine="true"
-                android:textAlignment="gravity"
-                android:paddingRight="4dp"
-                android:layout_gravity="right"
-                android:textStyle="italic"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="10">
 
+                <Space
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"/>
+
+                <ListView
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/tagList"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:layout_weight="10"/>
+
+                <Space
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
         </LinearLayout>
-
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tag_love_button"
-            android:src="@drawable/lovefalse"
-            android:background="#00000000"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:contentDescription="@string/ti_love_button_desc"/>
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/ti_initialProgressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
-
-    <TextView
-        android:id="@+id/ti_connectionwarning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:gravity="center_horizontal"
-        android:textSize="18sp"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="10">
-
-        <Space
-            android:layout_width="60dp"
-            android:layout_height="match_parent"/>
-
-        <ListView
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:id="@+id/tagList"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:layout_weight="10"/>
-
-        <Space
-            android:layout_width="60dp"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
-
-
-</LinearLayout>
-        <FrameLayout
+            android:layout_alignBottom="@id/just_tag_list"
+            android:layout_alignRight="@id/just_tag_list"
+            android:layout_margin="16dp"
+            app:backgroundTint="@color/lastfm_red"
+            android:src="@drawable/ic_add"
+            android:clickable="true"
+            app:elevation="4dp" />
+    </RelativeLayout>
+    <FrameLayout
         android:id="@+id/progressBarHolder"
         android:animateLayoutChanges="true"
         android:visibility="gone"
@@ -130,6 +138,6 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:layout_gravity="center" />
-        </FrameLayout>
+    </FrameLayout>
 </FrameLayout>
 
