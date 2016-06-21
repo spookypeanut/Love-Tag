@@ -46,15 +46,6 @@ public class TagInputActivity extends AppCompatActivity {
     // *could* happen, but I don't want to risk it.
     TagList mActallyUntagged = new TagList();
     TagAdapter mTagAdaptor;
-    private TextWatcher inputTextWatcher = new TextWatcher() {
-        public void beforeTextChanged(CharSequence s, int st, int c, int a) { }
-
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            updateOkButton();
-        }
-
-        public void afterTextChanged(Editable s) { }
-    };
 
     private void checkLoved() {
         IsLovedCall ilc = new IsLovedCall();
@@ -84,33 +75,14 @@ public class TagInputActivity extends AppCompatActivity {
         GetTagsCall gec = new GetTagsCall();
         gec.execute(mTrack);
         Log.d(tag, "Tags on track: " + mOrigTags.toString());
-        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
-        final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
-        final Button okButton = (Button) findViewById(R.id.tag_ok);
+//        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
+//        final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
+//        final Button okButton = (Button) findViewById(R.id.tag_ok);
         final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
         mTagAdaptor = new TagAdapter(this, mTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
-        tagEntry.addTextChangedListener(inputTextWatcher);
-        tagEntry.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                updateOkButton();
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if ((keyCode == KeyEvent.KEYCODE_ENTER ||
-                         keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
-                        // When enter is pressed in the field,
-                        // add the tag and reset the input
-                        if (addNewTag(tagEntry.getText().toString())) {
-                            tagEntry.setText("");
-                            tagEntry.requestFocus();
-                        }
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+        /*
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +120,7 @@ public class TagInputActivity extends AppCompatActivity {
                 setResult(RESULT_CANCELED);
                 finish();
             }
-        });
+        });*/
         loveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,7 +144,6 @@ public class TagInputActivity extends AppCompatActivity {
                     mActallyUntagged.add(mTagList.get(index));
                 }
                 mTagList.get(index).mActive = !previous;
-                updateOkButton();
                 updateList();
             }
         });
@@ -243,17 +214,6 @@ public class TagInputActivity extends AppCompatActivity {
         findViewById(R.id.ti_initialProgressBar).setVisibility(View.GONE);
         Collections.sort(mTagList);
         mTagAdaptor.notifyDataSetChanged();
-    }
-
-    private void updateOkButton() {
-        final Button okButton = (Button) findViewById(R.id.tag_ok);
-        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
-        String current_text = tagEntry.getText().toString();
-        if (mTagList.getActiveList().size() == 0 && current_text.equals("")) {
-            okButton.setEnabled(false);
-        } else {
-            okButton.setEnabled(true);
-        }
     }
 
     private void updateTrack() {
