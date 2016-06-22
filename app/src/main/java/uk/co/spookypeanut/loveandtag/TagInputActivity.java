@@ -223,7 +223,6 @@ public class TagInputActivity extends AppCompatActivity {
     }
 
     private class GetTagsCall extends AsyncTask<Track, String, String> {
-        TagList mFreqTags = new TagList();
         TagList mTrackTags = new TagList();
         @Override
         protected String doInBackground(Track... params) {
@@ -233,17 +232,10 @@ public class TagInputActivity extends AppCompatActivity {
             } else {
                 mTrackTags = mLfs.getTrackTags(t);
             }
-            mFreqTags = mLfs.getGlobalTags();
             return "";
         }
         protected void onPostExecute(String result) {
-            if (mFreqTags.size() == 0) {
-                TextView warn;
-                warn = (TextView) findViewById(R.id.ti_connectionwarning);
-                warn.setText(R.string.ti_no_global_tags);
-                warn.setVisibility(View.VISIBLE);
-            }
-            if (!mTrackTags.mValid || !mFreqTags.mValid) {
+            if (!mTrackTags.mValid) {
                 TextView warn;
                 warn = (TextView) findViewById(R.id.ti_connectionwarning);
                 warn.setText(R.string.ti_connection_warning);
@@ -251,7 +243,6 @@ public class TagInputActivity extends AppCompatActivity {
             }
             mTagList.addAll(mTrackTags);
             mOrigTags = mTrackTags;
-            mTagList.addAll(mFreqTags);
             updateList();
         }
     }
