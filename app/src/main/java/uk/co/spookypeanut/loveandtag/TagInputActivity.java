@@ -99,9 +99,7 @@ public class TagInputActivity extends AppCompatActivity {
                                 final String newTag =
                                         tagEntry.getText().toString();
                                 Log.d("TagInputActivity", "newTag: " + newTag);
-                                TagCall tc = new TagCall();
-                                tc.execute(mTrack.mArtist, mTrack.mTitle,
-                                           newTag);
+                                addNewTag(newTag);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
