@@ -6,24 +6,22 @@ package uk.co.spookypeanut.loveandtag;
  */
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -78,10 +76,40 @@ public class TagInputActivity extends AppCompatActivity {
 //        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
 //        final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
 //        final Button okButton = (Button) findViewById(R.id.tag_ok);
+        final FloatingActionButton addButton =
+                (FloatingActionButton) findViewById(R.id.add_button);
         final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
         mTagAdaptor = new TagAdapter(this, mTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
+        String newTag = "";
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final EditText tagEntry = new EditText(v.getContext());
+
+                tagEntry.setHint("Enter new tag");
+
+                new AlertDialog.Builder(v.getContext())
+                        .setTitle("Enter Tag")
+                        .setView(tagEntry)
+                        .setPositiveButton("Add", new DialogInterface
+                                .OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                final String newTag =
+                                        tagEntry.getText().toString();
+                                Log.d("TagInputActivity", "newTag: " + newTag);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        })
+                        .show();
+
+            }
+        });
         /*
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
