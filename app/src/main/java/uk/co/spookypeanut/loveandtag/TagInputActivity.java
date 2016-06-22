@@ -375,7 +375,6 @@ public class TagInputActivity extends AppCompatActivity {
             final String tag = "TIAct.Tag.onPostExec";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
-            finish();
         }
     }
 
@@ -401,7 +400,6 @@ public class TagInputActivity extends AppCompatActivity {
             final String tag = "TIAct.Untag.onPostExec";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
-            finish();
         }
     }
 }
