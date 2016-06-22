@@ -44,7 +44,7 @@ public class TagInputActivity extends AppCompatActivity {
     // so that we don't accidentally remove all existing tags because we
     // haven't managed to get the tags from last.fm yet. I'm not sure this
     // *could* happen, but I don't want to risk it.
-    TagList mActallyUntagged = new TagList();
+    TagList mActuallyUntagged = new TagList();
     TagAdapter mTagAdaptor;
 
     private void checkLoved() {
@@ -106,7 +106,7 @@ public class TagInputActivity extends AppCompatActivity {
                 tc.execute(mTrack.mArtist, mTrack.mTitle,
                         TextUtils.join(",", for_tagging));
                 for (Tag tag_obj : for_untagging) {
-                    if (!mActallyUntagged.contains(tag_obj)) continue;
+                    if (!mActuallyUntagged.contains(tag_obj)) continue;
                     UntagCall uc = new UntagCall();
                     uc.execute(mTrack.mArtist, mTrack.mTitle, tag_obj.mName);
                 }
@@ -141,7 +141,7 @@ public class TagInputActivity extends AppCompatActivity {
                 if (previous) {
                     // If we are de-activating the tag, we should also
                     // add it to the actually deactivated list
-                    mActallyUntagged.add(mTagList.get(index));
+                    mActuallyUntagged.add(mTagList.get(index));
                 }
                 mTagList.get(index).mActive = !previous;
                 updateList();
