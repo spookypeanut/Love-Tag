@@ -42,7 +42,6 @@ public class TagInputActivity extends AppCompatActivity {
     // so that we don't accidentally remove all existing tags because we
     // haven't managed to get the tags from last.fm yet. I'm not sure this
     // *could* happen, but I don't want to risk it.
-    TagList mActuallyUntagged = new TagList();
     TagAdapter mTagAdaptor;
 
     private void checkLoved() {
@@ -168,13 +167,16 @@ public class TagInputActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int index, long id) {
-                boolean previous = mTagList.get(index).mActive;
-                if (previous) {
-                    Tag tag = mTagList.get(index);
+                Tag tag = mTagList.get(index);
+                boolean active = mTagList.get(index).mActive;
+                if (active) {
                     UntagCall uc = new UntagCall();
                     uc.execute(mTrack.mArtist, mTrack.mTitle, tag.mName);
+                } else {
+                    TagCall tc = new TagCall();
+                    tc.execute(mTrack.mArtist, mTrack.mTitle, tag.mName);
                 }
-                mTagList.get(index).mActive = !previous;
+                mTagList.get(index).mActive = !active;
                 updateList();
             }
         });
@@ -375,6 +377,8 @@ public class TagInputActivity extends AppCompatActivity {
             final String tag = "TIAct.Tag.onPostExec";
             Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
             Log.i(tag, result);
+            GetTagsCall gec = new GetTagsCall();
+            gec.execute(mTrack);
         }
     }
 
