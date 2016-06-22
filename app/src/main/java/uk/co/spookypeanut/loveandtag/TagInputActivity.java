@@ -100,6 +100,9 @@ public class TagInputActivity extends AppCompatActivity {
                                 final String newTag =
                                         tagEntry.getText().toString();
                                 Log.d("TagInputActivity", "newTag: " + newTag);
+                                TagCall tc = new TagCall();
+                                tc.execute(mTrack.mArtist, mTrack.mTitle,
+                                           newTag);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -167,9 +170,9 @@ public class TagInputActivity extends AppCompatActivity {
                                     int index, long id) {
                 boolean previous = mTagList.get(index).mActive;
                 if (previous) {
-                    // If we are de-activating the tag, we should also
-                    // add it to the actually deactivated list
-                    mActuallyUntagged.add(mTagList.get(index));
+                    Tag tag = mTagList.get(index);
+                    UntagCall uc = new UntagCall();
+                    uc.execute(mTrack.mArtist, mTrack.mTitle, tag.mName);
                 }
                 mTagList.get(index).mActive = !previous;
                 updateList();
