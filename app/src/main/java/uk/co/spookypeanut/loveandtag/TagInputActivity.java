@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -74,23 +73,19 @@ public class TagInputActivity extends AppCompatActivity {
         GetTagsCall gec = new GetTagsCall();
         gec.execute(mTrack);
         Log.d(tag, "Tags on track: " + mOrigTags.toString());
-//        final EditText tagEntry = (EditText) findViewById(R.id.tagInputBox);
-//        final Button cancelButton = (Button) findViewById(R.id.tag_cancel);
-//        final Button okButton = (Button) findViewById(R.id.tag_ok);
         final FloatingActionButton addButton =
                 (FloatingActionButton) findViewById(R.id.add_button);
         final ImageButton loveButton = (ImageButton) findViewById(R.id.tag_love_button);
         mTagAdaptor = new TagAdapter(this, mTagList);
         ListView tagListView = (ListView) findViewById(R.id.tagList);
         tagListView.setAdapter(mTagAdaptor);
-        String newTag = "";
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 final AutoCompleteTextView tagEntry = new AutoCompleteTextView(v.getContext());
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(),
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(v.getContext(),
                  android.R.layout.simple_dropdown_item_1line, mFreqTags.getAsStrings());
 
                 tagEntry.setHint("Enter new tag");
@@ -116,45 +111,6 @@ public class TagInputActivity extends AppCompatActivity {
 
             }
         });
-        /*
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String current_text = tagEntry.getText().toString();
-                boolean valid_tag = true;
-                if (!current_text.equals("")) {
-                    valid_tag = addNewTag(current_text);
-                }
-                if (mTagList.size() == 0 || !valid_tag) {
-                    return;
-                }
-                TagList for_tagging = mTagList.getActiveList();
-                for_tagging.removeAll(mOrigTags);
-                Log.d(tag, "For tagging: " + for_tagging.toString());
-                TagList for_untagging = (TagList) mOrigTags.clone();
-                for_untagging.removeAll(mTagList.getActiveList());
-                Log.d(tag, "For untagging: " + for_untagging.toString());
-                Log.d(tag, "Tagging " + mTrack.mTitle + " with " +
-                        for_tagging.toString());
-                TagCall tc = new TagCall();
-                tc.execute(mTrack.mArtist, mTrack.mTitle,
-                        TextUtils.join(",", for_tagging));
-                for (Tag tag_obj : for_untagging) {
-                    if (!mActuallyUntagged.contains(tag_obj)) continue;
-                    UntagCall uc = new UntagCall();
-                    uc.execute(mTrack.mArtist, mTrack.mTitle, tag_obj.mName);
-                }
-                showWaitingDialog();
-            }
-        });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(tag, "User cancelled tagging");
-                setResult(RESULT_CANCELED);
-                finish();
-            }
-        });*/
         loveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -287,7 +243,6 @@ public class TagInputActivity extends AppCompatActivity {
             }
             mTagList.addAll(mTrackTags);
             mOrigTags = mTrackTags;
-//            mTagList.addAll(mFreqTags);
             updateList();
         }
     }

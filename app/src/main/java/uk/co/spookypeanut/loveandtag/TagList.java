@@ -32,7 +32,7 @@ public class TagList extends ArrayList<Tag> {
     }
 
     public ArrayList<String> getAsStrings() {
-        ArrayList<String> out = new ArrayList<String>();
+        ArrayList<String> out = new ArrayList<>();
         for (Tag tag : this) {
             out.add(tag.mName);
         }
