@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -87,9 +88,13 @@ public class TagInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final EditText tagEntry = new EditText(v.getContext());
+                final AutoCompleteTextView tagEntry = new AutoCompleteTextView(v.getContext());
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(),
+                 android.R.layout.simple_dropdown_item_1line, mFreqTags.getAsStrings());
 
                 tagEntry.setHint("Enter new tag");
+                tagEntry.setAdapter(adapter);
 
                 new AlertDialog.Builder(v.getContext())
                         .setTitle("Enter Tag")
