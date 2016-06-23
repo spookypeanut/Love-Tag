@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Pattern;
 
 public class TagInputActivity extends AppCompatActivity {
@@ -205,7 +206,12 @@ public class TagInputActivity extends AppCompatActivity {
 
     private void updateList() {
         findViewById(R.id.ti_initialProgressBar).setVisibility(View.GONE);
-        Collections.sort(mTagList);
+        Collections.sort(mTagList, new Comparator<Tag>() {
+            @Override
+            public int compare(Tag lhs, Tag rhs) {
+                return lhs.mName.compareTo(rhs.mName);
+            }
+        });
         mTagAdaptor.notifyDataSetChanged();
     }
 
