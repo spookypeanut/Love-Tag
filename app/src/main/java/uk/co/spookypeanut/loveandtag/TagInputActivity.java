@@ -43,6 +43,7 @@ public class TagInputActivity extends AppCompatActivity {
     // haven't managed to get the tags from last.fm yet. I'm not sure this
     // *could* happen, but I don't want to risk it.
     TagAdapter mTagAdaptor;
+    TagList mFreqTags = new TagList();
 
     private void checkLoved() {
         IsLovedCall ilc = new IsLovedCall();
@@ -254,7 +255,6 @@ public class TagInputActivity extends AppCompatActivity {
     }
 
     private class GetTagsCall extends AsyncTask<Track, String, String> {
-        TagList mFreqTags = new TagList();
         TagList mTrackTags = new TagList();
         @Override
         protected String doInBackground(Track... params) {
@@ -282,7 +282,7 @@ public class TagInputActivity extends AppCompatActivity {
             }
             mTagList.addAll(mTrackTags);
             mOrigTags = mTrackTags;
-            mTagList.addAll(mFreqTags);
+//            mTagList.addAll(mFreqTags);
             updateList();
         }
     }
