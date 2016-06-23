@@ -31,6 +31,14 @@ public class TagList extends ArrayList<Tag> {
         }
     }
 
+    public ArrayList<String> getAsStrings() {
+        ArrayList<String> out = new ArrayList<String>();
+        for (Tag tag : this) {
+            out.add(tag.mName);
+        }
+        return out;
+    }
+
     public TagList getActiveList() {
         TagList tl = new TagList();
         for (Tag tag : this) {
