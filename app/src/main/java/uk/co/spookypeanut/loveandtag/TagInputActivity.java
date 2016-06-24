@@ -133,11 +133,10 @@ public class TagInputActivity extends AppCompatActivity {
                 if (active) {
                     UntagCall uc = new UntagCall();
                     uc.execute(mTrack.mArtist, mTrack.mTitle, tag.mName);
+                    mTagList.get(index).mActive = !active;
                 } else {
-                    TagCall tc = new TagCall();
-                    tc.execute(mTrack.mArtist, mTrack.mTitle, tag.mName);
+                    addNewTag(tag.mName);
                 }
-                mTagList.get(index).mActive = !active;
                 updateList();
             }
         });
@@ -155,6 +154,10 @@ public class TagInputActivity extends AppCompatActivity {
         }
         Tag tag = new Tag(tag_name);
         tag.mActive = true;
+
+        TagCall tc = new TagCall();
+        tc.execute(mTrack.mArtist, mTrack.mTitle, tag.mName);
+
         mTagList.add(tag);
         updateList();
         return true;

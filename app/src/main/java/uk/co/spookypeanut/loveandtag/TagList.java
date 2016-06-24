@@ -16,8 +16,8 @@ public class TagList extends ArrayList<Tag> {
     public boolean add(Tag new_tag) {
         final String tag = "TagList.add";
         if (this.contains(new_tag)) {
-            Log.d(tag, new_tag.mName + " is already there");
-            return false;
+            Log.d(tag, new_tag.mName + " is already there, replacing");
+            super.remove(this.indexOf(new_tag));
         }
         super.add(new_tag);
         return true;
